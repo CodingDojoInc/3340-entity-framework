@@ -1,0 +1,26 @@
+@model List<Trail>
+<h1>Lost in the Woods</h1>
+<p>
+    List of local hiking trails
+</p>
+<hr>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Trail Name</th>
+            <th>Trail Length</th>
+            <th>Elevation Change</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var trail in Model)
+    {
+        <tr>
+            <td><a asp-controller="Home" asp-action="Show" asp-route-id="@trail.TrailId">@trail.Name</a></td>
+            <td>@trail.Length</td>
+            <td>@trail.ElevationGain</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<a href="/new">Add a new trail! </a>
