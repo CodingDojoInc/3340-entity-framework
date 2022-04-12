@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Dish>
+<h1>Welcome to CRUDelicious!</h1>
+<a asp-controller="Home" asp-action="New">Add a new Dish</a>
+<h3>Check out some recent dishes:</h3>
+<hr>
+@foreach(var dish in Model)
+{
+    <p><a asp-controller="Home" 
+        asp-action="Show" 
+        asp-route-dishId="@dish.DishId">@dish.Name</a> by @dish.Chef</p>
+}
