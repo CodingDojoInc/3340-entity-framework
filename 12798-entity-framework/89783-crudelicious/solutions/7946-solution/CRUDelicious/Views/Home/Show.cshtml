@@ -1,0 +1,10 @@
+@model Dish
+@Html.Partial("Back")
+<h1>@Model.Name</h1>
+<h3>@Model.Chef</h3>
+<hr>
+<p>@Model.Description</p>
+<h3><strong>Calories: </strong>@Model.Calories</h3>
+<h3><strong>Tastiness: </strong>@Model.Tastiness</h3>
+<a asp-action="Delete" asp-route-id="@Model.DishId"><button>Delete</button></a>
+<a asp-action="Edit" asp-route-id="@Model.DishId"><button>Edit</button></a>
