@@ -1,0 +1,156 @@
+
+            <h1>Getting Started with Entity Framework Core</h1>
+<p>
+    Entity Framework Core is a fully featured ORM that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement!&nbsp;Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
+<p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.&nbsp;</p>
+<p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
+<h3>Package: Pomelo.EntityFrameworkCore.MySql</h3>
+<p> To get started we'll need a new dependency, an Entity Framework package for MySQL databases:
+</p>
+<p><strong>Note:&nbsp;</strong>You must run this installation every time you begin a new project, it is not a globally saved package.<br></p>
+<pre data-language="bash" class="rainbow">dotnet add package Pomelo.EntityFrameworkCore.MySql <span class="keyword operator from-rainbow">-</span>v <span class="constant numeric from-rainbow">2.2</span>.<span class="constant numeric from-rainbow">0</span>
+</pre>
+<h3>Your Context Class<br>
+    </h3>
+<p>Next, we'll need to create a new file in our&nbsp;
+    <code>Models</code>
+    &nbsp;folder. This is our&nbsp;
+    <code>context</code>
+    &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
+</p>
+<h4>YourContext.cs</h4>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">using</span> Microsoft.EntityFrameworkCore;
+ 
+<span class="keyword from-rainbow">namespace</span> YourNamespace.Models
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext <span class="operator from-rainbow">:</span> DbContext
+    {
+        <span class="comment from-rainbow">// base() calls the parent class' constructor passing the "options" parameter along</span>
+        <span class="keyword from-rainbow">public</span> MyContext(DbContextOptions options) <span class="operator from-rainbow">:</span> <span class="keyword from-rainbow">base</span>(options) { }
+    }
+}</pre>
+<h2>Setting up and securing your Connection String</h2>
+<p>One crucial step in your setup will be to put your MySQL connection string (the line of code that will connect your project to MySQL) in a separate area from your source code. The connection string contains important information such as your username and password into MySQL, which would introduce a severe vulnerability whereby anyone that has access to your project source (ie. public git repositories) would have the means to take control of your database (bad news!).&nbsp;</p>
+<p>Luckily, there is an easy way for you to store your sensitive info in a separate json file which can be used to format what ASP calls a "Configuration" object at startup. This way, you can "gitignore" this file from any git repo, and ASP can load and reference the data contained - thus allowing you to pass your connection string required by MySQL. (Refer back to Git in Web Fundamentals if you need a refresher on gitignore.)</p>
+<h2>appsettings.json</h2>
+<p>If you created a project from <code>dotnet new mvc</code> or any previously existing MVC project, then in your project root you should see a file named <strong>appsettings.json</strong>. If not, create the file, but be sure to name it <code>appsettings.json</code>, or this will not work.&nbsp;</p>
+<p><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/appsettings-location.png"><br><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;</p>
+<p>If you set up MySQL properly earlier in the course, then your userid and password should both be root. If your userid or password into MySQL are anything other than root, be sure to replace these areas with the proper login credentials to connect to your local version of MySQL. (You can see now where this could become a severe security vulnerability without a gitignore!)</p>
+<pre data-language="json" class="rainbow">{
+    <span class="string from-rainbow">"DBInfo"</span>:
+    {
+        <span class="string from-rainbow">"Name"</span>: <span class="string from-rainbow">"MySQLconnect"</span>,
+        <span class="string from-rainbow">"ConnectionString"</span>: <span class="string from-rainbow">"server=localhost;userid=root;password=root;port=3306;database=mydb;SslMode=None"</span>
+    }
+}
+</pre>
+<p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
+<h2>Startup</h2>
+<p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Startup class. Let's see what this looks like:</p>
+<pre data-language="csharp" class="rainbow"><span class="comment from-rainbow">// other using statements</span>
+<span class="keyword from-rainbow">using</span> Microsoft.Extensions.Configuration;
+<span class="keyword from-rainbow">using</span> Microsoft.EntityFrameworkCore;
+<span class="keyword from-rainbow">using</span> YourProject.Models;
+<span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">Startup</span>
+{
+    <span class="comment from-rainbow">// This public getter will be how you access the data from appsettings.json</span>
+    <span class="comment from-rainbow">// To access the connection string itself, you would use the following:</span>
+    <span class="comment from-rainbow">// Configuration["DBInfo:ConnectionString"]</span>
+    <span class="keyword from-rainbow">public</span> IConfiguration Configuration {<span class="keyword from-rainbow">get</span>;}
+    
+    <span class="comment from-rainbow">// Here we will "inject" the default IConfiguration service, which will bind to appsettings.json by default</span>
+    <span class="comment from-rainbow">// and then assign it to the Configuration property.  This happens at the startup of our application.</span>
+    <span class="keyword from-rainbow">public</span> Startup(IConfiguration configuration)
+    {
+    	Configuration <span class="operator from-rainbow">=</span> configuration;
+    }
+    
+    <span class="comment from-rainbow">// Now we may use the connection string, bound to Configuration, to pass the required connection</span>
+    <span class="comment from-rainbow">// credentials to MySQL</span>
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">void</span> ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext&lt;MyContext&gt;(options <span class="operator from-rainbow">=&gt;</span> options.UseMySql(Configuration[<span class="string from-rainbow">"DBInfo:ConnectionString"</span>]));
+        <span class="comment from-rainbow">// Add other services</span>
+    }
+}
+</pre>
+<p>Notice that when we register the service (<strong>services.AddDbContext</strong>), we will specify that we are using MySQL (<strong>options.UseMySql</strong>).&nbsp; This registers an&nbsp;<em>additional </em>service (<strong>DbContextOptions</strong>), that we can then utilize in our Context class's constructor.  It is also here that we need to pass a connection string for our MySQL server (which you created in appsettings.json) to authenticate the handshake to our ASP app.<br></p>
+<h2>Your Entity class</h2>
+<p>
+        For each table we want to work with, we will create an associated Model class. <br></p>
+<p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity".  In this Entity class, we will provide <strong>Auto-Implemented Properties</strong> that will be used by Entity Framework to "map" to <strong>Columns</strong> in the associated table. <br></p>
+<p>The <strong>name</strong> and <strong>type</strong> of each one of these properties will need to match the <strong>name</strong> and <strong>type</strong> of the table column they represent.  
+    </p>
+<p>For this example, consider the following table "users" in our MySQL schema.</p>
+<figure><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/getting-started-ef-table.png"></figure>
+<p></p>
+<h4>User.cs</h4>
+<pre data-language="csharp" class="rainbow">    <span class="keyword from-rainbow">using</span> System.ComponentModel.DataAnnotations;
+    <span class="keyword from-rainbow">using</span> System;
+    <span class="keyword from-rainbow">namespace</span> MyProject.Models
+    {
+        <span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">User</span>
+        {
+            <span class="comment from-rainbow">// auto-implemented properties need to match the columns in your table</span>
+            <span class="comment from-rainbow">// the [Key] attribute is used to mark the Model property being used for your table's Primary Key</span>
+            [Key]
+            <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+            <span class="comment from-rainbow">// MySQL VARCHAR and TEXT types can be represeted by a string</span>
+            <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+            <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+            <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+            <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+            <span class="comment from-rainbow">// The MySQL DATETIME type can be represented by a DateTime</span>
+            <span class="keyword from-rainbow">public</span> DateTime CreatedAt {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}
+            <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}
+        }
+    }
+    </pre>
+<h2>Your DbSets</h2>
+<p>At this point, our <code>User</code> Model class and our <code>users</code> table now have connections needed to represent a single entry - or <strong>row</strong> of SQL - but to actually access the data to be stored in your <code>users</code> table you will need to update your <strong>Context </strong>class with a <code>DbSet</code> <strong>property</strong>. <br></p>
+<p>The <strong>type</strong> you give this property will be a <code>DbSet</code> -- a collection type from the Entity Framework library. Then in angle brackets we will declare the model we will be using to reference into our SQL tables. In this case, to set up the <code>User</code> Model DB connection, we will use the <strong>type </strong><code>DbSet&lt;User&gt;<user></user></code>. Read literally, we are telling the system "I want access to all the information you have inside the database table for User."<br></p>
+<p>The <strong>name</strong> you give this <code>DbSet</code> property is important.  It will need to correlate to your MySQL table name.  Much like how our Model class properties map to <strong>Column</strong> names, DbSet properties in your Context class will need to match <strong>Table</strong> names.&nbsp; By default MySQL will store your table names as lowercase, but will able to handle case-insensitivity.&nbsp; So if our table name here is <strong>"users"</strong>, we can name this DbSet property <strong>"Users"</strong>. This "Users" name is what we will use to refer to the data from our controllers.<br></p>
+<p>Our Context classes can contain any number of <code>DbSet</code> properties, with each relating to a separate table in the database. If we had models for "Posts" or "Books" we would set up a <code>public DbSet&lt;Post&gt; Posts</code> and <code>public DbSet&lt;Book&gt; Books</code> respectively.&nbsp;</p>
+<h4>MyContext.cs</h4>
+<pre data-language="csharp" class="rainbow">    <span class="keyword from-rainbow">using</span> Microsoft.EntityFrameworkCore; 
+    <span class="keyword from-rainbow">namespace</span> MyProject.Models
+    {
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext <span class="operator from-rainbow">:</span> DbContext
+        {
+            <span class="keyword from-rainbow">public</span> MyContext(DbContextOptions options) <span class="operator from-rainbow">:</span> <span class="keyword from-rainbow">base</span>(options) { }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// "users" table is represented by this DbSet "Users"</span>
+            <span class="keyword from-rainbow">public</span> DbSet&lt;User&gt; Users {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}
+        }
+    }
+    </pre>
+<h2>Dependency Injection (to our Controller)</h2>
+<p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
+<h3>YourController.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">using</span> Microsoft.EntityFrameworkCore;
+<span class="keyword from-rainbow">using</span> YourNamespace.Models;
+<span class="keyword from-rainbow">using</span> System.Linq;
+<span class="comment from-rainbow">// Other using statements</span>
+<span class="keyword from-rainbow">namespace</span> MyProject.Controllers
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController <span class="operator from-rainbow">:</span> Controller
+    {
+        <span class="keyword from-rainbow">private</span> MyContext dbContext;
+     
+        <span class="comment from-rainbow">// here we can "inject" our context service into the constructor</span>
+        <span class="keyword from-rainbow">public</span> HomeController(MyContext context)
+        {
+            dbContext <span class="operator from-rainbow">=</span> context;
+        }
+     
+        [HttpGet]
+        [Route(<span class="string from-rainbow">""</span>)]
+        <span class="keyword from-rainbow">public</span> IActionResult Index()
+        {
+            List&lt;User&gt; AllUsers <span class="operator from-rainbow">=</span> dbContext.Users.ToList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="keyword from-rainbow">return</span> View();
+        }
+    }
+ }</pre>
+        
