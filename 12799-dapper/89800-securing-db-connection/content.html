@@ -1,0 +1,123 @@
+
+            <p> <br> </p>
+<h1>Securing Connection Strings</h1>
+<p>If we look back at how we were previously connecting to MySQL, we may find some serious security vulnerabilities. Namely, we are providing the exact MySQL connection string - complete with our root username and password, as well as the db schema for our application - to anyone who may be viewing our source code! In order to remove this connection string from our source code, we need to put our connection string in a separate file that we can .gitignore. This file will be a .json file, conventionally named&nbsp;<strong>appsettings.json</strong>.&nbsp;</p>
+<h2>appsettings.json</h2>
+<p>appsettings.json is the name of the file that is going to hold our sensitive information for us. (If you are using <code>dotnet new mvc</code>&nbsp;to generate your files, this file has already been created for you.) Here we can list a variety of information in a JSON object and our program will be able to make use of them. As long as we include <code>appsettings.json</code> in our <code>.gitignore</code> it will not be&nbsp;pushed out where others can see it. In this case, we are just going to add the connection string and a name representing the connection as an&nbsp;object with the key name "DBInfo."</p>
+<pre data-language="json" class="rainbow">{
+    <span class="string from-rainbow">"DBInfo"</span>:
+    {
+        <span class="string from-rainbow">"Name"</span>: <span class="string from-rainbow">"MySQLconnect"</span>,
+        <span class="string from-rainbow">"ConnectionString"</span>: <span class="string from-rainbow">"server=localhost;userid=root;password=root;port=8889;database=mydb;SslMode=None"</span>
+    }
+}
+</pre>
+<p>Again, since the information in this file is sensitive, the file itself is also sensitive. <strong> Do not push your appsettings.json file to GitHub! </strong>
+</p>
+<p>Now that we have this string separated, we need to tell our app how to find this string when it needs it (i.e. we're taking it out of the factory, but we still need to make the connection there).</p>
+<p>If you are not using <code>dotnet new mvc</code>, you may need to add two new namespaces to your list of using statements in Startup.cs.</p>
+<pre data-language="csharp" class="rainbow">    <span class="keyword from-rainbow">using</span> Microsoft.Extensions.Configuration;
+    <span class="comment from-rainbow">// and</span>
+    <span class="keyword from-rainbow">using</span> Microsoft.AspNetCore.Hosting;
+</pre>
+<p>From there, we also need to add a constructor function to our Startup that runs code to include the new appsettings.json file when the program builds. Again, if you are using <code>dotnet new mvc</code>, you do not need to do this step.</p>
+<h3>Startup.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">using</span> Microsoft.Extensions.Configuration;
+<span class="keyword from-rainbow">using</span> Microsoft.AspNetCore.Hosting;
+<span class="comment from-rainbow">// Other usings</span>
+ 
+<span class="comment from-rainbow">// Other code</span>
+<span class="keyword from-rainbow">public</span> IConfiguration Configuration { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">private</span> <span class="keyword from-rainbow">set</span>; }
+ 
+<span class="keyword from-rainbow">public</span> Startup(IHostingEnvironment env)
+{
+    <span class="keyword from-rainbow">var</span> builder <span class="operator from-rainbow">=</span> <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">ConfigurationBuilder</span>()
+    .SetBasePath(env.ContentRootPath)
+    .AddJsonFile(<span class="string from-rainbow">"appsettings.json"</span>, optional<span class="operator from-rainbow">:</span> <span class="constant from-rainbow">true</span>, reloadOnChange<span class="operator from-rainbow">:</span> <span class="constant from-rainbow">true</span>)
+    .AddEnvironmentVariables();
+    Configuration <span class="operator from-rainbow">=</span> builder.Build();
+}
+</pre>
+<p>Now that we have the file linked to our code we need to add the "DBInfo" object as a service. This allows us to access the object in other parts of our code outside of the Startup.cs file. (If we only need access to the info in appsettings.json in our Startup class, we do not need this step.)</p>
+<h3>Startup.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">void</span> ConfigureServices(IServiceCollection services)
+{
+    <span class="comment from-rainbow">// Add framework services.</span>
+    services.Configure&lt;MySqlOptions&gt;(Configuration.GetSection(<span class="string from-rainbow">"DBInfo"</span>));
+}
+</pre>
+<p>Notice we said Configure took on type <code>MySqlOptions</code>. Here we are making use of the Options pattern for configuration which enables using custom option classes to represent a group of related settings. We need to also make sure to create this option class so we have access to it later. By convention, we add a folder called <code>Properties</code> in the root of our project and add the <code>MySqlOptions</code> class definition inside:</p>
+<h3>Properties/MySqlOptions.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">namespace</span> YourNamespace
+{
+    <span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">MySqlOptions</span>
+    {
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> ConnectionString { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    }
+}
+</pre>
+<p>With the service added, there are only a few more steps left. First off anything added as a service is available to us anywhere through a process called <strong>dependency injection</strong>. What happens with services and dependency injection is some of the magic ASP.NET Core provides. If we want any class to have access to a service we have added here, we just have to list that service as a parameter in that class's constructor. It may seem a little confusing now, but hopefully, after we access our MySqlOption service we've added it will start to make sense.</p>
+<p>We can use dependency injection to pass our connection string from <code>appsettings.json</code> to our <code>UserFactory</code> class, removing the hard-coded version we were using before.</p>
+<h3>UserFactory.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">using</span> System.Collections.Generic;
+<span class="keyword from-rainbow">using</span> System.Linq;
+<span class="keyword from-rainbow">using</span> Dapper;
+<span class="keyword from-rainbow">using</span> System.Data;
+<span class="keyword from-rainbow">using</span> MySql.Data.MySqlClient;
+<span class="keyword from-rainbow">using</span> YourNamespace.Models;
+<span class="keyword from-rainbow">using</span> Microsoft.Extensions.Options;
+ 
+<span class="keyword from-rainbow">namespace</span> YourNamespace.Factory
+{
+    <span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">UserFactory</span>
+    {
+        <span class="keyword from-rainbow">private</span> MySqlOptions _options;
+        <span class="keyword from-rainbow">public</span> UserFactory(IOptions&lt;MySqlOptions&gt; config)
+        {
+            _options <span class="operator from-rainbow">=</span> config.Value;
+        }
+        <span class="keyword from-rainbow">internal</span> IDbConnection Connection
+        {
+            <span class="keyword from-rainbow">get</span> {
+                <span class="keyword from-rainbow">return</span> <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">MySqlConnection</span>(_options.ConnectionString);
+            }
+        }
+    }
+}
+</pre>
+<p>Note how the <code>
+        IOptions&lt;MySqlOptions&gt; config
+    </code> &nbsp;passed to the constructor function doesn't seem to come from anywhere, yet it's still something we can access. This is the dependency injection for our service mentioned earlier! Simply by listing our service as a method parameter, ASP.NET knows to fill it in and grant us access to it. You can actually configure as many services as you would like with dependency injection.&nbsp; Now we can make our <code>UserFactory</code> a service as well, and inject into any of our Controller classes!  This idea of added services to work with dependency injection better is referred to as <strong>chaining</strong>.</p>
+<h3>Startup.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">void</span> ConfigureServices(IServiceCollection services)
+{
+    <span class="comment from-rainbow">// Add framework services.</span>
+    <span class="comment from-rainbow">//Added UserFactory as a service</span>
+    services.AddScoped&lt;UserFactory&gt;();
+}
+</pre>
+<h3>YourController.cs</h3>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">namespace</span> YourNamespace.Controllers
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> YourController <span class="operator from-rainbow">:</span> Controller
+    {
+        <span class="keyword from-rainbow">private</span> <span class="keyword from-rainbow">readonly</span> UserFactory _userFactory;
+ 
+        <span class="keyword from-rainbow">public</span> YourController(UserFactory uFactory)
+        {
+            _userFactory <span class="operator from-rainbow">=</span> uFactory;
+        }
+ 
+        [HttpGet]
+        [Route(<span class="string from-rainbow">""</span>)]
+        <span class="keyword from-rainbow">public</span> IActionResult Index()
+        {
+            List&lt;User&gt; AllUsers <span class="operator from-rainbow">=</span> _userFactory.FindAll();
+            <span class="comment from-rainbow">// Other code</span>
+        }
+    }
+}
+</pre>
+<p> <br> <br></p>
+        
