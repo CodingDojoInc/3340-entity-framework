@@ -1,0 +1,147 @@
+
+            
+            
+            
+            <h1>LINQ - Language Integrated Query</h1>
+<p>Before we go any further into databases and ORMs, we will need to dig into a library of methods that are used to perform queries on sets of data. While these methods can be used on any collection (arrays, lists, etc. of <em>any</em> type), this library will be particularly valuable when we start using Entity Framework, the primary ORM we will use for this stack.</p>
+<p>So let's go ahead and take a quick step back from building web applications and take a minute to learn <strong>LINQ</strong>!</p>
+<p>LINQ (pronounced "link") allows you to work with any dataset with SQL-esque methods. It's a very valuable tool that exists in the .NET framework and makes sorting, ordering, and searching through datasets simple once you learn the syntax. Recall briefly how you would query into your MySQL database. You would need to remember syntax such as SELECT * FROM Userdb.users WHERE userid = '2', or run long join queries in order to access something found using a foreign key. Now with LINQ we can perform the same types of queries with shorter syntax and make Entity Framework handle much of the legwork for us!</p>
+<p>There are two different notations that can be used with LINQ, <strong>Method Syntax </strong>and <strong>Query Syntax</strong>; to keep things focused we will use <strong>Method Syntax </strong>in this course.&nbsp; <br></p>
+<h3>Lambda Expressions</h3>
+<p>When using method syntax, we have to learn about lambda expressions. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; An arrow symbol <code>=&gt;</code>represents the <strong>return</strong> of an operation performed on each item.&nbsp; The left hand side of the arrow symbol is a <strong>variable</strong> definition, its <strong>type </strong>is&nbsp;determined by whatever type the collection contains.&nbsp; The right hand side of the arrow symbol is the operation to be performed on each item.<br></p>
+<p>There are two types of operations our lambda expressions will need to perform: <strong>selectors</strong>&nbsp;and <strong>predicates</strong>.<br></p>
+<p>It will help to see these expressions in some examples with the LINQ methods that will be using them. Let's start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
+<pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
+}
+</pre>
+<p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
+<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> Product[]
+{
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Scooter"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">99.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skateboard"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skirt"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">17.5</span> }
+};
+</pre>
+<p>Now with this as our "database", we can do some basic queries!</p>
+<h2>Sorting</h2>
+<p>Let's sort all the products by price, using the&nbsp;<strong>OrderBy/OrderByDescending</strong> LINQ methods. The lambda we pass to these methods will be a <strong>selector</strong>, where we will determine which property of our Products we wish to order by.<br></p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// The lambda here uses a variable 'prod' which represents a product </span>
+<span class="comment from-rainbow">// (although this may be named whatever you like)  </span>
+<span class="comment from-rainbow">//  The right hand side of the arrow is selecting Price as the thing we want to order by.</span>
+IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> orderedProducts <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">OrderByDescending</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Price);
+</pre>
+<p>So what exactly just happened here? Let's take it one piece at a time:</p>
+<p><strong>IEnumerable&lt;Product&gt;</strong><br></p>
+<p>What is this IEnumerable type? This is simply the interface for any data type that can be iterated over. (For example: Lists and Arrays.) LINQ can be used on sets of data, but that data may originate in many different forms (arrays, lists, dictionaries, etc.). To provide the same functionality for any type of dataset, LINQ works on any class that implements the IEnumerable interface. (Are you seeing the power of interfaces yet?).<br></p>
+<p><strong>orderedProducts</strong><br></p>
+<p>This is simply the variable name which we will use to reference the results of our query. We could call this anything we like.</p>
+<p><strong>myProducts</strong><br></p>
+<p>This is what we called the original list we created. We are starting our query by saying "I am looking in to the dataset of 'myProducts'". Which will then fetch&nbsp;<em>all</em> the data we have contained in myProducts.</p>
+<p><strong>.OrderByDescending</strong><br></p>
+<p>All the features you use to make a query can be strung together by separating them with a ".". We can stack multiple LINQ queries together to narrow down our search further or add structure like sorting to them. Say we wanted all the users whose last name started with "T" but was over the age of 35 and male sorted alphabetically. We can do this in one line! That is what is happening here. So far our query says "Take all the data within the dataset 'myProducts' and order them in descending order by price'". If we wanted them to be in ascending order, we would just say "OrderBy" (which will assume ascending).</p>
+<p><strong>(prod =&gt; prod.Price)</strong></p>
+<p>Here we have our lambda function in action! We start by instantiating a variable (this could be anything! 'prod', 'product', 'p', 'a', 'b', 'c'...it doesn't matter!) Then we use our lambda (<code>=&gt;</code>) and specify which part of the dataset we are using. (In this case, prod.Price.) Think of how earlier you would pass along an object (say, after you've filled out a form), and you called that object by a name (say, 'MyUser'). Then to pull specific information out of that object, you would tell it something like "render the information stored in MyUser.Name", and you would get back "Tim" or "Nate" or whatever name was stored in the Name property of your object. It's the same concept here, but on a dataset level. We're getting&nbsp;<em>all</em> the Prices from our myProducts list. LINQ then goes through every Price and does the work of sorting them for us! (Remember having to write your own sorting algorithms?)&nbsp;</p>
+<p>With that, we now have all our products ordered by price. We could now pass the orderedProducts along in a ViewBag or ViewModel and see the results rendered on our CSHTML if we'd like! But we'll cover doing that a bit later.&nbsp;</p>
+<p>
+</p>
+<p>Note also that none of these queries affect the original collection.</p>
+<h2>Filtering</h2>
+<h3>Where</h3>
+<p>One of the most common LINQ methods you will use is <code>Where</code> which allows us to filter on a specific condition(s), also known as a <strong>predicate</strong>. In a <strong>predicate</strong>, the right side of the arrow is a boolean expression.&nbsp; Think of this as a test being performed on each item in the collection. If a particular item "passes the test," it will be included in the resulting collection.<br></p>
+<pre data-language="c_sharp" class="rainbow">    <span class="comment from-rainbow">// Each "Product" in the array will be tested to see if its Category property matches the string "Clothing"</span>
+    <span class="comment from-rainbow">// If it matches (if the bool returns true) it will "pass the test" and be included in the result</span>
+    IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> justClothings <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">Where</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Category <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>);
+</pre>
+<h3>FirstOrDefault</h3>
+<p>If you wish to retrieve a single item from a collection, you can use <strong>FirstOrDefault</strong>, which - like <strong>Where </strong>- can also be passed a predicate.&nbsp; Say you wanted to retrieve a <strong>Product&nbsp;</strong>with the <strong>Name&nbsp;</strong>of "Jeans":</p>
+<pre data-language="c_sharp" class="rainbow">   Product justJeans <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">FirstOrDefault</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Name <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>);
+   
+   <span class="comment from-rainbow">// FirstOrDefault can be used with no argument, as well, which will just retrieve the first item in the collection</span>
+   Product firstOne <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">FirstOrDefault</span>();
+</pre>
+<p>Notice quickly how instead of using IEnumerable&lt;Product&gt; justJeans we used Product justJeans. When performing your queries it is important to know if you are specifically looking to return a list of objects or a single object. (Granted, your list of objects could potentially contain a single object.) In the case of using FirstOrDefault, we know we are only returning a single object, so it makes no sense to try to store it in a list we would then have to foreach through in order to get the information out of it. So here we can simply say our variable type is Product. Be aware that if you see errors in your code saying you could not implicitly cast x object into y type, you are likely receiving a different object type than you think you are or you have tried to cast it into the wrong type from the beginning. Always be aware of what types of objects you are returning! C# is unforgiving about this!&nbsp;</p>
+<h2>Select</h2>
+<p>Most LINQ operations return an IEnumerable of the same type as the original source. If we wanted to select only some of the properties of that class, we can use <code>Select</code>. The select method transforms each item in a collection and returns a collection <strong>of the type selected</strong>. The lambda here will be a <strong>selector</strong>, which will be used to determine which piece of your collection's item you wish to transform.<br></p>
+<pre data-language="c_sharp" class="rainbow">    IEnumerable<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> justCategories <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">Select</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Category);
+</pre>
+<p>Since <strong>Category </strong>is a <strong>string</strong>,&nbsp;this <strong>Select</strong> expression will grab just the categories found in <strong>myProducts</strong>, and return them as a collection of strings.</p>
+<h2>General Purpose</h2>
+<p>Some LINQ methods can perform general purpose utilities, such as find the Min/Max/Sum of a collection, or convert one type of collection to another such as ToList/ToArray.<br></p>
+<h3></h3>
+<h3>Min/Max/Sum</h3>
+<pre data-language="c_sharp" class="rainbow">   <span class="keyword from-rainbow">int</span>[] numbers <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> <span class="keyword from-rainbow">int</span>[]{<span class="constant numeric from-rainbow">12</span>,<span class="constant numeric from-rainbow">4</span>,<span class="constant numeric from-rainbow">5</span>,<span class="constant numeric from-rainbow">2</span>,<span class="constant numeric from-rainbow">5</span>,<span class="keyword operator from-rainbow">-</span><span class="constant numeric from-rainbow">1</span>};
+   <span class="keyword from-rainbow">int</span> smallestNum <span class="keyword operator from-rainbow">=</span> numbers.<span class="function call from-rainbow">Min</span>();
+   <span class="keyword from-rainbow">int</span> largestNum <span class="keyword operator from-rainbow">=</span> numbers.<span class="function call from-rainbow">Max</span>();
+   <span class="keyword from-rainbow">int</span> sumOfNums <span class="keyword operator from-rainbow">=</span> numbers.<span class="function call from-rainbow">Sum</span>();
+   <span class="comment from-rainbow">// Ok, this makes sense for integers, but what about the .Sum of a Product?</span>
+   <span class="comment from-rainbow">// You can use a "selector" lambda as an overload for these methods to determine how something like .Sum could be calculated</span>
+   <span class="keyword from-rainbow">double</span> sumOfProductPrice <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">Sum</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Price);
+</pre>
+<h3>ToList/ToArray</h3>
+<p>These helpful LINQ methods will convert a collection to either a List or Array of whatever type your collection contains.&nbsp; You can also see here how LINQ methods can be chained together and formatted for readability.<br></p>
+<pre data-language="c_sharp" class="rainbow">   List<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> highTicketItemList <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">Where</span>(p <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> p.Price <span class="keyword operator from-rainbow">&gt;</span> <span class="constant numeric from-rainbow">100</span>).<span class="function call from-rainbow">ToList</span>();
+   Product[] orderedProductArray <span class="keyword operator from-rainbow">=</span> myProducts
+        .<span class="function call from-rainbow">Where</span>(p <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> p.Category <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>)
+        .<span class="function call from-rainbow">OrderBy</span>(p <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> p.Price)
+        .<span class="function call from-rainbow">ToArray</span>();
+</pre>
+<h2>Join</h2>
+<p>If we have two collections and we want to combine their values, we can use the <code>Join</code> method. A join operates on each value in both collections and combines them based on some equivalence. The <code>Join</code> method is very similar to the SQL "join" operation; it will return an entry for each match it finds in the two collections.</p>
+<p>
+<code>Join</code> accepts four arguments, in this order:</p>
+<ol>
+<li>The second collection we want to join with</li>
+<li>A lambda function that defines the value from the first collection to use for comparison</li>
+<li>A lambda function that defines the value from the second collection to use for comparison</li>
+<li>A lambda function that defines how the matching values should be returned</li>
+</ol>
+<pre data-language="c_sharp" class="rainbow active_pre">List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> Food <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> 
+{
+    <span class="string from-rainbow">"apple"</span>,
+    <span class="string from-rainbow">"banana"</span>,
+    <span class="string from-rainbow">"carrot"</span>,
+    <span class="string from-rainbow">"fudge"</span>,
+    <span class="string from-rainbow">"tomato"</span>
+};
+                           
+List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> Adjective <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> 
+{
+    <span class="string from-rainbow">"tasty"</span>,
+    <span class="string from-rainbow">"capital"</span>,
+    <span class="string from-rainbow">"best"</span>,
+    <span class="string from-rainbow">"typical"</span>,
+    <span class="string from-rainbow">"flavorful"</span>,
+    <span class="string from-rainbow">"toothsome"</span>
+};
+ 
+<span class="comment from-rainbow">// each string in the Food list will be combined with each adjective from the Adjective list where their first characters match</span>
+IEnumerable<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">string</span><span class="keyword operator from-rainbow">&gt;</span> Alliterations <span class="keyword operator from-rainbow">=</span> Food.<span class="function call from-rainbow">Join</span>(Adjective, 
+    foodItem <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> foodItem[<span class="constant numeric from-rainbow">0</span>],
+    adjective <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> adjective[<span class="constant numeric from-rainbow">0</span>],
+    (foodItem, adjective) <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
+    {
+         <span class="keyword from-rainbow">return</span> adjective <span class="keyword operator from-rainbow">+</span> <span class="string from-rainbow">" "</span> <span class="keyword operator from-rainbow">+</span> foodItem;
+    });
+ 
+<span class="comment from-rainbow">//Combo:   "best banana",</span>
+<span class="comment from-rainbow">//         "capital carrot",</span>
+<span class="comment from-rainbow">//         "flavorful fudge",</span>
+<span class="comment from-rainbow">//         "tasty tomato",</span>
+<span class="comment from-rainbow">//         "typical tomato",</span>
+<span class="comment from-rainbow">//         "toothsome tomato"</span>
+ 
+<span class="comment from-rainbow">// Notice that apple is not in the combination collection because it does not match an adjective, but tomato occurs three times because it matched three different adjectives</span>
+</pre>
+<h3>More Method Syntax Methods</h3>
+<p>LINQ methods can be chained together as long as the previous one returns a new collection to be operated on. (For example, why would you need to OrderBy something that's only returning a single FirstOrDefault object?)</p>
+<p><img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_4015/handouts/chapter4015_7325_LINQExtensionMethods.png"></p>
+        
+        
+        
+        
