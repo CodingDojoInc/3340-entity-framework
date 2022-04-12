@@ -1,0 +1,5 @@
+
+            
+            <h1>Deployment with Dapper</h1><p>At this point, it should be no surprise that deployment with Dapper is no different than what we have been doing in the past. This is great for us, but there are a few things we should reiterate. The goal at this point is to deploy the app&nbsp;we have just built. There are quite a few sensitive parts of this app that we should take note to secure!</p><ul><li>Move things like API keys and database connection strings away from your public files and into something more like appsettings.json or secrets</li><li>Make sure you do not push your appsettings.json file out somewhere public</li><li>Have all validations on models generated from input fields and test them</li><li>Include a check for Antiforgery Token and add it to your forms or use tag helpers (done by default with tag helpers)</li><li>Make use of the bind keyword for post routes as to avoid "re-posting"</li><li>Make sure users have proper permissions to any sensitive routes on your site (admin pages) they may access or else&nbsp;immediately&nbsp;display a 404 status error</li></ul>
+        
+        
