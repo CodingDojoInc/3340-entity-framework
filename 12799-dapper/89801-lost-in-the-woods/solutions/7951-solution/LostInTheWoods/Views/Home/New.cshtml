@@ -1,0 +1,36 @@
+@model Trail
+<h2>Add a new Trail!</h2>
+<hr>
+<form method="post" asp-action="Create" asp-controller="Home">
+    <div class="form-group">
+        <span asp-validation-for="Name"></span>
+        <label asp-for="Name"></label>
+        <input asp-for="Name">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Length"></span>
+        <label asp-for="Length"></label>
+        <input asp-for="Length">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="ElevationGain"></span>
+        <label asp-for="ElevationGain"></label>
+        <input asp-for="ElevationGain">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Latitude"></span>
+        <label asp-for="Latitude"></label>
+        <input asp-for="Latitude">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Longitude"></span>
+        <label asp-for="Longitude"></label>
+        <input asp-for="Longitude">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Description"></span>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <input type="submit" value="Add Trail!">
+</form>
