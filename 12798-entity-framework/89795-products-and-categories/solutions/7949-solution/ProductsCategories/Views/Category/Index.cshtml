@@ -1,0 +1,15 @@
+@model Category
+<form asp-action="Create" asp-controller="Category" method="post">
+    <div class="form-group">
+        <span asp-validation-for="Name"></span>
+        <label asp-for="Name"></label>
+        <input asp-for="Name">
+    </div>
+    <input type="submit" value="Add Category">
+</form>
+<div class="items">
+@foreach(var cat in ViewBag.AllCategories)
+{
+    <p><a asp-action="Show" asp-controller="Category" asp-route-categoryId="@cat.CategoryId">@cat.Name</a></p>
+}
+</div>
