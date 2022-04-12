@@ -1,0 +1,9 @@
+form.logreg {
+    display: inline-block;
+    vertical-align: top;
+    width: 45%;
+    padding: 10px;
+}
+form.logreg label {
+    display: block;
+}
