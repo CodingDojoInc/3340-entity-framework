@@ -1,0 +1,146 @@
+
+            
+            
+            <h1>Querying with EF Core</h1>
+<p>The only retrieval&nbsp;query&nbsp;that is&nbsp;directly part of&nbsp;Entity Framework Core is grabbing entire tables. <code>dbContext.Users</code> returns every entry in the table without the ability to filter or perform any other operations. EF Core relies on LINQ to filter this wide set of data down to only the Model objects you require. Once we have retrieved the table we're interested in, we can chain LINQ queries as much as we like to obtain our desired result.</p>
+<h2>Retrieving</h2>
+<p>You will use LINQ methods on your Context class's DbSet properties to perform queries.&nbsp; A few examples are shown to get an idea how to get started.</p>
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using MyProjct.Models;
+ 
+namespace MyProject.Controllers
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+    {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">private</span> MyContext dbContext;
+ 
+        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
+        {
+            dbContext <span class="keyword operator from-rainbow">=</span> context;
+        }
+ 
+        [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
+        <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+        {
+            <span class="comment from-rainbow">// Get all Users</span>
+            ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get Users with the LastName "Jefferson"</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
+ 
+    	&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get the 5 most recently added Users</span>
+            ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> dbContext.Users
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt)
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>)
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">ToList</span>();
+ 
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
+     	}
+&nbsp;&nbsp;&nbsp;&nbsp;}  
+}
+</pre>
+<p>If we only want one result, we can instead use the <code>FirstOrDefault</code>&nbsp;method. It accepts the same parameter as&nbsp;<code>Where</code>, but it can only ever return a single value (or null, if no values are found).</p>
+<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using YourNamespace.Models;
+<span class="comment from-rainbow">// Inside HomeController</span>
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">GetOneUser</span>(<span class="keyword from-rainbow">string</span> Email)
+{
+    Person oneUser <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">FirstOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> Email);
+    <span class="comment from-rainbow">// Other code</span>
+}
+</pre>
+<h2>Adding</h2>
+<p>Our Context contains a method called <code>Add</code>&nbsp;that we can pass an object which will be staged for saving&nbsp;to the database. We can then&nbsp;call the Context's&nbsp;<code>SaveChanges</code>&nbsp;method to commit any staged operations.&nbsp;Even if we don't specify which table the User should be saved to,&nbsp;Entity Framework is smart enough to look for a DbSet that contains the appropriate&nbsp;object type&nbsp;and save the new entry there. If our database does contain multiple tables that store the same object type, it does become necessary to target a specific DbSet in our&nbsp;<code>Add</code>&nbsp;call.</p>
+<h3>YourController.cs</h3>
+<pre data-language="c_sharp" class="rainbow"> <span class="comment from-rainbow">// Inside HomeController</span>
+[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"create"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateUser</span>(User newUser)
+{
+    <span class="comment from-rainbow">// We can take the User object created from a form submission</span>
+	<span class="comment from-rainbow">// And pass this object to the .Add() method</span>
+    dbContext.<span class="function call from-rainbow">Add</span>(newUser);
+    <span class="comment from-rainbow">// OR dbContext.Users.Add(newUser);</span>
+    dbContext.<span class="function call from-rainbow">SaveChanges</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other code</span>
+}
+</pre>
+<p>There may be times we wish to create new Entity objects with some default values.&nbsp; A good example of this might be the <strong>CreatedAt </strong>and <strong>UpdatedAt </strong>properties of our example User class, which we would want to be automatically set to <strong>DateTime.Now</strong>.&nbsp; We can provide default values right in the Entity model class for User, so that when a new User object is created after a form submission these values would be already set.</p>
+<p>Let's revisit this User class to see how this can be achieved</p>
+<h3>User.cs</h3>
+<pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations;
+using System;
+ 
+namespace MyProject.Models
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Key]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
+	<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
+    	<span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to </span>
+    	<span class="comment from-rainbow">// values that are stored in the DB</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+<h2>Updating</h2>
+<p>To update an Entity model, we must first query for it from the DB.&nbsp; Once this object is retrieved, we may then modify any of its properties, and then call&nbsp;<code>SaveChanges</code>&nbsp;for the changes to be saved to the database.</p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
+[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"update/{userId}"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UpdateUser</span>(<span class="keyword from-rainbow">int</span> userId)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We must first Query for a single User from our Context object to track changes.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;User RetrievedUser <span class="keyword operator from-rainbow">=</span> dbContext.Users
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">FirstOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.UserId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> userId);
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Then we may modify properties of this tracked model object</span>
+&nbsp;&nbsp;&nbsp; RetrievedUser.Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"New name"</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;RetrievedUser.UpdatedAt <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+ &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Finally, .SaveChanges() will update the DB with these new values</span>
+&nbsp;&nbsp;&nbsp; dbContext.<span class="function call from-rainbow">SaveChanges</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other code</span>
+}
+</pre>
+<p>You might wonder if a valid option for updating an object would be to say <code>oldObject = newObject</code>&nbsp;if say, you've filled out a form to update an object and have passed it along in your post request. However this is not the case. You must be explicit about what is being altered. So, if your User has a Name, Email, Age, and Address, when you pass along an updated version of the object you must individually set <code>User.Name = NewUser.Name</code>, <code>User.Email = NewUser.Email</code>, and so on. (Then don't forget to save your changes!)&nbsp;</p>
+<h2>Removing</h2>
+<p>To remove an entry from the database, we must query for the object we wish to delete, and then pass the object to the&nbsp;<code>Remove</code>&nbsp;method on the Entity's DBSet.&nbsp;The <code>SaveChanges</code>&nbsp;method will then execute the removal.</p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
+[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"delete/{userId}"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">DeleteUser</span>(<span class="keyword from-rainbow">int</span> userId)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Like Update, we will need to query for a single user from our Context object</span>
+&nbsp;&nbsp;&nbsp; User RetrievedUser <span class="keyword operator from-rainbow">=</span> dbContext.Users
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">SingleOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.UserId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> userId);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Then pass the object we queried for to .Remove() on Users</span>
+&nbsp;&nbsp;&nbsp; dbContext.Users.<span class="function call from-rainbow">Remove</span>(RetrievedUser);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Finally, .SaveChanges() will remove the corresponding row representing this User from DB </span>
+&nbsp;&nbsp;&nbsp; dbContext.<span class="function call from-rainbow">SaveChanges</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other code</span>
+}
+</pre>
+<h2>SingleOrDefault vs FirstOrDefault</h2>
+<p>You may have noticed above that we used SingleOrDefault instead of FirstOrDefault. Why and what are the differences between the two? FirstOrDefault is set so that even if your query were to return multiple results, it would select just the first item from the results list and pass you that. SingleOrDefault, however, operates under the assumption that there is only&nbsp;<em>one</em> possible result. (Most of the time this is true, but there are occasional exceptions.)&nbsp;</p>
+<p>The major difference then is that if multiple objects are returned, FirstOrDefault will still provide you the first item it finds. Meanwhile SingleOrDefault, upon finding multiple values, will throw an exception error. The two can be used interchangeably for the most part given you know what you are looking for.&nbsp;</p>
+<p>However there have been cases where using FirstOrDefault when trying to delete an object has thrown an error, while using SingleOrDefault has not. If you find your code throwing strange errors for reasons you can't figure out, try using SingleOrDefault to see if that fixes it. Otherwise, FirstOrDefault is the usual query to go for. (It returns results faster than SingleOrDefault as well over a large database set!)</p>
+<h2>Wrapping up</h2>
+<p>
+As you can see, adding, updating, and removing all require that the <code>SaveChanges</code> method be called to actually complete the operation. This is because all of these methods only modify the local copy of the database held in our Context. We can stage as many changes as we like, adding multiple entries or editing fields across the entire database, then execute them all at once with a single call to <code>SaveChanges</code>. The ability to queue up database operations can help reduce the number of times we have to travel to the database. Performing trips to and from the database is a common bottleneck found in web apps and minimizing the number of individual transactions can improve performance.
+</p>
+        
+        
+        
