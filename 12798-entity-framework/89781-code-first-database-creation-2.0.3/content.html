@@ -1,0 +1,57 @@
+
+            
+            
+            
+            <h1>Code First Database Creation</h1>
+<p>Up until now, we've had to manually create our databases to match our models. But Entity Framework provides us with a tool that allows us to create database tables directly from our models! EF can read our model files to create "migrations", files that contain instructions for the database to create or modify tables.</p>
+<p>We can continue to use the MySql.Data.EntityFrameworkCore package, but we will need additional command-line support for executing migrations.&nbsp; Add the following package dependencies to your .csproj file, and restore.<br></p>
+<h2>yourproject.csproj</h2>
+<pre data-language="csharp" class="rainbow">&lt;ItemGroup&gt;
+    &lt;PackageReference Include<span class="operator from-rainbow">=</span><span class="string from-rainbow">"Microsoft.AspNetCore.All"</span> Version<span class="operator from-rainbow">=</span><span class="string from-rainbow">"2.0.3"</span> /&gt;
+    &lt;PackageReference Include<span class="operator from-rainbow">=</span><span class="string from-rainbow">"MySql.Data.EntityFrameworkCore"</span> Version<span class="operator from-rainbow">=</span><span class="string from-rainbow">"8.0.11"</span> /&gt;
+    &lt;PackageReference Include<span class="operator from-rainbow">=</span><span class="string from-rainbow">"Microsoft.EntityFrameworkCore.Tools"</span> Version<span class="operator from-rainbow">=</span><span class="string from-rainbow">"2.0.3"</span> /&gt;
+&lt;/ItemGroup&gt;
+&lt;ItemGroup&gt;
+    &lt;DotNetCliToolReference Include<span class="operator from-rainbow">=</span><span class="string from-rainbow">"Microsoft.EntityFrameworkCore.Tools.DotNet"</span> Version<span class="operator from-rainbow">=</span><span class="string from-rainbow">"2.0.3"</span> /&gt;
+&lt;/ItemGroup&gt;
+</pre>
+<h3>Migrations</h3>
+<p>
+    Migrations are an extremely powerful tool for interacting with your database. &nbsp;Any time we change our models we can create new migrations to update the database accordingly but be warned, you may have to delete your existing table data if it doesn't conform to the new model structure.
+</p>
+<p>
+    Migrations are created using the Entity Framework command line tools.  After we restore our app we can create our first migration (Make sure you've created some model files first!). From the console we can create migrations like so:
+</p>
+<pre>
+    dotnet ef migrations add YourMigrationName
+</pre>
+<p>
+    Let's create an initial migration:
+</p>
+<pre>
+    dotnet ef migrations add FirstMigration
+</pre>
+<p>
+    After this code finishes executing you should see a new folder called "Migrations"
+</p>
+<p>
+    <img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_4043/handouts/chapter4043_7586_MigrationFiles.PNG" style="height: auto; max-width: 100%; cursor: pointer;">
+</p>
+<p>
+    With the migration file created, all that's left is to apply it to the database. We do this with another console command:
+</p>
+<pre>
+dotnet ef database update</pre>
+<p>
+    <code>database update</code>
+    &nbsp;takes our migration file and applies it to the database, performing the actual creation of the tables.The name of the tables we create is determined by the name we give to their corresponding&nbsp;
+    <code>DbSet</code>
+    &nbsp;field in our Context, not the name of the model they correspond to.
+</p>
+<p>
+    If you change your database significantly, it's possible that you'll receive errors when you try to run your updates. If you're having trouble, a guaranteed solution is to drop your tables, delete all of your migrations, and generate a new migration. You will lose all of your data, but this will solve any migration conflicts you may have.
+</p>
+        
+        
+        
+        
