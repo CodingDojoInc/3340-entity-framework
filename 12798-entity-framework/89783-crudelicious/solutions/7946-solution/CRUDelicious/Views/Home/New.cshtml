@@ -1,0 +1,43 @@
+﻿@model Dish
+<h1>Add a new Dish!</h1>
+<a asp-controller="Home" asp-action="Index">Home</a>
+<form method="post" asp-action="Create" asp-controller="Home">
+    <div class="form-group">
+        <span asp-validation-for="Chef"></span>
+        <label asp-for="Chef"></label>
+        <input asp-for="Chef">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Name"></span>
+        <label asp-for="Name"></label>
+        <input asp-for="Name">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Tastiness"></span>
+        <label asp-for="Tastiness"></label>
+        <select asp-for="Tastiness">
+        @for(var tasty = 1; tasty <= 5; tasty++)
+        {
+            if(tasty == 5)
+            {
+                <option selected value="@tasty">@tasty</option>
+            }
+            else
+            {
+                <option value="@tasty">@tasty</option>
+            }
+        }
+        </select>
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Calories"></span>
+        <label asp-for="Calories"></label>
+        <input asp-for="Calories">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Description"></span>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    <button>Add Dish</button>
+</form>
