@@ -1,0 +1,19 @@
+<h1>RapperAPI</h1>
+<p>For this assignment, we'll be using the same JSON dataset, but now we'll add some routing to have this application function as an API, where our routes will return JSON data based on the route parameters provided.</p>
+<p>Clone the repo below. The root route provides an outline of the expected routes<strong>:</strong></p>
+<ul>
+    <li><strong>'/artists'</strong> - a list of all artists</li>
+    <ul>
+    <li><strong>'/artists/Name/{string}' </strong>- a list of all artists whose names contain the string parameter</li>
+    <li><strong>'/artists/RealName/{string}'</strong> - a list of all artists whose real names contain the string parameter</li>
+    <li><strong>'/artists/Hometown/{string}'</strong> - a list of all artists whose hometown matches the string parameter</li>
+	<li><strong>'/artists/GroupId/{int}'</strong> - a list of all artists who belong to the group associated with the given id</li>
+    </ul>
+    <li><strong>'/groups'</strong> - a list of all the groups</li>
+    <ul>
+    <li><strong>'/groups/Name/{string}' </strong>- a list of all groups whose names contain the string parameter</li>
+    <li><strong>'/groups/GroupId/{int}'</strong> - the group whose id matches the specified value</li>
+    <li><strong>(BONUS) ?ListArtists={boolean}</strong> - if ListArtists is true on a groups route, populate each displayed group with its list of artists</li>
+    </ul>
+</ul>
+<p><a href="https://github.com/April2018DotNetCore/RapperAPI" target="_blank"><button>RapperAPI Repo</button></a></p>
