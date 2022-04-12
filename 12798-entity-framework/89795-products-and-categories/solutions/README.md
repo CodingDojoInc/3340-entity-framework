@@ -1,0 +1,1 @@
+Solutions directory for Products and Categories      
