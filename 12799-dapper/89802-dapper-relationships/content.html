@@ -1,0 +1,111 @@
+
+            
+            
+            
+            <h1>Dapper Relationships</h1>
+<p>We've worked a bit with Dapper now, but we are still missing one key component of working with any database: relationships! Relationships are a fundamental aspect of SQL databases, so we should definitely be able to work with them using Dapper. If you've done any queries involving joins, you know we'll get back data that corresponds to more than one model. To account for these relationships, we'll need to update our queries and our models.</p>
+<h2>Model Setup</h2>
+<p>On the model side of things, we will need to update each of the models involved in the relationship with an additional property. To the model on the many side of a relationship, we'll add a property corresponding to the foreign key being saved in the database, as well as a property of the model type to which it relates. To the model on the one side, we'll add a property that is a <em>list</em> of the model type to which it relates. Here's an example, where a given Team may have many Players, and a given Player belongs to a single Team:</p>
+<h3>Models/Player.cs</h3>
+<pre data-language="c_sharp" class="language-c_sharp rainbow active_pre">using System;
+using System.ComponentModel.DataAnnotations;
+ 
+namespace dapperRelations.Models
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Player
+    {
+        [Key]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">long</span> id { get; set; }
+ 
+        [Required]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> name { get; set; }
+ 
+        [Required]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> skill { get; set; }
+ 
+        <span class="keyword from-rainbow">public</span> DateTime created_at { get; set; }
+ 
+        <span class="keyword from-rainbow">public</span> DateTime updated_at { get; set; }
+    
+    	<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> team_id { get; set; }&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// the foreign key value for the associated team (will be saved in db)</span>
+ 
+        <span class="keyword from-rainbow">public</span> Team team { get; set; }&nbsp;&nbsp;&nbsp;&nbsp;  <span class="comment from-rainbow">// a given player will be associated with a specific Team</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// while the Player model isn't saved with a whole team object in the db, </span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// having this object makes it much easier to interact with the Player instance in the rest of our code</span>
+    }
+}
+</pre>
+<h3>Models/Team.cs</h3>
+<pre data-language="c_sharp" class="language-c_sharp rainbow">using System;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+ 
+namespace dapperRelations.Models
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Team
+    { 
+        [Key]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">long</span> id { get; set; }
+ 
+        [Required]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> name { get; set; }
+ 
+        [Required]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> location { get; set; }
+ 
+        <span class="keyword from-rainbow">public</span> DateTime created_at { get; set; }
+ 
+        <span class="keyword from-rainbow">public</span> DateTime updated_at { get; set; }
+ 
+        <span class="keyword from-rainbow">public</span> IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Player<span class="keyword operator from-rainbow">&gt;</span> players { get; set; }&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// a given team may have many players</span>
+        
+    	<span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">Team</span>() {
+            players <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Player<span class="keyword operator from-rainbow">&gt;</span>();&nbsp;&nbsp;&nbsp;&nbsp;
+        }
+    }
+}
+</pre>
+<p>We had to create a list of Player objects in the Team model, but why make the type an IEnumerable instead of List? An IEnumerable is simply the interface that most collections, like Dictionaries and Lists, implement. We are being type safe here to avoid a crash when running our query since the results could vary depending on the query we specify or the database we are using. We also initialize this list on model construction so that a Razor view page that may attempt to iterate through the field before Players is set does not get a null reference error.</p>
+<h2>Querying</h2>
+<p>Now that our models are set up, how do we query with relationships? For example, we may want to get a single team and include all the players on that team. We've set up our models to be ready for this, but we need to tell our ORM how to populate those models. One approach to this could be to use a join statement, but it is hard to pull the results apart in this case and place them in their corresponding models. What we'll do instead is run two queries at the same time by using Dapper to process a multiple result grid. By specifying multiple queries in a single execution string, we can use Dapper to map back the result where we want.</p>
+<h3>Factories/TeamFactory.cs</h3>
+<pre data-language="c_sharp" class="language-c_sharp rainbow"><span class="comment from-rainbow">// Other code</span>
+<span class="keyword from-rainbow">public</span> Team <span class="function call from-rainbow">FindById</span>(<span class="keyword from-rainbow">long</span> id)
+{
+    using (IDbConnection dbConnection <span class="keyword operator from-rainbow">=</span> Connection)
+    {
+        dbConnection.<span class="function call from-rainbow">Open</span>();
+        <span class="keyword from-rainbow">var</span> query <span class="keyword operator from-rainbow">=</span>
+        @"
+        SELECT <span class="keyword operator from-rainbow">*</span> FROM teams WHERE id <span class="keyword operator from-rainbow">=</span> @Id;
+        SELECT <span class="keyword operator from-rainbow">*</span> FROM players WHERE team_id <span class="keyword operator from-rainbow">=</span> @Id;
+        ";
+ 
+        using (<span class="keyword from-rainbow">var</span> multi <span class="keyword operator from-rainbow">=</span> dbConnection.<span class="function call from-rainbow">QueryMultiple</span>(query, <span class="keyword from-rainbow">new</span> {Id <span class="keyword operator from-rainbow">=</span> id}))
+        {
+            Team team <span class="keyword operator from-rainbow">=</span> multi.Read<span class="keyword operator from-rainbow">&lt;</span>Team<span class="keyword operator from-rainbow">&gt;</span>().<span class="function call from-rainbow">Single</span>();
+            team.players <span class="keyword operator from-rainbow">=</span> multi.Read<span class="keyword operator from-rainbow">&lt;</span>Player<span class="keyword operator from-rainbow">&gt;</span>().<span class="function call from-rainbow">ToList</span>();
+            <span class="keyword from-rainbow">return</span> team;
+        }
+    }
+}
+</pre>
+<p>On the other hand, if we wanted to get the players each with their associated team, using a <strong>JOIN</strong> is actually favorable. That is because the resulting number of rows for this particular statement is exactly how many models we want to make. For this, we can use Dapper "multi-mapping" to make a model for each row returned with the association set up as well!</p>
+<h3>Factories/PlayerFactory.cs</h3>
+<pre data-language="c_sharp" class="language-c_sharp rainbow"><span class="keyword from-rainbow">public</span> IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Player<span class="keyword operator from-rainbow">&gt;</span> <span class="function call from-rainbow">PlayersWithTeams</span>()
+{
+    using (IDbConnection dbConnection <span class="keyword operator from-rainbow">=</span> Connection)
+    {
+        <span class="keyword from-rainbow">var</span> query <span class="keyword operator from-rainbow">=</span> $"SELECT <span class="keyword operator from-rainbow">*</span> FROM players JOIN teams ON players.team_id<span class="keyword operator from-rainbow">=</span>teams.id";
+        dbConnection.<span class="function call from-rainbow">Open</span>();
+ 
+        IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Player<span class="keyword operator from-rainbow">&gt;</span> myPlayers <span class="keyword operator from-rainbow">=</span> dbConnection.Query<span class="keyword operator from-rainbow">&lt;</span>Player, Team, Player<span class="keyword operator from-rainbow">&gt;</span>(query, (player, team) <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> { player.team <span class="keyword operator from-rainbow">=</span> team; <span class="keyword from-rainbow">return</span> player; });
+        <span class="keyword from-rainbow">return</span> myPlayers;
+    }
+}
+</pre>
+<p>Notice now we are specifying multiple models for the Query method. The first two models (Player and Team) specify the two models that are being joined, in the order in which they appear in our SQL query. If we were joining more than two models, we would specify that by listing additional models. The last model specified (the second Player) indicates the model to which the results will ultimately be mapped. The second argument being passed to the Query method is a lambda function that specifies how the results of each join are to be mapped--in the example above, for each join between player and team, the player's team instance will be set to the corresponding Team object.</p>
+        
+        
+        
+        
