@@ -1,0 +1,116 @@
+
+<h1>Database Connection with Dapper</h1>
+<p>Let's see how Dapper works. First let's add the dependency to our project. We'll still need the MySql Connector package, but let's also add Dapper:</p>
+<pre data-language="bash" class="rainbow">dotnet add package Dapper</pre>
+<p>Now let's set up a User model to work with.</p>
+<h3>User.cs</h3>
+<pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations;
+namespace YourNamespace.Models
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+    {
+        [Key]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">long</span> Id { get; set; }
+ 
+        [Required]
+        [<span class="function call from-rainbow">MinLength</span>(3)]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
+ 
+        [Required]
+        [EmailAddress]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
+ 
+        [Required]
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+    }
+}</pre>
+<p>Since Dapper is all about writing our own custom SQL queries, we are going to have different classes for each of our models so that we can write specific queries for each of those given models. To do this, we are going to set these query classes, known as <strong>factories</strong>. We can think of this factory class as a container for query methods dedicated to a particular model. So our User model will have a corresponding UserFactory class that contains methods responsible for all DB operations that pertain to a User SQL table.</p>
+<p>First, we must establish a connection to our MySQL database - which we can do in similar fashion to the DbConnector class we have been using, by providing an IDbConnection property that returns a connection to MySQL. For now, we will provide our connection string in source code, but be aware that this is <strong>very</strong> insecure to do for a live site. If you wish to deploy a project using Dapper, you will want to follow instructions to secure/obscure your connection string by placing this information in a separate local json file that can be read at run-time. See Securing Dapper DB Connection String for steps on how to achieve this.<br></p>
+<h3>UserFactory.cs</h3>
+<pre data-language="c_sharp" class="rainbow active_pre">using System.Collections.Generic;
+using System.Linq;
+using Dapper;
+using System.Data;
+using MySql.Data.MySqlClient;
+using YourNamespace.Models;
+ 
+namespace DapperApp.Factory
+{
+    public class UserFactory
+    {
+        private <span class="keyword from-rainbow">string</span> connectionString;
+        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">UserFactory</span>()
+        {
+            connectionString <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"server=localhost;userid=root;password=root;port=8889;database=mydb;SslMode=None"</span>;
+        }
+        internal IDbConnection Connection
+        {
+            get {
+                <span class="keyword from-rainbow">return</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">MySqlConnection</span>(connectionString);
+            }
+        }
+    }
+}
+</pre>
+<p>In the constructor, we are defining the connection string to the MySQL database (similar to the one from the DbConnection file). The next part is to begin writing the SQL query methods. <br></p>
+<h3>UserFactory.cs (continued)</h3>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">//USERFACTORY CLASS DEFINITION</span>
+ 
+        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">void</span> <span class="function call from-rainbow">Add</span>(User item)
+        {
+            using (IDbConnection dbConnection <span class="keyword operator from-rainbow">=</span> Connection) {
+                <span class="keyword from-rainbow">string</span> query <span class="keyword operator from-rainbow">=</span>  <span class="string from-rainbow">"INSERT INTO users (user_name, email, password, created_at, updated_at) VALUES (@Name, @Email, @Password, NOW(), NOW())"</span>;
+                dbConnection.<span class="function call from-rainbow">Open</span>();
+                dbConnection.<span class="function call from-rainbow">Execute</span>(query, item);
+            }
+        }
+        <span class="keyword from-rainbow">public</span> IEnumerable<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span> <span class="function call from-rainbow">FindAll</span>()
+        {
+            using (IDbConnection dbConnection <span class="keyword operator from-rainbow">=</span> Connection)
+            {
+                dbConnection.<span class="function call from-rainbow">Open</span>();
+                <span class="keyword from-rainbow">return</span> dbConnection.Query<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span>(<span class="string from-rainbow">"SELECT * FROM users"</span>);
+            }
+        }
+        <span class="keyword from-rainbow">public</span> User <span class="function call from-rainbow">FindByID</span>(<span class="keyword from-rainbow">int</span> id)
+        {
+            using (IDbConnection dbConnection <span class="keyword operator from-rainbow">=</span> Connection)
+            {
+                dbConnection.<span class="function call from-rainbow">Open</span>();
+                <span class="keyword from-rainbow">return</span> dbConnection.Query<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span>(<span class="string from-rainbow">"SELECT * FROM users WHERE id = @Id"</span>, <span class="keyword from-rainbow">new</span> { Id <span class="keyword operator from-rainbow">=</span> id }).<span class="function call from-rainbow">FirstOrDefault</span>();
+            }
+        }
+</pre>
+<p>The <code>using</code> statement at the beginning of each method grabs the Connection instance, and then we use the <code>Open</code>&nbsp;method on it to open a line of connection to the database. Then we can use that connection to run a query or execute a statement.&nbsp;</p>
+<p>Notice that with the Query method, we must specify the model type to which the statement should be bound. We can then inject the model's properties into our query using the<strong>&nbsp;@</strong>&nbsp;symbol in front of a property variable. Note that Dapper also provides an Execute method that we can use when we do not need a return value from our query. With that in mind, that's all there is in using Dapper! We can now just call our SQL query methods from a controller after instantiating a UserFactory object:</p>
+<p><strong>HomeController.cs</strong></p>
+<pre data-language="c_sharp" class="rainbow">using System;
+using System.Collections.Generic;
+using DapperApp.Models;
+using Microsoft.AspNetCore.Mvc;
+using DapperApp.Factory; <span class="comment from-rainbow">//Need to include reference to new Factory Namespace</span>
+namespace DapperApp.Controllers
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+    {
+        <span class="keyword from-rainbow">private</span> readonly UserFactory userFactory;
+        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>()
+        {
+            <span class="comment from-rainbow">//Instantiate a UserFactory object that is immutable (READONLY)</span>
+            <span class="comment from-rainbow">//This establishes the initial DB connection for us.</span>
+            userFactory <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">UserFactory</span>();
+        }
+        <span class="comment from-rainbow">// GET: /Home/</span>
+        [HttpGet]
+        [<span class="function call from-rainbow">Route</span>(<span class="string from-rainbow">""</span>)]
+        <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+        {
+            <span class="comment from-rainbow">//We can call upon the methods of the userFactory directly now.</span>
+            ViewBag.Users <span class="keyword operator from-rainbow">=</span> userFactory.<span class="function call from-rainbow">FindAll</span>();
+            <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
+        }
+    }
+}
+</pre>
+<iframe src="https://player.vimeo.com/video/210989133?title=0&byline=0&portrait=0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" class="vimeo_responsive" style="width: 938px; height: 703.5px;" width="640" height="480" frameborder="0">&lt;span id="selection-marker-1" class="redactor-selection-marker"&gt;&lt;/span&gt;</iframe>
+<p> <br> <br> <br> </p>
