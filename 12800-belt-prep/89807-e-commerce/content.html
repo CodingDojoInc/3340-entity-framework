@@ -1,0 +1,19 @@
+
+            
+            <h2>E-commerce</h2>
+<p>For this assignment, we are going to be building a virtual storefront as a sort of capstone project. It will be a site that displays listings of products for sale with the ability to dive into each of the individual product pages to have access to more information. From there, products can be added to a cart and also purchased. Following the wireframe below, try to replicate the functionality of an E-commerce website. Be sure to keep in mind all the things you've learned up until now including web security considerations!</p>
+<p><img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_3715/handouts/chapter3715_6194_mini-mean1.png" style="height: auto; max-width: 100%; cursor: pointer;"></p><p>&nbsp;<img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_3715/handouts/chapter3715_6195_mini-mean2.png" style="height: auto; max-width: 100%; cursor: pointer;"></p><p>&nbsp;<img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_3715/handouts/chapter3715_6364_mini-mean3.png" style="height: auto; max-width: 100%; cursor: pointer;"></p><p>&nbsp;<img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_3715/handouts/chapter3715_6197_mini-mean4.png" style="height: auto; max-width: 100%; cursor: pointer;"></p><p><br></p>
+<h3>Stripe API</h3><p>
+</p><p>As an extra piece to this assignment we highly encourage that you attempt to work with Stripe API as well when building out the app. Stripe is an API meant to help with Ecommerce site construction by providing services for billing, carts, product info, customers, and order history. This is awesome for our purposes! With Stripe, the first thing we need to do is create an account on their site so that we can get an API key.</p>
+<ul><li>Head to&nbsp;<a href="https://stripe.com/">their website here</a></li><li>Create a new account</li><li>Navigate to Your Account &gt; Account Settings &gt; API Keys</li><li>Here you'll find the keys you need!</li></ul>
+<p>Once you have that in place there is a great package for working with Stripe in ASP.NET called <a href="https://github.com/jaymedavis/stripe.net">Stripe.Net</a>. This will provide most of the hooks and methods we'll need when working with Stripe features. Documentation for the different methods can be found on their GitHub page. We just need to import the dependencies and then configure the service.</p>
+<p><strong>project.json</strong></p>
+<pre class="rainbow" data-language="javascript">...
+<span class="string from-rainbow">"Newtonsoft.json"</span>: <span class="string from-rainbow">"9.0.1"</span>,
+<span class="string from-rainbow">"Stripe.net"</span>: <span class="string from-rainbow">"6.8.0"</span>
+...
+</pre>
+<p><strong>Startup.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp">StripeConfiguration.<span class="function call from-rainbow">SetApiKey</span>(<span class="string from-rainbow">"[your api key here]"</span>);</pre>
+        
+        
