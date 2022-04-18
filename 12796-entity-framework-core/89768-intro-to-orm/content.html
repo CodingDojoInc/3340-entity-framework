@@ -2,12 +2,14 @@
             
             
             
+            
 <h1>Object Relational Mapper</h1>
 <p>The database systems we use are designed independently of any particular framework or language. Because of this, we need a go-between to communicate with them. Fun as it is to use a connection file to write all our SQL queries out manually, an ORM, or Object Relational Mapper, is more commonly used in applications as the connector between a given framework and a database.</p>
 <p>While we do give up some control when using ORMs, we gain the functionality of having our database tables mapped directly to our model classes. That means that instead of dealing with generic <code>List&lt;Dictionary&lt;string, object&gt;&gt;</code> instances, we can be given back&nbsp;<code>List&lt;OurModel&gt;</code>&nbsp;instances instead!&nbsp;In addition, many databases only support having simple alpha-numeric values stored in them, but some ORMs can handle serializing more complex data for us and un-serializing it upon retrieval.</p>
-<p>In the next couple of chapters, we'll introduce 2 different ORMs. Dapper is a micro-ORM, which is a more barebones ORM that still gives us control over our SQL queries, but maps query results to our models for us. The Entity Framework is a full ORM, which not only maps things to our models, but also completely obscures any SQL queries, and even has the potential to generate our tables for us. To use Entity most effectively, we'll first learn LINQ, C#'s query OOP query language.</p>
+<p>In the next couple of chapters, we'll introduce 2 different ORMs. Dapper is a micro-ORM, which is a more barebones ORM that still gives us control over our SQL queries, but maps query results to our models for us. The Entity Framework is a full ORM, which not only maps things to our models, but also completely obscures any SQL queries, and even has the potential to generate our tables for us. To use Entity most effectively, we'll first learn LINQ, C#'s OOP query language.</p>
 <p><img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_4035/handouts/chapter4035_7484_EFMapping.png" alt="Entity Framework Mapping"></p>
 <iframe src="https://player.vimeo.com/video/208534323?title=0&byline=0&portrait=0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" class="vimeo_responsive" style="width: 938px; height: 527.625px;" width="640" height="360" frameborder="0">&lt;span id="selection-marker-1" class="redactor-selection-marker"&gt;&lt;/span&gt;</iframe>
+        
         
         
         
