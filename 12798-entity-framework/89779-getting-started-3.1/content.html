@@ -1,17 +1,14 @@
-
-            <h1>Getting Started</h1>
+<p> <br></p><h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
 <h2>Tools: dotnet-ef</h2>
-<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre>
-dotnet tool install --global dotnet-ef</pre>
+<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
 <p>This will be installed globally, meaning we only need to do this once on our computer.</p><h3>Adding Packages</h3></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
-<pre>
-dotnet add package Pomelo.EntityFrameworkCore.MySql --version 3.1.1
-dotnet add package Microsoft.EntityFrameworkCore.Design --version 3.1.5</pre>
+<pre class="active_pre">dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <div><h2>Making Our Model</h2><p>The Model class will represent what we want the "Object" to be for our ORM and for each table we want to work with, we will create an associated Model class.&nbsp;</p>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
@@ -46,9 +43,9 @@ namespace Monster.Models
 { 
     <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
     <span class="comment from-rainbow">// database allowing us to query for or save data</span>
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext : DbContext 
+    public class MyContext : DbContext 
     { 
-        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
+        public <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
         <span class="comment from-rainbow">// the "Monsters" table name will come from the DbSet variable name</span>
         <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; }
     }
@@ -59,7 +56,7 @@ namespace Monster.Models
 <p>If you created a project from <code>dotnet new mvc</code> or any previously existing MVC project, then in your project root you should see a file named <strong>appsettings.json</strong>. If not, create the file, but be sure to name it <code>appsettings.json</code>, or this will not work.&nbsp;</p>
 <p><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/appsettings-location.png"><br><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;</p>
 <p>If you set up MySQL properly earlier in the course, then your userid and password should both be root. If your userid or password into MySQL are anything other than root, be sure to replace these areas with the proper login credentials to connect to your local version of MySQL. (You can see now where this could become a severe security vulnerability without a gitignore!)</p><h4>appsettings.json</h4>
-<pre data-language="javascript" class="rainbow active_pre">{
+<pre data-language="javascript" class="rainbow">{
   <span class="string from-rainbow">"Logging"</span>: {
     <span class="string from-rainbow">"LogLevel"</span>: {
       <span class="string from-rainbow">"Default"</span>: <span class="string from-rainbow">"Information"</span>,
@@ -139,4 +136,3 @@ namespace Monsters.Controllers
 </div>
 <p> <br> <br></p>
 <p> <br> <br> <br> <br> </p>
-        
