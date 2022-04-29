@@ -6,41 +6,48 @@
 <p>The only retrieval&nbsp;query&nbsp;that is&nbsp;directly part of&nbsp;Entity Framework Core is grabbing entire tables. <code>dbContext.Users</code> returns every entry in the table without the ability to filter or perform any other operations. EF Core relies on LINQ to filter this wide set of data down to only the Model objects you require. Once we have retrieved the table we're interested in, we can chain LINQ queries as much as we like to obtain our desired result.</p>
 <h2>Retrieving</h2>
 <p>You will use LINQ methods on your Context class's DbSet properties to perform queries.&nbsp; A few examples are shown to get an idea how to get started.</p>
-<pre data-language="c_sharp" class="rainbow">using System.Diagnostics;
+<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using MyProjct.Models;
  
-namespace MyProject.Controllers;
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller 
+namespace MyProject.Controllers
 {
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">private</span> MyContext dbContext;
- 
-    <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
     {
-        dbContext <span class="keyword operator from-rainbow">=</span> context;
-    }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">private</span> MyContext dbContext;
  
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
-    {
-        <span class="comment from-rainbow">// Get all Users</span>
-        ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
+        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
+        {
+            dbContext <span class="keyword operator from-rainbow">=</span> context;
+        }
+ 
+        [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
+        <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+        {
+            <span class="comment from-rainbow">// Get all Users</span>
+            ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
     
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get Users with the LastName "Jefferson"</span>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get Users with the LastName "Jefferson"</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
  
-    	<span class="comment from-rainbow">// Get the 5 most recently added Users</span>
-        ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> dbContext.Users
-    	&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt)
-    	&nbsp;&nbsp;&nbsp;&nbsp; .<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>)
-    	&nbsp;&nbsp;&nbsp;&nbsp; .<span class="function call from-rainbow">ToList</span>();
+    	&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get the 5 most recently added Users</span>
+            ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> dbContext.Users
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt)
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>)
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">ToList</span>();
  
-	<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
-     }
-}  
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
+     	}
+&nbsp;&nbsp;&nbsp;&nbsp;}  
+}
 </pre>
 <p>If we only want one result, we can instead use the <code>FirstOrDefault</code>&nbsp;method. It accepts the same parameter as&nbsp;<code>Where</code>, but it can only ever return a single value (or null, if no values are found).</p>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
+<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using YourNamespace.Models;
+<span class="comment from-rainbow">// Inside HomeController</span>
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">GetOneUser</span>(<span class="keyword from-rainbow">string</span> Email)
 {
     Person oneUser <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">FirstOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> Email);
@@ -65,23 +72,28 @@ namespace MyProject.Controllers;
 <p>There may be times we wish to create new Entity objects with some default values.&nbsp; A good example of this might be the <strong>CreatedAt </strong>and <strong>UpdatedAt </strong>properties of our example User class, which we would want to be automatically set to <strong>DateTime.Now</strong>.&nbsp; We can provide default values right in the Entity model class for User, so that when a new User object is created after a form submission these values would be already set.</p>
 <p>Let's revisit this User class to see how this can be achieved</p>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow">namespace MyProject.Models;
-&nbsp;&nbsp;&nbsp;&nbsp;
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations;
+using System;
+ 
+namespace MyProject.Models
 {
-&nbsp;&nbsp;&nbsp;&nbsp;[Key]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Key]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
+	<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
     
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     	
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
-    <span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to values that are stored in the DB</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
+    	<span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to </span>
+    	<span class="comment from-rainbow">// values that are stored in the DB</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
 }
 </pre>
 <h2>Updating</h2>
