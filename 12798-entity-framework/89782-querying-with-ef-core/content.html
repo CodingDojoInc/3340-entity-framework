@@ -72,7 +72,7 @@ namespace MyProject.Controllers;
 &nbsp;&nbsp;&nbsp;&nbsp;[Key]
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
-<span class="keyword from-rainbow">    public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
     
@@ -80,8 +80,8 @@ namespace MyProject.Controllers;
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     	
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned
-    </span><span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to </span><span class="comment from-rainbow">values that are stored in the DB</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
+    <span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to values that are stored in the DB</span>
 }
 </pre>
 <h2>Updating</h2>
@@ -106,7 +106,7 @@ namespace MyProject.Controllers;
 <p>You might wonder if a valid option for updating an object would be to say <code>oldObject = newObject</code>&nbsp;if say, you've filled out a form to update an object and have passed it along in your post request. However this is not the case. You must be explicit about what is being altered. So, if your User has a Name, Email, Age, and Address, when you pass along an updated version of the object you must individually set <code>User.Name = NewUser.Name</code>, <code>User.Email = NewUser.Email</code>, and so on. (Then don't forget to save your changes!)&nbsp;</p>
 <h2>Removing</h2>
 <p>To remove an entry from the database, we must query for the object we wish to delete, and then pass the object to the&nbsp;<code>Remove</code>&nbsp;method on the Entity's DBSet.&nbsp;The <code>SaveChanges</code>&nbsp;method will then execute the removal.</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Inside HomeController</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
 [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"delete/{userId}"</span>)]
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">DeleteUser</span>(<span class="keyword from-rainbow">int</span> userId)
 {
