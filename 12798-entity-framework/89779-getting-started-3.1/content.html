@@ -1,4 +1,3 @@
-
 <h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
@@ -24,10 +23,10 @@ namespace Monsters.Models
     {
         [Key]
         <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MonsterId { get; set; }
-        <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
+        <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"keyword from-rainbow"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Height { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; }
-        <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+        <span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"keyword from-rainbow"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
         <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     }
 }</pre>
@@ -55,7 +54,7 @@ namespace Monster.Models;
 <p>One crucial step in your setup will be to put your MySQL connection string (the line of code that will connect your project to MySQL) in a separate area from your source code. The connection string contains important information such as your username and password into MySQL, which would introduce a severe vulnerability whereby anyone that has access to your project source (ie. public git repositories) would have the means to take control of your database (bad news!).&nbsp;</p>
 <p>Luckily, there is an easy way for you to store your sensitive info in a separate json file which can be used to format what ASP calls a "Configuration" object at startup. This way, you can "gitignore" this file from any git repo, and ASP can load and reference the data contained - thus allowing you to pass your connection string required by MySQL. (Refer back to Git in Web Fundamentals if you need a refresher on gitignore.)</p>
 <p>If you created a project from <code>dotnet new mvc</code> or any previously existing MVC project, then in your project root you should see a file named <strong>appsettings.json</strong>. If not, create the file, but be sure to name it <code>appsettings.json</code>, or this will not work.&nbsp;</p>
-<p><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/appsettings-location.png"><br><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;</p>
+<p><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1651255668__Screen Shot 2022-04-29 at 11.07.20 AM.png" style="width: 288px; height: 270px;" width="288" height="270"></p><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;<p></p>
 <p>If you set up MySQL properly earlier in the course, then your userid and password should both be root. If your userid or password into MySQL are anything other than root, be sure to replace these areas with the proper login credentials to connect to your local version of MySQL. (You can see now where this could become a severe security vulnerability without a gitignore!)</p><h4>appsettings.json</h4>
 <pre data-language="javascript" class="rainbow">{
   <span class="string from-rainbow">"Logging"</span>: {
@@ -73,35 +72,19 @@ namespace Monster.Models;
 </pre>
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
-<p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. Let's see what this looks like:</p>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">var</span> builder <span class="keyword operator from-rainbow">=</span> WebApplication.<span class="function call from-rainbow">CreateBuilder</span>(args);
-<span class="comment from-rainbow">// Add services to the container.</span>
-builder.Services.<span class="function call from-rainbow">AddControllersWithViews</span>();
-<span class="comment from-rainbow">// Add database connection.</span>
+<p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. Let's see what this looks like inside of our Program.cs file:</p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Adds database connection </span>
 <span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>(<span class="string from-rainbow">"DefaultConnection"</span>);
 builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</span>MyContext<span class="keyword operator from-rainbow">&gt;</span>(options <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
 {
     options.<span class="function call from-rainbow">UseMySql</span>(connectionString, ServerVersion.<span class="function call from-rainbow">AutoDetect</span>(connectionString));
 });
-<span class="keyword from-rainbow">var</span> app <span class="keyword operator from-rainbow">=</span> builder.<span class="function call from-rainbow">Build</span>();
-<span class="comment from-rainbow">// Configure the HTTP request pipeline.</span>
-<span class="keyword from-rainbow">if</span> (<span class="keyword operator from-rainbow">!</span>app.Environment.<span class="function call from-rainbow">IsDevelopment</span>())
-{
-    app.<span class="function call from-rainbow">UseExceptionHandler</span>(<span class="string from-rainbow">"/Home/Error"</span>);
-}
-app.<span class="function call from-rainbow">UseStaticFiles</span>();
-app.<span class="function call from-rainbow">UseRouting</span>();
-app.<span class="function call from-rainbow">UseAuthorization</span>();
-app.<span class="function call from-rainbow">MapControllerRoute</span>(
-    name: <span class="string from-rainbow">"default"</span>,
-    pattern: <span class="string from-rainbow">"{controller=Home}/{action=Index}/{id?}"</span>);
-app.<span class="function call from-rainbow">Run</span>();
 </pre>
 <p>Notice that when we register the service (<strong>services.AddDbContext</strong>), we will specify that we are using MySQL (<strong>options.UseMySql</strong>).&nbsp; This registers an&nbsp;<em>additional </em>service (<strong>DbContextOptions</strong>), that we can then utilize in our Context class's constructor.  It is also here that we need to pass a connection string for our MySQL server (which you created in appsettings.json) to authenticate the handshake to our ASP app.<br></p>
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="active_pre rainbow">using Microsoft.EntityFrameworkCore;
 using Monsters.Models;
 using System.Linq;
 <span class="comment from-rainbow">// Other using statements</span>
@@ -128,5 +111,3 @@ namespace Monsters.Controllers
  }</pre>
 </div>
 </div>
-<p> <br> <br></p>
-<p> <br> <br> <br> <br> </p>
