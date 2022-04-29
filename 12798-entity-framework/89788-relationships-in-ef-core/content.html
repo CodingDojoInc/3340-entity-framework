@@ -82,7 +82,7 @@
 <h2>Querying Related Data</h2>
 <p>The use of a .Include() in your query expressions is the first step in making queries across tables/models, in that it will produce the related objects in your model's navigation properties.  This step will then allow you to query further into your model's relationships.  For example, if you wanted to know the number of CreatedMessages a User has produced, or the User with the longest Message, etc - you will need to follow a .Include() with the requisite LINQ expressions that target your model's relationships.  Let's see a few examples:</p>
 <h3>In your Controller:</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{userId}"</span>)]    
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{userId}"</span>)]    
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UserDetails</span>(<span class="keyword from-rainbow">int</span> userId)
 {
     <span class="comment from-rainbow">// Number of messages created by this User</span>
