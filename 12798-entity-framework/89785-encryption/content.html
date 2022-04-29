@@ -20,22 +20,21 @@ class which allows us to generate and verify hashed strings.&nbsp; The PasswordH
 }
 </pre>
 <h3>YourController.cs</h3>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.AspNetCore.Identity;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.AspNetCore.Identity;
 <span class="comment from-rainbow">//Other using statements</span>
-namespace YourNamespace.Controllers
+namespace YourNamespace.Controllers;
+    
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> YourController : Controller
 {
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> YourController : Controller
+    <span class="comment from-rainbow">//Route</span>
+    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Method</span>(User user)
     {
-        <span class="comment from-rainbow">//Route</span>
-        <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Method</span>(User user)
+        <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
         {
-            <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
-            {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="comment from-rainbow">// Initializing a PasswordHasher object, providing our User class as its type</span>
-                PasswordHasher<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span> Hasher <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> PasswordHasher<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span>();
-                user.Password <span class="keyword operator from-rainbow">=</span> Hasher.<span class="function call from-rainbow">HashPassword</span>(user, user.Password);
-                <span class="comment from-rainbow">//Save your user object to the database</span>
-            }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Initializing a PasswordHasher object, providing our User class as its type</span>
+            PasswordHasher<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span> Hasher <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> PasswordHasher<span class="keyword operator from-rainbow">&lt;</span>User<span class="keyword operator from-rainbow">&gt;</span>();
+            user.Password <span class="keyword operator from-rainbow">=</span> Hasher.<span class="function call from-rainbow">HashPassword</span>(user, user.Password);
+            <span class="comment from-rainbow">//Save your user object to the database</span>
         }
     }
 }
