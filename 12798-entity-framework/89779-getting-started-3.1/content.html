@@ -61,8 +61,7 @@ namespace Monster.Models;
   <span class="string from-rainbow">"Logging"</span>: {
     <span class="string from-rainbow">"LogLevel"</span>: {
       <span class="string from-rainbow">"Default"</span>: <span class="string from-rainbow">"Information"</span>,
-      <span class="string from-rainbow">"Microsoft"</span>: <span class="string from-rainbow">"Warning"</span>,
-      <span class="string from-rainbow">"Microsoft.Hosting.Lifetime"</span>: <span class="string from-rainbow">"Information"</span>
+      <span class="string from-rainbow">"Microsoft.AspNetCore"</span>: <span class="string from-rainbow">"Warning"</span>
     }
   },
   <span class="string from-rainbow">"AllowedHosts"</span>: <span class="string from-rainbow">"*"</span>,
@@ -75,7 +74,7 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. Let's see what this looks like:</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">var</span> builder <span class="keyword operator from-rainbow">=</span> WebApplication.<span class="function call from-rainbow">CreateBuilder</span>(args);
+<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">var</span> builder <span class="keyword operator from-rainbow">=</span> WebApplication.<span class="function call from-rainbow">CreateBuilder</span>(args);
 <span class="comment from-rainbow">// Add services to the container.</span>
 builder.Services.<span class="function call from-rainbow">AddControllersWithViews</span>();
 <span class="comment from-rainbow">// Add database connection.</span>
@@ -102,7 +101,7 @@ app.<span class="function call from-rainbow">Run</span>();
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
 using Monsters.Models;
 using System.Linq;
 <span class="comment from-rainbow">// Other using statements</span>
@@ -115,13 +114,13 @@ namespace Monsters.Controllers
         <span class="comment from-rainbow">// here we can "inject" our context service into the constructor</span>
         <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
         {
-            _context = context;
+            _context <span class="keyword operator from-rainbow">=</span> context;
         }
      
         [HttpGet"")]
         <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
         {
-            List&lt;Monster&gt; AllMonsters = _context.Monsters.<span class="function call from-rainbow">ToList</span>();
+            List<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> AllMonsters <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">ToList</span>();
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
         }
