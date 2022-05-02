@@ -26,7 +26,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; }
     <span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"keyword from-rainbow"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-}<br></pre>
+}</pre>
 </td><td><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/monster-erd.png"></td></tr></tbody></table><p><br></p>
  
 <h2>The Context Class</h2>
@@ -81,7 +81,7 @@ builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</s
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Using statements</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Using statements</span>
 namespace Monsters.Controllers;
     
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
@@ -101,7 +101,7 @@ namespace Monsters.Controllers;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
     }
- }<br></pre>
+ }</pre>
 </div>
 </div>
         
