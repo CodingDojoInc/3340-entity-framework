@@ -1,6 +1,4 @@
-
-            
-            <h1>Getting Started</h1>
+<p> <br> <br></p><h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
@@ -17,15 +15,15 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow">namespace Monsters.Models;
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow active_pre">namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MonsterId { get; set; }
-    <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"keyword from-rainbow"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Height { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; }
-    <span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"keyword from-rainbow"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
 }</pre>
 </td><td><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/monster-erd.png"></td></tr></tbody></table><p><br></p>
@@ -42,9 +40,9 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 namespace Monster.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext : DbContext 
+public class MyContext : DbContext 
 { 
-    <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
+    public <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
     <span class="comment from-rainbow">// the "Monsters" table name will come from the DbSet variable name</span>
     <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; }
 }<span class="keyword operator from-rainbow">&lt;</span>br<span class="keyword operator from-rainbow">&gt;</span></pre>
@@ -105,5 +103,4 @@ namespace Monsters.Controllers;
  }</pre>
 </div>
 </div>
-        
-        
+<p> <br> </p>
