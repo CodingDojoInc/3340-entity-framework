@@ -1,4 +1,5 @@
-<p> <br> <br></p><h1>Getting Started</h1>
+
+<h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
@@ -15,7 +16,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow active_pre">namespace Monsters.Models;
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow">namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
 {
     [Key]
@@ -38,14 +39,14 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <h4>Models/MyContext.cs</h4>
 <pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
 namespace Monster.Models;
-<span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
-<span class="comment from-rainbow">// database allowing us to query for or save data</span>
+// the MyContext class representing a session with our MySQL 
+// database allowing us to query for or save data
 public class MyContext : DbContext 
 { 
-    public <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
-    <span class="comment from-rainbow">// the "Monsters" table name will come from the DbSet variable name</span>
-    <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; }
-}<span class="keyword operator from-rainbow">&lt;</span>br<span class="keyword operator from-rainbow">&gt;</span></pre>
+    public MyContext(DbContextOptions options) : base(options) { }
+    // the "Monsters" table name will come from the DbSet variable name
+    public DbSet&lt;Monster&gt; Monsters { get; set; }
+}&lt;br&gt;</pre>
 <div><p>Our Monster Model class has all of the connections needed to represent a single entry - or&nbsp;row&nbsp;of SQL - but to actually access the data to be stored in our users&nbsp;table we will need to update our Context&nbsp;class with a&nbsp;DbSet&nbsp;property.&nbsp;   The&nbsp;type&nbsp;we give this property will be a&nbsp;DbSet&nbsp;-- a collection type from the Entity Framework library. Then in angle brackets we will declare what type of data (Our Monster model) we will be storing and retrieving from our SQL table. The&nbsp;name&nbsp;you give this&nbsp;DbSet&nbsp;property is important. It will need to correlate to your MySQL table name. Much like how our Model class properties map to&nbsp;Column&nbsp;names, DbSet properties in your Context class will match our Table&nbsp;names.&nbsp; By default MySQL will store your table names as lowercase, but will able to handle case-insensitivity.&nbsp; So if our table name will be "Monsters", we can name this DbSet property&nbsp;"Monsters". This "Monsters" name is what we will use to refer to the data from our controllers.   Our Context classes can contain any number of&nbsp;DbSet&nbsp;properties, with each relating to a separate table in the database. If we had models for "Stories" or "Countries" we would set up a&nbsp;public DbSet Stories and&nbsp;public DbSet Countries respectively.<br></p><h2>Setting up and securing our Connection String</h2>
 <p>One crucial step in your setup will be to put your MySQL connection string (the line of code that will connect your project to MySQL) in a separate area from your source code. The connection string contains important information such as your username and password into MySQL, which would introduce a severe vulnerability whereby anyone that has access to your project source (ie. public git repositories) would have the means to take control of your database (bad news!).&nbsp;</p>
 <p>Luckily, there is an easy way for you to store your sensitive info in a separate json file which can be used to format what ASP calls a "Configuration" object at startup. This way, you can "gitignore" this file from any git repo, and ASP can load and reference the data contained - thus allowing you to pass your connection string required by MySQL. (Refer back to Git in Web Fundamentals if you need a refresher on gitignore.)</p>
