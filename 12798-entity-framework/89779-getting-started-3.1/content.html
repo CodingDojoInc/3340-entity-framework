@@ -10,8 +10,7 @@ dotnet ef</pre>
 <p>The output will tell you the version of the tool you're using!</p><p>This&nbsp; performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database), so it is very important that you have this installed or your database connection will not work! You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h2>Adding Packages</h2></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
-<pre>
-dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
+<pre class="active_pre">dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <div><h2>Making Our Model</h2><p>The Model class will represent what we want the "Object" to be for our ORM and for each table we want to work with, we will create an associated Model class.&nbsp;</p>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
@@ -38,7 +37,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
 namespace Monster.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
@@ -54,7 +53,7 @@ namespace Monster.Models;
 <p>If you created a project from <code>dotnet new mvc</code> or any previously existing MVC project, then in your project root you should see a file named <strong>appsettings.json</strong>. If not, create the file, but be sure to name it <code>appsettings.json</code>, or this will not work.&nbsp;</p>
 <p><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1651255668__Screen Shot 2022-04-29 at 11.07.20 AM.png" style="width: 288px; height: 270px;" width="288" height="270"></p><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;
 <p>If you set up MySQL properly earlier in the course, then your userid and password should both be root. If your userid or password into MySQL are anything other than root, be sure to replace these areas with the proper login credentials to connect to your local version of MySQL. (You can see now where this could become a severe security vulnerability without a gitignore!)</p><h4>appsettings.json</h4>
-<pre data-language="javascript" class="rainbow">{
+<pre data-language="javascript" class="rainbow active_pre">{
   <span class="string from-rainbow">"Logging"</span>: {
     <span class="string from-rainbow">"LogLevel"</span>: {
       <span class="string from-rainbow">"Default"</span>: <span class="string from-rainbow">"Information"</span>,
@@ -71,8 +70,8 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow">// Adds database connection 
-<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>("DefaultConnection");
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Adds database connection </span>
+<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>(<span class="string from-rainbow">"DefaultConnection"</span>);
 builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</span>MyContext<span class="keyword operator from-rainbow">&gt;</span>(options <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
 {
     options.<span class="function call from-rainbow">UseMySql</span>(connectionString, ServerVersion.<span class="function call from-rainbow">AutoDetect</span>(connectionString));
