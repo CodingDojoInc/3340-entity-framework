@@ -6,8 +6,7 @@
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
 <h2>Tools: dotnet-ef</h2>
-<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre>
-dotnet tool install --global dotnet-ef</pre>
+<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
 <p>This will be installed globally, meaning we only need to do this once on our computer. This tool performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database). You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h3>Adding Packages</h3></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
@@ -55,7 +54,7 @@ namespace Monster.Models;
 <p>If you created a project from <code>dotnet new mvc</code> or any previously existing MVC project, then in your project root you should see a file named <strong>appsettings.json</strong>. If not, create the file, but be sure to name it <code>appsettings.json</code>, or this will not work.&nbsp;</p>
 <p><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1651255668__Screen Shot 2022-04-29 at 11.07.20 AM.png" style="width: 288px; height: 270px;" width="288" height="270"></p><br>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. Include the following, changing your <strong>port</strong>, <strong>userid</strong>, <strong>password</strong>, and <strong>database </strong>as needed.&nbsp;<p></p>
 <p>If you set up MySQL properly earlier in the course, then your userid and password should both be root. If your userid or password into MySQL are anything other than root, be sure to replace these areas with the proper login credentials to connect to your local version of MySQL. (You can see now where this could become a severe security vulnerability without a gitignore!)</p><h4>appsettings.json</h4>
-<pre data-language="javascript" class="rainbow active_pre">{
+<pre data-language="javascript" class="rainbow">{
   <span class="string from-rainbow">"Logging"</span>: {
     <span class="string from-rainbow">"LogLevel"</span>: {
       <span class="string from-rainbow">"Default"</span>: <span class="string from-rainbow">"Information"</span>,
@@ -65,7 +64,7 @@ namespace Monster.Models;
   <span class="string from-rainbow">"AllowedHosts"</span>: <span class="string from-rainbow">"*"</span>,
     <span class="string from-rainbow">"ConnectionStrings"</span>:
     {
-        <span class="string from-rainbow">"DefaultConnection"</span>: <span class="string from-rainbow">"Server=localhost;port=3306;database=monsterdb;"</span>
+        <span class="string from-rainbow">"DefaultConnection"</span>: <span class="string from-rainbow">"Server=localhost;port=3306;userid=root;password=root;database=monsterdb;"</span>
     }
 }
 </pre>
@@ -83,7 +82,7 @@ builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</s
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Using statements</span>
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Using statements</span>
 namespace Monsters.Controllers;
     
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
