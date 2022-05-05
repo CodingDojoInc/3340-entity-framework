@@ -1,5 +1,4 @@
-
-            <h1>Getting Started</h1>
+<h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
@@ -7,10 +6,12 @@
 <div><p>At the beginning of the course, you should have installed the following CLI tool:&nbsp;</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
 <p>This is a global installation, meaning we only need to do this once on our computer. If you followed the installation instructions carefully, you do not need to take this step again!&nbsp;However, if you skipped over any parts, you may want to check that the tool is in use by typing:&nbsp;</p>
 <pre>
-dotnet ef</pre><p>The output will tell you the version of the tool you're using!</p><p>This&nbsp; performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database), so it is very important that you have this installed or your database connection will not work! You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h3><div><h3></h3></div>Adding Packages</h3></div>
+dotnet ef</pre>
+<p>The output will tell you the version of the tool you're using!</p><p>This&nbsp; performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database), so it is very important that you have this installed or your database connection will not work! You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h2>Adding Packages</h2></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
-<pre class="active_pre">dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
+<pre>
+dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <div><h2>Making Our Model</h2><p>The Model class will represent what we want the "Object" to be for our ORM and for each table we want to work with, we will create an associated Model class.&nbsp;</p>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
@@ -70,8 +71,8 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Adds database connection </span>
-<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>(<span class="string from-rainbow">"DefaultConnection"</span>);
+<pre data-language="c_sharp" class="rainbow">// Adds database connection 
+<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>("DefaultConnection");
 builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</span>MyContext<span class="keyword operator from-rainbow">&gt;</span>(options <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
 {
     options.<span class="function call from-rainbow">UseMySql</span>(connectionString, ServerVersion.<span class="function call from-rainbow">AutoDetect</span>(connectionString));
@@ -105,6 +106,4 @@ namespace Monsters.Controllers;
 </div>
 </div>
 <p> <br> </p>
-        
-        
-        
+<p> <br> </p>
