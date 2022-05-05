@@ -5,9 +5,8 @@
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
 <h2>Tools: dotnet-ef</h2>
-<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre>
-dotnet tool install --global dotnet-ef</pre>
-<p>This will be installed globally, meaning we only need to do this once on our computer.</p><h3>Adding Packages</h3></div>
+<div><p>Before we can start working with Entity Framework, we need to install the following tool...</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
+<p>This will be installed globally, meaning we only need to do this once on our computer. This tool performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database). You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h3>Adding Packages</h3></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
 <pre>
@@ -17,7 +16,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow">namespace Monsters.Models;
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow active_pre">namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
 {
     [Key]
@@ -38,7 +37,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
 namespace Monster.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
