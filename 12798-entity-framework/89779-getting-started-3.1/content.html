@@ -89,7 +89,7 @@ builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</s
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Using statements</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Using statements</span>
 using System.Diagnostics
 using Microsoft.AspNetCore.Mvc;
 using Monsters.Models;
