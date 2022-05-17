@@ -73,7 +73,7 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. You will also need some additional libraries. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Additional libraries</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Additional libraries</span>
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 <span class="comment from-rainbow">// creates builder (also part of boilerplate code for web apps)</span>
@@ -89,7 +89,10 @@ builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</s
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Using statements</span>
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Using statements</span>
+using System.Diagnostics
+using Microsoft.AspNetCore.Mvc;
+using Monsters.Models;
 namespace Monsters.Controllers;
     
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
