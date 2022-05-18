@@ -73,7 +73,7 @@ using YourNamespace.Models;
 <p>There may be times we wish to create new Entity objects with some default values.&nbsp; A good example of this might be the <strong>CreatedAt </strong>and <strong>UpdatedAt </strong>properties of our example User class, which we would want to be automatically set to <strong>DateTime.Now</strong>.&nbsp; We can provide default values right in the Entity model class for User, so that when a new User object is created after a form submission these values would be already set.</p>
 <p>Let's revisit this User class to see how this can be achieved</p>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">namespace MyProject.Models;
+<pre data-language="c_sharp" class="rainbow">namespace MyProject.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
 &nbsp;&nbsp;&nbsp;&nbsp;[Key]
