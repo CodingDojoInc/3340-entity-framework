@@ -12,9 +12,9 @@
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } 
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 }
 </pre>
 <pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
@@ -22,24 +22,24 @@
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MessageId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 }
 </pre>
 <p>Inside of the Message model, we included <code>public int UserId</code> to let the database know which user is the creator of the message. When we create a message, this information will be passed along in the form submit just as the rest of the data would.</p>
 <h2>Navigation Properties</h2>
 <p>With Entity Framework, you can add a <em>reference</em> to the related model object known as a <strong>navigation property</strong>. For a <strong>Message</strong>, that would be the <strong>User </strong>that is associated with the&nbsp;<strong>Message</strong>, which we would identify&nbsp;by looking at the stored&nbsp;<strong>UserId </strong>(foreign key) that matches an existing&nbsp;<strong>User </strong>model's <strong>UserId </strong>(primary key). Inversely, you can have a navigation property on <strong>User</strong> that maps a <em>collection</em> of related <strong>Message</strong> objects. After all, a user can create many messages, so we would need to keep track of a List of messages created by the User. This list must be instantiated as an empty list and cannot be assigned the null forgiving property.&nbsp;<br></p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } = null!;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
     <span class="comment from-rainbow">// Navigation property for related Message objects. This </span>
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span> CreatedMessages { get; set; } = new List&lt;Message&gt;(); 
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span> CreatedMessages { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span>(); 
     
 }
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
@@ -47,7 +47,7 @@
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MessageId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; } = null!;
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
     <span class="comment from-rainbow">// Navigation property for related User object</span>
