@@ -1,5 +1,6 @@
 
             
+            
             <h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
@@ -25,9 +26,9 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MonsterId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Height { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
     <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
 }</pre>
@@ -41,7 +42,7 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
 namespace Monster.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
@@ -49,7 +50,7 @@ namespace Monster.Models;
 { 
     <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
     <span class="comment from-rainbow">// the "Monsters" table name will come from the DbSet variable name</span>
-    <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; }
+    <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 }</pre>
 <div><p>Our Monster Model class has all of the connections needed to represent a single entry - or&nbsp;row&nbsp;of SQL - but to actually access the data to be stored in our users&nbsp;table we will need to update our Context&nbsp;class with a&nbsp;DbSet&nbsp;property.&nbsp;   The&nbsp;type&nbsp;we give this property will be a&nbsp;DbSet&nbsp;-- a collection type from the Entity Framework library. Then in angle brackets we will declare what type of data (Our Monster model) we will be storing and retrieving from our SQL table. The&nbsp;name&nbsp;you give this&nbsp;DbSet&nbsp;property is important. It will need to correlate to your MySQL table name. Much like how our Model class properties map to&nbsp;Column&nbsp;names, DbSet properties in your Context class will match our Table&nbsp;names.&nbsp; By default MySQL will store your table names as lowercase, but will able to handle case-insensitivity.&nbsp; So if our table name will be "Monsters", we can name this DbSet property&nbsp;"Monsters". This "Monsters" name is what we will use to refer to the data from our controllers.   Our Context classes can contain any number of&nbsp;DbSet&nbsp;properties, with each relating to a separate table in the database. If we had models for "Stories" or "Countries" we would set up a&nbsp;public DbSet Stories and&nbsp;public DbSet Countries respectively.<br></p><h2>Setting up and securing our Connection String</h2>
 <p>One crucial step in your setup will be to put your MySQL connection string (the line of code that will connect your project to MySQL) in a separate area from your source code. The connection string contains important information such as your username and password into MySQL, which would introduce a severe vulnerability whereby anyone that has access to your project source (ie. public git repositories) would have the means to take control of your database (bad news!).&nbsp;</p>
@@ -74,7 +75,7 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. You will also need some additional libraries. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Additional libraries</span>
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Additional libraries</span>
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 <span class="comment from-rainbow">// Creates builder (also part of boilerplate code for web apps)</span>
@@ -119,5 +120,6 @@ namespace Monsters.Controllers;
 </div>
 <p> <br> </p>
 <p> <br> </p>
+        
         
         
