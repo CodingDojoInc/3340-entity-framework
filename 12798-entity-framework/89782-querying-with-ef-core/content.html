@@ -2,6 +2,7 @@
             
             
             
+            
             <h1>Querying with EF Core</h1>
 <p>The only retrieval&nbsp;query&nbsp;that is&nbsp;directly part of&nbsp;Entity Framework Core is grabbing entire tables. <code>dbContext.Users</code> returns every entry in the table without the ability to filter or perform any other operations. EF Core relies on LINQ to filter this wide set of data down to only the Model objects you require. Once we have retrieved the table we're interested in, we can chain LINQ queries as much as we like to obtain our desired result.</p>
 <h2>Retrieving</h2>
@@ -72,28 +73,27 @@ using YourNamespace.Models;
 <p>There may be times we wish to create new Entity objects with some default values.&nbsp; A good example of this might be the <strong>CreatedAt </strong>and <strong>UpdatedAt </strong>properties of our example User class, which we would want to be automatically set to <strong>DateTime.Now</strong>.&nbsp; We can provide default values right in the Entity model class for User, so that when a new User object is created after a form submission these values would be already set.</p>
 <p>Let's revisit this User class to see how this can be achieved</p>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations;
-using System;
- 
-namespace MyProject.Models
+<pre data-language="c_sharp" class="rainbow active_pre">namespace MyProject.Models;
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
-&nbsp;&nbsp;&nbsp;&nbsp;{
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Key]
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
-	<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;[Key]
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
     
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     	
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
-    	<span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to </span>
-    	<span class="comment from-rainbow">// values that are stored in the DB</span>
-&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// New User objects will have these values assigned</span>
+   <span class="comment from-rainbow">// However, when we query existing data, CreatedAt/UpdatedAt will refer to </span>
+   <span class="comment from-rainbow">// values that are stored in the DB</span>
 }
 </pre>
 <h2>Updating</h2>
@@ -142,6 +142,7 @@ namespace MyProject.Models
 <p>
 As you can see, adding, updating, and removing all require that the <code>SaveChanges</code> method be called to actually complete the operation. This is because all of these methods only modify the local copy of the database held in our Context. We can stage as many changes as we like, adding multiple entries or editing fields across the entire database, then execute them all at once with a single call to <code>SaveChanges</code>. The ability to queue up database operations can help reduce the number of times we have to travel to the database. Performing trips to and from the database is a common bottleneck found in web apps and minimizing the number of individual transactions can improve performance.
 </p>
+        
         
         
         
