@@ -2,6 +2,7 @@
             
             
             
+            
             <h1>Password Hashing</h1>
 <p>
     Now that we know how to use models, we can take advantage of ASP.NET Core's built-in encryption tool, part of Microsoft's Identity suite.
@@ -15,8 +16,10 @@ class which allows us to generate and verify hashed strings.&nbsp; The PasswordH
 <pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other fields</span>
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email {get; set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 }
 </pre>
 <h3>YourController.cs</h3>
@@ -45,8 +48,10 @@ namespace YourNamespace.Controllers;
 <pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> LoginUser
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// No other fields!</span>
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email {get; set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
+&nbsp;&nbsp;&nbsp;&nbsp;[Required]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    [Required]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
 }
 </pre>
 <p>
@@ -56,14 +61,14 @@ namespace YourNamespace.Controllers;
     <code>VerifyHashedPassword</code>
     method, which returns a <code>PasswordVerificationResult</code> to indicate success or failure. You may compare the result of <code>VerifyHashedPassword</code> to <code>0</code> to detect failure.</p>
 <h3>YourController.cs</h3>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.AspNetCore.Identity;
+<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.AspNetCore.Identity;
 <span class="comment from-rainbow">//Other using statements</span>
 namespace YourNamespace.Controllers;
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Login</span>(LoginUser userSubmission)
 {
     <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
     {
-        <span class="comment from-rainbow">// If inital ModelState is valid, query for a user with provided email</span>
+        <span class="comment from-rainbow">// If initial ModelState is valid, query for a user with provided email</span>
         <span class="keyword from-rainbow">var</span> userInDb <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">FirstOrDefault</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> userSubmission.Email);
         <span class="comment from-rainbow">// If no user exists with provided email</span>
         <span class="keyword from-rainbow">if</span>(userInDb <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span>)
@@ -88,6 +93,7 @@ namespace YourNamespace.Controllers;
 }
 </pre>
 <p></p>
+        
         
         
         
