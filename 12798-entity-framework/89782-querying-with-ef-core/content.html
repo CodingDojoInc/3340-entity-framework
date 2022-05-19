@@ -8,43 +8,40 @@
 <p>The only retrieval&nbsp;query&nbsp;that is&nbsp;directly part of&nbsp;Entity Framework Core is grabbing entire tables. <code>dbContext.Users</code> returns every entry in the table without the ability to filter or perform any other operations. EF Core relies on LINQ to filter this wide set of data down to only the Model objects you require. Once we have retrieved the table we're interested in, we can chain LINQ queries as much as we like to obtain our desired result.</p>
 <h2>Retrieving</h2>
 <p>You will use LINQ methods on your Context class's DbSet properties to perform queries.&nbsp; A few examples are shown to get an idea how to get started.</p>
-<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
-using System.Linq;
+<pre data-language="c_sharp" class="rainbow active_pre">using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MyProjct.Models;
+using MyProject.Models;
  
-namespace MyProject.Controllers
+namespace MyProject.Controllers;
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
 {
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">private</span> MyContext dbContext;
+ 
+    <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
     {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">private</span> MyContext dbContext;
+        dbContext <span class="keyword operator from-rainbow">=</span> context;
+    }
  
-        <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(MyContext context)
-        {
-            dbContext <span class="keyword operator from-rainbow">=</span> context;
-        }
- 
-        [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
-        <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
-        {
-            <span class="comment from-rainbow">// Get all Users</span>
-            ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
+    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
+    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+    {
+        <span class="comment from-rainbow">// Get all Users</span>
+        ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
     
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get Users with the LastName "Jefferson"</span>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/<span class="comment from-rainbow">/ Get Users with the LastName "Jefferson"</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
  
-    	&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get the 5 most recently added Users</span>
-            ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> dbContext.Users
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt)
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>)
-    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">ToList</span>();
+    	<span class="comment from-rainbow">// Get the 5 most recently added Users</span>
+        ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> dbContext.Users
+    	&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt)
+    	&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>)
+    	&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">ToList</span>();
  
 	&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
-     	}
-&nbsp;&nbsp;&nbsp;&nbsp;}  
-}
-</pre>
+  }
+}  
+</pre><figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1652985388__Screen Shot 2022-05-19 at 11.36.19 AM.png"></figure>
 <p>If we only want one result, we can instead use the <code>FirstOrDefault</code>&nbsp;method. It accepts the same parameter as&nbsp;<code>Where</code>, but it can only ever return a single value (or null, if no values are found).</p>
 <pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -99,7 +96,7 @@ using YourNamespace.Models;
 </pre>
 <h2>Updating</h2>
 <p>To update an Entity model, we must first query for it from the DB.&nbsp; Once this object is retrieved, we may then modify any of its properties, and then call&nbsp;<code>SaveChanges</code>&nbsp;for the changes to be saved to the database.</p>
-<pre data-language="c_sharp" class="language-c_sharp rainbow active_pre"><span class="comment from-rainbow">// Inside HomeController</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
 [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"update/{userId}"</span>)]
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UpdateUser</span>(<span class="keyword from-rainbow">int</span> userId, User editedUser)
 {
