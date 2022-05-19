@@ -1,6 +1,7 @@
 
             
             
+            
             <h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
@@ -21,7 +22,8 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow">namespace Monsters.Models;
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow active_pre">using System.ComponentModel.DataAnnotations;
+namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
 {
     [Key]
@@ -42,8 +44,8 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
-namespace Monster.Models;
+<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
+namespace Monsters.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext : DbContext 
@@ -75,7 +77,7 @@ namespace Monster.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. You will also need some additional libraries. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Additional libraries</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Additional libraries</span>
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 <span class="comment from-rainbow">// Creates builder (also part of boilerplate code for web apps)</span>
@@ -120,6 +122,7 @@ namespace Monsters.Controllers;
 </div>
 <p> <br> </p>
 <p> <br> </p>
+        
         
         
         
