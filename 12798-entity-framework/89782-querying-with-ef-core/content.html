@@ -28,7 +28,7 @@ namespace MyProject.Controllers;
         <span class="comment from-rainbow">// Get all Users</span>
         ViewBag.AllUsers <span class="keyword operator from-rainbow">=</span> dbContext.Users.<span class="function call from-rainbow">ToList</span>();
     
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/<span class="comment from-rainbow">/ Get Users with the LastName "Jefferson"</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Get Users with the LastName "Jefferson"</span>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> dbContext.Users
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);
  
@@ -40,8 +40,7 @@ namespace MyProject.Controllers;
  
 	&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
   }
-}  
-</pre><figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1652985388__Screen Shot 2022-05-19 at 11.36.19 AM.png"></figure>
+}  </pre>
 <p>If we only want one result, we can instead use the <code>FirstOrDefault</code>&nbsp;method. It accepts the same parameter as&nbsp;<code>Where</code>, but it can only ever return a single value (or null, if no values are found).</p>
 <pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
 using System.Linq;
