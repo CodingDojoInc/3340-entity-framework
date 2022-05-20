@@ -4,7 +4,7 @@
             <h1>Self Joins</h1>
 <p>Self-joining relationships are created the same way as Many-to-Many relationships: with a joining table containing two keys. The difference, of course, is that both keys reference the same table. We can't use the same name for both of the foreign key fields so we have to alias one or both of them. Entity Framework doesn't know which fields are&nbsp;aliased foreign keys reference, so we'll have to tell it. We do this using the&nbsp;<code>[InverseProperty]</code>&nbsp;attribute:</p>
 <h4>Connection.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre">namespace YourNamespace.Models;
+<pre data-language="c_sharp" class="rainbow">namespace YourNamespace.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Connection
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> ConnectionId { get; set; }
@@ -24,10 +24,10 @@
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> TwitterUserId { get; set; }
  
     [<span class="function call from-rainbow">InverseProperty</span>(<span class="string from-rainbow">"UserFollowed"</span>)]
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span> Followers { get; set; } = new List&lt;Connection&gt;();
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span> Followers { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span>();
  
     [<span class="function call from-rainbow">InverseProperty</span>(<span class="string from-rainbow">"Follower"</span>)]
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span> UsersFollowed { get; set; } = new List&lt;Connection&gt;()
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span> UsersFollowed { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Connection<span class="keyword operator from-rainbow">&gt;</span>()
 }
 </pre>
 <p>The&nbsp;<code>[InverseProperty]</code>&nbsp;attribute is applied to fields that are referenced by foreign keys in&nbsp;<strong>other tables.</strong></p>
