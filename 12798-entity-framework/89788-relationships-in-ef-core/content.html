@@ -2,42 +2,46 @@
             
             
             
+            
             <h1>Relationships in EF Core</h1>
 <p>Creating models for your applications isn't just about considering the content within a model. We also have to be concerned with a models relationship to other models! Of course, Entity Framework Core supports these relationships.</p>
 <p>We can't create fields in MySQL that contain complex data (like another object), so we use the IDs of these objects to represent the relationship. In addition to the field for the ID we will&nbsp;<strong>also</strong> have a&nbsp;field for the full object for its own reference. However, this field will not be visible if we were to view the model in MySQL (because, as mentioned, MySQL does not support fields that contain entire objects). This is the one exception to our rule that our models have exactly the same fields as our database tables. Entity Framework Core is able to detect that the ID and object fields represent the same relationship -- based on their names -- but inside our table columns, we would only be able to see the IDs of our objects.</p>
 <p>For example, consider the following schema. We have&nbsp;<em>one&nbsp;</em>user who is able to post&nbsp;<em>many</em> messages. But&nbsp;<em>one</em> message can only have been posted by&nbsp;<em>one</em> user. Therefore, we have a one to many relationship:&nbsp;</p>
 <figure><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/ef-relations-erd.png" style="width: 537px; height: 204px;" width="537" height="204"><br>Now consider model classes that map exactly to these tables:<br></figure>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } 
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 }
 </pre>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
+<pre data-language="c_sharp" class="language-c_sharp rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MessageId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 }
 </pre>
 <p>Inside of the Message model, we included <code>public int UserId</code> to let the database know which user is the creator of the message. When we create a message, this information will be passed along in the form submit just as the rest of the data would.</p>
 <h2>Navigation Properties</h2>
 <p>With Entity Framework, you can add a <em>reference</em> to the related model object known as a <strong>navigation property</strong>. For a <strong>Message</strong>, that would be the <strong>User </strong>that is associated with the&nbsp;<strong>Message</strong>, which we would identify&nbsp;by looking at the stored&nbsp;<strong>UserId </strong>(foreign key) that matches an existing&nbsp;<strong>User </strong>model's <strong>UserId </strong>(primary key). Inversely, you can have a navigation property on <strong>User</strong> that maps a <em>collection</em> of related <strong>Message</strong> objects. After all, a user can create many messages, so we would need to keep track of a List of messages created by the User. This list must be instantiated as an empty list and cannot be assigned the null forgiving property.&nbsp;<br></p>
-<pre data-language="c_sharp" class="active_pre rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } 
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
     <span class="comment from-rainbow">// Navigation property for related Message objects. This </span>
     <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span> CreatedMessages { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span>(); 
     
@@ -47,7 +51,7 @@
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MessageId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
     <span class="comment from-rainbow">// Navigation property for related User object</span>
@@ -131,6 +135,7 @@
 <p>EF Core is a smart framework. It's capable of making certain leaps of logic such as relating objects for us with just an ID provided. And it's doing something similar here. The information your query is after (the names of the creators) is technically already there. It's just wrapped up in another query meant for a different result on the same page. But our program is smart enough to realize "Hey, I already grabbed this information earlier for this other query, so since I have it, I'll just tag it on to this query you're doing!"</p>
 <p>You might notice the same result if your messages are all made by the same user, and you, the logged in user, are able to see the page just fine, but you get errors when you try to log in as anyone else! If you've done any separate queries for the logged in user (say, if you wanted to display the user's name in the navigation bar at the top) then you've essentially done the same thing, but it only works for things related to the logged in user. It is good to be aware of this logic loophole in case you're getting strange moments where some things are rendering for some users and not for others!</p>
 <p><strong>Disclaimer!!&nbsp;</strong>Just because we are now aware of the extra connections EF will make for us does&nbsp;<em>not</em> mean we should rely on it! If you are doing a query that requires an include you&nbsp;<em>must</em> use it! It is always better to be explicit rather than implicit with your code!<br></p>
+        
         
         
         
