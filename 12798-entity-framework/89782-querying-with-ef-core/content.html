@@ -9,8 +9,7 @@
 <p>The only retrieval&nbsp;query&nbsp;that is&nbsp;directly part of&nbsp;Entity Framework Core is grabbing entire tables. <code>dbContext.Users</code> returns every entry in the table without the ability to filter or perform any other operations. EF Core relies on LINQ to filter this wide set of data down to only the Model objects you require. Once we have retrieved the table we're interested in, we can chain LINQ queries as much as we like to obtain our desired result.</p>
 <h2>Retrieving</h2>
 <p>You will use LINQ methods on your Context class's DbSet properties to perform queries.&nbsp; A few examples are shown to get an idea how to get started.</p>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
-using System.Diagnostics;
+<pre data-language="c_sharp" class="rainbow">using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MyProject.Models;
  
@@ -72,19 +71,20 @@ using YourNamespace.Models;
 <p>There may be times we wish to create new Entity objects with some default values.&nbsp; A good example of this might be the <strong>CreatedAt </strong>and <strong>UpdatedAt </strong>properties of our example User class, which we would want to be automatically set to <strong>DateTime.Now</strong>.&nbsp; We can provide default values right in the Entity model class for User, so that when a new User object is created after a form submission these values would be already set.</p>
 <p>Let's revisit this User class to see how this can be achieved</p>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow">namespace MyProject.Models;
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+namespace MyProject.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
 &nbsp;&nbsp;&nbsp;&nbsp;[Key]
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
     
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// We can provide some hardcoded default values like so:</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
