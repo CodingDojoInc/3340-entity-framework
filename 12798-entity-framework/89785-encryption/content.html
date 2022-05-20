@@ -14,7 +14,8 @@
 class which allows us to generate and verify hashed strings.&nbsp; The PasswordHasher class needs to be associated with a type, like the List and Dictionary classes, and the hashing method itself requires an instance of that type be passed to it. <br></p>
 <h2>Handling Registration</h2>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other fields</span>
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
@@ -46,7 +47,8 @@ namespace YourNamespace.Controllers;
 <hr>
 <h2>Handling Login</h2>
 <h3>LoginUser.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> LoginUser
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> LoginUser
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// No other fields!</span>
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
