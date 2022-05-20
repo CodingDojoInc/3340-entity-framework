@@ -56,7 +56,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 <hr>
 <h2>Validating Unique Email</h2>
 <p>In addition to the data that we want our Model to validate, we will also want an additional validation step - one that requires us to query our db.&nbsp; In this example, a user's "Email" field would be used for a user to log in, and should be unique for each user in the database.&nbsp; The simplest way to go about this, is to make an additional check in your controller, when processing the POST request, and use ModelState.AddModelError to add a validation error message directly to the "Email" field if the attempted email exists already.</p>
-<pre data-language="c_sharp" class="rainbow active_pre">[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"register"</span>)]
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"register"</span>)]
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Register</span>(User user)
 {
     <span class="comment from-rainbow">// Check initial ModelState</span>
