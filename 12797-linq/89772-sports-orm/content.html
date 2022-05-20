@@ -1,6 +1,6 @@
 
-            <h1>Sports ORM (Level 1)</h1>
-<p>With our new LINQ knowledge, we can now parse through large sets of data stored in any type of collection.&nbsp;For this assignment we will have a database of sports teams, leagues, and players to work through. By using various LINQ methods we can get a lot of interesting information from our collections. Since the goal of this assignment is solely to practice LINQ, we have provided a skeleton for this assignment. However, you will notice that this project already begins to incorporate Entity Framework Core, which will not be covered until the next section. Don't panic! You do not need to understand how to use EF Core to do this assignment. So to start, we'll just quickly break down the extra pieces of information you need to know to be on your way to querying into our sports ORM!&nbsp;</p>
+            
+            <h1>LINQ Queries</h1><h1><span style="color: rgb(80, 80, 80); font-size: 14px; font-weight: normal;">With our new LINQ knowledge, we can now parse through large sets of data stored in any type of collection.&nbsp;For this assignment we will have a database of sports teams, leagues, and players to work through. By using various LINQ methods we can get a lot of interesting information from our collections. Since the goal of this assignment is solely to practice LINQ, we have provided a skeleton for this assignment. However, you will notice that this project already begins to incorporate Entity Framework Core, which will not be covered until the next section. Don't panic! You do not need to understand how to use EF Core to do this assignment. So to start, we'll just quickly break down the extra pieces of information you need to know to be on your way to querying into our sports ORM!&nbsp;</span></h1>
 <p>When you first open the Sports ORM file, if you dotnet run your project you'll find a fully functional website ready for you on localhost 5000, as well as a quick instructional on how to set up your queries and tables. Let's take a look at a few other noteworthy places though.&nbsp;</p>
 <p>Open up the Controller folder and you'll see a file called DataController.cs. And it is packed with information! This is our data! It is auto-loaded for us, so you don't have to worry about filling out leagues and teams yourself. This is the information we will be querying for.&nbsp;</p>
 <p>Now look at your Models folder, and you'll see quite a few files in there! For the time being, you only need to concern yourself with the League, Team, and Player files. You should be familiar with the way the models were set up and notice the properties each individual model was given, which is filled out back in the DataController.</p>
@@ -18,9 +18,11 @@
 <p>
 </p>
 <p>Don't worry if this seems like a lot of confusing information. We'll be breaking this down in detail in the next section. In general your queries will look like this:</p>
-<pre class="active_pre">ViewBag.&lt;Name of bag&gt; = context.&lt;Name of table&gt;.&lt;Your query goes here&gt;&nbsp;</pre>
+<pre>
+ViewBag.&lt;Name of bag&gt; = context.&lt;Name of table&gt;.&lt;Your query goes here&gt;&nbsp;</pre>
 <p>For the time being you only need to concern yourself with finishing&nbsp;<strong>Level 1<em>.&nbsp;</em></strong>The following levels require queries that we have not covered yet, and you will be completing these levels for later assignments. The point here is to get started practicing a variety of LINQ queries. Work until you feel comfortable performing basic queries.&nbsp;</p>
 <p>You can download the zip file for the project:</p><p><a href="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1651257755__SportsORM.zip" data-file="">SportsORM.zip</a><br></p>
 <p><strong>Important:</strong> If you are using a different version of dotnet, make sure to go into the <code>.csproj</code> file and change the version number then run <code>dotnet restore</code> to update the package installations</p>
 <p> <br> </p>
+        
         
