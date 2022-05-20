@@ -1,53 +1,56 @@
 
             
             
+            
             <h1>Registration Concerns</h1>
 <h2>Resolving Password Confirm</h2>
 <p>There may be times when you wish to validate some data on a form that does not exist in the model/table you have in your database.&nbsp; Take a Registration form, for example.&nbsp; This form's objective is to validate requirements of a User model: required fields, valid email address, etc.&nbsp; However you will also want to validate that a password your user enters wasn't mis-typed, and thus you will want an additional field for a password confirmation.</p>
 <p>The issue here, is that your Model class for Entity Framework needs its properties to match columns that it is representing in your MySQL table.&nbsp; "Confirm Password" doesn't need to be stored in your database!&nbsp; Consider the following table and model class:</p>
 <figure><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/users-erd.png"><br><br><br></figure>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]    
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } 
     [Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
     [Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
-    <span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;}
-    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} = DateTime.Now;
+    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} = DateTime.Now;
 }
 </pre>
 <p>If we add a <code>string Confirm {get;set;}</code> property to this model, an exception will be thrown due to Entity Framework not being able to "map" this property to a <code>Confirm</code> column in this table! <br></p>
 <p>One way we can resolve this, is by adding a <strong>[NotMapped]</strong> attribute to a Confirm property, which will tell EF to not attempt to map it!&nbsp; Let's see a fully implemented User class with this new property.</p>
-<pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations.Schema;
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+using System.ComponentModel.DataAnnotations.Schema;
     
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } 
     [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
     [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } 
     [EmailAddress]
     [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
     [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
     [Required]
     [<span class="function call from-rainbow">MinLength</span>(<span class="constant numeric from-rainbow">8</span>, ErrorMessage<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Password must be 8 characters or longer!"</span>)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
     <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="comment from-rainbow">// Will not be mapped to your users table!</span>
     [NotMapped]
     [<span class="function call from-rainbow">Compare</span>(<span class="string from-rainbow">"Password"</span>)]
     [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Confirm { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Confirm { get; set; }
 }    
 </pre>
 <hr>
@@ -72,6 +75,7 @@
     <span class="comment from-rainbow">// other code</span>
 } 
 </pre>
+        
         
         
         
