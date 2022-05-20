@@ -1,25 +1,26 @@
 
             
+            
             <h1>Many to Many</h1>
 <p>Many-to-many relationships in EF Core are set up in the same way as we've handled them with SQL in the past. We create a joining table that contains a pair of IDs to establish the connections between the two tables we want to join. Using this joining table, we can now set up a Navigation Property inside of the two models based on the joining table. You can see below how this works:</p>
 <div>
 <div class="inline">
 <h4>Magazine.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Title { get; set; } 
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; }
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
 }
 </pre>
 </div>
 <div class="inline">
 <h4>Person.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Person
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Person
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; }
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } = new List&lt;Subscription&gt;();
 }
 </pre>
 </div>
@@ -27,7 +28,7 @@
 <div>
 <div class="inline">
 <h4>Subscription.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> SubscriptionId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }
@@ -39,10 +40,10 @@
 </div>
 <div class="inline">
 <h4>YourContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">//Other code</span>
-<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> Persons { get; set; }
-<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Magazine<span class="keyword operator from-rainbow">&gt;</span> Magazines { get; set; }
-<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; }
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">//Other code</span>
+<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> Persons { get; set; } = new List&lt;Person&gt;();
+<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Magazine<span class="keyword operator from-rainbow">&gt;</span> Magazines { get; set; } = new List&lt;Magazine&gt;();
+<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } = new List&lt;Subscription&gt;();
 </pre>
 </div>
 </div>
@@ -59,7 +60,7 @@
 <p><strong>.ThenInclude(subscription =&gt; subscription.Magazine)</strong><br></p>
 <p>Finally, we query for a FirstOrDefault person at a provided personId, and now we have access to all the magazine data that the person is subscribed to!</p>
 <h3>In your Controller:</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{personId}"</span>)]
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{personId}"</span>)]
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Show</span>(<span class="keyword from-rainbow">int</span> personId)
 {
     <span class="keyword from-rainbow">var</span> personWithSubsAndMags <span class="keyword operator from-rainbow">=</span> dbContext.Persons
@@ -72,7 +73,7 @@
 </pre>
 <p>Now that we have that information, we can display it!</p>
 <h3>In your View:</h3>
-<pre data-language="c_sharp" class="language-c_sharp rainbow">@model Person
+<pre data-language="c_sharp" class="rainbow">@model Person
 <span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Subscriptions <span class="keyword from-rainbow">for</span> @Model.Name<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
 @<span class="keyword from-rainbow">foreach</span>(<span class="keyword from-rainbow">var</span> sub in Model.Subscriptions)
 {
@@ -87,5 +88,6 @@
 }
 </style>
 <p> <br></p>
+        
         
         
