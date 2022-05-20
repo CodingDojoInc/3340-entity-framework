@@ -3,7 +3,8 @@
 <p>Directions: Follow the "Project Set Up"&nbsp;Steps, and then execute the LINQ queries outlined in the "Assignment Tasks"</p>
 <p>Project Set&nbsp;Up:&nbsp;</p>
 <p>1. Open a new console app. Just in case you've forgotten, the command to do this is:&nbsp;<br></p>
-<pre class="active_pre">dotnet new console -o YourProjectName</pre>
+<pre>
+dotnet new console -o YourProjectName</pre>
 <p>2. Create a file named Eruption.cs copy and paste the code below to create your "Eruption"&nbsp;class:</p>
 <pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">Eruption</span>
 {
@@ -32,7 +33,7 @@ Type<span class="operator from-rainbow">:</span> {Type}
     }
 }</pre>
 <p>3. Copy and paste the following code snippet in your Program&nbsp;</p>
-<pre data-language="c_sharp" class="language-c_sharp rainbow">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
+<pre data-language="c_sharp" class="rainbow">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
 {
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"La Palma"</span>, <span class="constant numeric from-rainbow">2021</span>, <span class="string from-rainbow">"Canary Is"</span>, <span class="constant numeric from-rainbow">2426</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Villarrica"</span>, <span class="constant numeric from-rainbow">1963</span>, <span class="string from-rainbow">"Chile"</span>, <span class="constant numeric from-rainbow">2847</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
@@ -50,8 +51,8 @@ Type<span class="operator from-rainbow">:</span> {Type}
 <span class="comment from-rainbow">// Example Query - Prints all Stratovolcano eruptions</span>
 IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> stratovolcanoEruptions <span class="keyword operator from-rainbow">=</span> eruptions.<span class="function call from-rainbow">Where</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.Type <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Stratovolcano"</span>);
 <span class="function call from-rainbow">PrintEach</span>(stratovolcanoEruptions, <span class="string from-rainbow">"Stratovolcano eruptions."</span>);
-<span class="comment from-rainbow">// Execute Assignment Tasks here!
- </span>
+<span class="comment from-rainbow">// Execute Assignment Tasks here!</span>
+ 
 <span class="comment from-rainbow">// Helper method to print each item in a List or IEnumerable.This should remain at the bottom of your class!</span>
 <span class="keyword from-rainbow">static</span> <span class="keyword from-rainbow">void</span> <span class="function call from-rainbow">PrintEach</span>(IEnumerable<span class="keyword operator from-rainbow">&lt;</span>dynamic<span class="keyword operator from-rainbow">&gt;</span> items, <span class="keyword from-rainbow">string</span> msg <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">""</span>)
 {
