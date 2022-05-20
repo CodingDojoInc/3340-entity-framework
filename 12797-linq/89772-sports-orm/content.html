@@ -8,7 +8,7 @@
 <pre>
 dotnet new console -o YourProjectName</pre>
 <p>2. Create a file named Eruption.cs copy and paste the code below to create your "Eruption"&nbsp;class:</p>
-<pre data-language="c_sharp" class="language-c_sharp rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Eruption
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Eruption
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Volcano { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Year { get; set; }
@@ -35,7 +35,7 @@ Type: {Type}
     }
 }</pre>
 <p>3. Copy and paste the following code snippet in your Program&nbsp;</p>
-<pre data-language="c_sharp" class="rainbow active_pre">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
+<pre data-language="c_sharp" class="rainbow">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
 {
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"La Palma"</span>, <span class="constant numeric from-rainbow">2021</span>, <span class="string from-rainbow">"Canary Is"</span>, <span class="constant numeric from-rainbow">2426</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Villarrica"</span>, <span class="constant numeric from-rainbow">1963</span>, <span class="string from-rainbow">"Chile"</span>, <span class="constant numeric from-rainbow">2847</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
@@ -64,4 +64,4 @@ IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Eruption<span 
         Console.<span class="function call from-rainbow">WriteLine</span>(item.<span class="function call from-rainbow">ToString</span>());
     }
 }</pre>
-<p> Source:&nbsp;<b>National Geophysical Data Center / World Data Service (NGDC/WDS): NCEI/WDS Global Significant Volcanic Eruptions Database. NOAA National Centers for Environmental Information.&nbsp;<a href="http://dx.doi.org/10.7289/V5JW8BSH" rel="noopener noreferrer" target="_blank" title="Earthquake DOI Information" aria-label="Earthquake DOI Information">doi:10.7289/V5JW8BSH</a></b></p>
+<p> Source:&nbsp;<b>National Geophysical Data Center / World Data Service (NGDC/WDS): NCEI/WDS Global Significant Volcanic Eruptions Database. NOAA National Centers for Environmental Information.&nbsp;<a href="http://dx.doi.org/10.7289/V5JW8BSH" rel="noopener noreferrer" target="_blank" title="Earthquake DOI Information" aria-label="Earthquake DOI Information">doi:10.7289/V5JW8BSH</a>.&nbsp;Accessed on 05/20/2022. </b></p>
