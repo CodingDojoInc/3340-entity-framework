@@ -1,24 +1,64 @@
-
-            
-            <h1>LINQ Queries</h1><h1><font color="#505050">Objectives: Students will demonstrate a working knowledge of basic LINQ queries by&nbsp;<br></font></h1><p>Directions: This assignment is intended to be done in a console application! Just as a remdiner, you can create a console application through your terminal by typing the command:</p><p>dotnet new console -o YourProjectName</p><p><br></p>
-<pre data-language="csharp" class="rainbow">&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> DbSet&lt;league&gt; Leagues {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}
-   <span class="keyword from-rainbow">public</span> DbSet&lt;team&gt; Teams {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}
-   <span class="keyword from-rainbow">public</span> DbSet&lt;player&gt; Players {<span class="keyword from-rainbow">get</span>;<span class="keyword from-rainbow">set</span>;}</pre>
-<p>These are your connections to the tables within your database (all that information you saw in the DataController), hooked up to the league, team, and player models you saw earlier.&nbsp;</p>
-<p>Now in our HomeController, let's look at our example query:</p>
-<pre data-language="csharp" class="rainbow">    ViewBag.BaseballLeagues <span class="operator from-rainbow">=</span> context.Leagues
-                .Where(l <span class="operator from-rainbow">=&gt;</span> l.Sport.Contains(<span class="string from-rainbow">"Baseball"</span>));  </pre>
-<p>ViewBag you should be familiar with, and you should have seen references to the queries .Where and .Contains and how to create these queries on the page before. But what about context and Leagues? Well, look up! "Leagues" matches the Leagues we see in Context.cs. And context is what we've called our connection to the database.&nbsp;</p>
-<p>The code reads like this:&nbsp;</p>
-<p>In <code>ViewBag.BaseballLeagues</code>, query into my database (<code>context</code>) and look into my table for <code>Leagues</code>. From my Leagues table, I want all the leagues <code>Where</code> the <code>Sport</code> (a property of the League model) <code>Contains</code> the word&nbsp;<code>"Baseball"</code>. Now in our ViewBag, we have a list of all the Leagues where the sport is baseball. On our cshtml side we can render this information in a table, and voila! Our information is rendered!</p>
-<p>
-</p>
-<p>Don't worry if this seems like a lot of confusing information. We'll be breaking this down in detail in the next section. In general your queries will look like this:</p>
+<p> <br></p><h1>LINQ Queries</h1>
+<h1><font color="#505050">Objectives: Students will demonstrate a working knowledge of basic LINQ queries by creating a console application with boiler plate code and querying data from the included data set.&nbsp;<br></font></h1>
+<p>Directions: Follow the "Project Set Up"&nbsp;Steps, and then execute the LINQ queries outlined in the "Assignment Tasks"</p>
+<p>Project Set&nbsp;Up:&nbsp;</p>
+<p>1. Open a new console app. Just in case you've forgotten, the command to do this is:&nbsp;<br></p>
 <pre>
-ViewBag.&lt;Name of bag&gt; = context.&lt;Name of table&gt;.&lt;Your query goes here&gt;&nbsp;</pre>
-<p>For the time being you only need to concern yourself with finishing&nbsp;<strong>Level 1<em>.&nbsp;</em></strong>The following levels require queries that we have not covered yet, and you will be completing these levels for later assignments. The point here is to get started practicing a variety of LINQ queries. Work until you feel comfortable performing basic queries.&nbsp;</p>
-<p>You can download the zip file for the project:</p><p><a href="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1651257755__SportsORM.zip" data-file="">SportsORM.zip</a><br></p>
-<p><strong>Important:</strong> If you are using a different version of dotnet, make sure to go into the <code>.csproj</code> file and change the version number then run <code>dotnet restore</code> to update the package installations</p>
+dotnet new console -o YourProjectName</pre>
+<p>2. Create a file named Eruption.cs copy and paste the code below to create your "Eruption"&nbsp;class:</p>
+<pre data-language="csharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="storage class from-rainbow">class</span> <span class="entity name class from-rainbow">Eruption</span>
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Volcano { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Year { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Location { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> ElevationInMeters { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Type { <span class="keyword from-rainbow">get</span>; <span class="keyword from-rainbow">set</span>; }
+    <span class="keyword from-rainbow">public</span> Eruption(<span class="keyword from-rainbow">string</span> volcano, <span class="keyword from-rainbow">int</span> year, <span class="keyword from-rainbow">string</span> location, <span class="keyword from-rainbow">int</span> elevationInMeters, <span class="keyword from-rainbow">string</span> type)
+    {
+        Volcano <span class="operator from-rainbow">=</span> volcano;
+        Year <span class="operator from-rainbow">=</span> year;
+        Location <span class="operator from-rainbow">=</span> location;
+        ElevationInMeters <span class="operator from-rainbow">=</span> elevationInMeters;
+        Type <span class="operator from-rainbow">=</span> type;
+    }
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">override</span> <span class="keyword from-rainbow">string</span> ToString()
+    {
+        <span class="keyword from-rainbow">return</span> $@"
+Name<span class="operator from-rainbow">:</span> {Volcano}
+Year<span class="operator from-rainbow">:</span> {Year}
+Location<span class="operator from-rainbow">:</span> {Location}
+Elevation<span class="operator from-rainbow">:</span> {ElevationInMeters} meters
+Type<span class="operator from-rainbow">:</span> {Type}
+            ";
+    }
+}</pre>
+<p>3. Copy and paste the following code snippet in your Program&nbsp;</p>
+<pre data-language="csharp" class="rainbow">List&lt;eruption&gt; eruptions <span class="operator from-rainbow">=</span> <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">List</span>&lt;eruption&gt;()
+{
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"La Palma"</span>, <span class="integer from-rainbow">2021</span>, <span class="string from-rainbow">"Canary Is"</span>, <span class="integer from-rainbow">2426</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Villarrica"</span>, <span class="integer from-rainbow">1963</span>, <span class="string from-rainbow">"Chile"</span>, <span class="integer from-rainbow">2847</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Chaiten"</span>, <span class="integer from-rainbow">2008</span>, <span class="string from-rainbow">"Chile"</span>, <span class="integer from-rainbow">1122</span>, <span class="string from-rainbow">"Caldera"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Kilauea"</span>, <span class="integer from-rainbow">2018</span>, <span class="string from-rainbow">"Hawaiian Is"</span>, <span class="integer from-rainbow">1122</span>, <span class="string from-rainbow">"Shield Volcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Hekla"</span>, <span class="integer from-rainbow">1206</span>, <span class="string from-rainbow">"Iceland"</span>, <span class="integer from-rainbow">1490</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Taupo"</span>, <span class="integer from-rainbow">1910</span>, <span class="string from-rainbow">"New Zealand"</span>, <span class="integer from-rainbow">760</span>, <span class="string from-rainbow">"Caldera"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Lengai, Ol Doinyo"</span>, <span class="integer from-rainbow">1927</span>, <span class="string from-rainbow">"Tanzania"</span>, <span class="integer from-rainbow">2962</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Santorini"</span>, <span class="integer from-rainbow">46</span>,<span class="string from-rainbow">"Greece"</span>, <span class="integer from-rainbow">367</span>, <span class="string from-rainbow">"Shield Volcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Katla"</span>, <span class="integer from-rainbow">950</span>, <span class="string from-rainbow">"Iceland"</span>, <span class="integer from-rainbow">1490</span>, <span class="string from-rainbow">"Subglacial Volcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Aira"</span>, <span class="integer from-rainbow">766</span>, <span class="string from-rainbow">"Japan"</span>, <span class="integer from-rainbow">1117</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Ceboruco"</span>, <span class="integer from-rainbow">930</span>, <span class="string from-rainbow">"Mexico"</span>, <span class="integer from-rainbow">2280</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+    <span class="keyword new from-rainbow">new</span> <span class="support class from-rainbow">Eruption</span>(<span class="string from-rainbow">"Etna"</span>, <span class="integer from-rainbow">1329</span>, <span class="string from-rainbow">"Italy"</span>, <span class="integer from-rainbow">3320</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+};
+<span class="comment from-rainbow">// Example Query - Prints all Stratovolcano eruptions</span>
+IEnumerable&lt;eruption&gt; stratovolcanoEruptions <span class="operator from-rainbow">=</span> eruptions.Where(c <span class="operator from-rainbow">=&gt;</span> c.Volcano);
+PrintEach(stratovolcanoEruptions, <span class="string from-rainbow">"Stratovolcano eruptions."</span>);
+<span class="comment from-rainbow">// Execute Assignment Tasks here! </span>
+<span class="comment from-rainbow">// Helper method to print each item in a List or IEnumerable.This should remain at the bottom of your class!</span>
+<span class="keyword from-rainbow">static</span> <span class="keyword from-rainbow">void</span> PrintEach(IEnumerable&lt;<span class="keyword from-rainbow">dynamic</span>&gt; items, <span class="keyword from-rainbow">string</span> msg <span class="operator from-rainbow">=</span> <span class="string from-rainbow">""</span>)
+{
+    Console.WriteLine(<span class="string from-rainbow">"\n"</span> <span class="operator from-rainbow">+</span> msg);
+    <span class="keyword from-rainbow">foreach</span> (<span class="keyword from-rainbow">var</span> item <span class="keyword from-rainbow">in</span> items)
+    {
+        Console.WriteLine(item.ToString());
+    }
+}</pre>
 <p> <br> </p>
-        
-        
