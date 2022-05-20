@@ -1,14 +1,9 @@
-
-            
-            
-            
-            <h1>Getting Started</h1>
+<h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
 <h2>Tools: dotnet-ef</h2>
-<div><p>At the beginning of the course, you should have installed the following CLI tool:&nbsp;</p><pre>
-dotnet tool install --global dotnet-ef</pre>
+<div><p>At the beginning of the course, you should have installed the following CLI tool:&nbsp;</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
 <p>This is a global installation, meaning we only need to do this once on our computer. If you followed the installation instructions carefully, you do not need to take this step again!&nbsp;However, if you skipped over any parts, you may want to check that the tool is in use by typing:&nbsp;</p>
 <pre>
 dotnet ef</pre>
@@ -22,19 +17,22 @@ dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow">using System.ComponentModel.DataAnnotations;
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="active_pre language-c_sharp rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+using System.ComponentModel.DataAnnotations;
 namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
 {
     [Key]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MonsterId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } 
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Height { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Description { get; set; }
     <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
 }</pre>
-</td><td><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/monster-erd.png"></td></tr></tbody></table><p><br></p>
+</td><td><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/monster-erd.png"></td></tr></tbody></table><h2>Disabling the Nullable Warning</h2><p>Because Entity Framework Core is managing our database for us, we can safely disable the nullable warning in all of our model files! We do this by adding this line to the top of each model file:</p>
+    <pre class="active_pre">#pragma warning disable CS8618</pre>
+    <p>Now we no longer need to worry about the null forgiveness operator or declaring types as optional for these files. We&nbsp;<em>could</em> disable the warning throughout our entire project, but it is best practice not to, as this feature serves the important role of preventing the infamous .System.NullReferenceException error.</p>
  
 <h2>The Context Class</h2>
 <p>Next, we'll need to create another new file in our&nbsp;
@@ -83,7 +81,7 @@ using System.ComponentModel.DataAnnotations;
 <span class="comment from-rainbow">// Creates builder (also part of boilerplate code for web apps)</span>
 <span class="keyword from-rainbow">var</span> builder <span class="keyword operator from-rainbow">=</span> WebApplication.<span class="function call from-rainbow">CreateBuilder</span>(args)
 <span class="comment from-rainbow">//  Creates the db connection string</span>
-<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>(<span class="string from-rainbow">"DefaultConnection"</span>);
+<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>("DefaultConnection");
 <span class="comment from-rainbow">// Adds database connection - must be before app.Build();</span>
 builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</span>MyContext<span class="keyword operator from-rainbow">&gt;</span>(options <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
 {
@@ -94,7 +92,7 @@ builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</s
 <h2>Dependency Injection (to our Controller)</h2>
 <p>We now have our context class relating to our database, and we've added it to our application as a service.&nbsp; This means we can add a new field in our controller class for our context class's type - <strong>MyContext</strong> - and initialize this field in the controller's constructor method - where the service <strong>can be injected</strong>.&nbsp; This means our database context is available to any and all of our controller's methods!<br></p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Using statements</span>
+<pre data-language="c_sharp" class="rainbow">// Using statements
 using System.Diagnostics
 using Microsoft.AspNetCore.Mvc;
 using Monsters.Models;
@@ -122,7 +120,4 @@ namespace Monsters.Controllers;
 </div>
 <p> <br> </p>
 <p> <br> </p>
-        
-        
-        
-        
+<p> <br> <br> <br> </p>
