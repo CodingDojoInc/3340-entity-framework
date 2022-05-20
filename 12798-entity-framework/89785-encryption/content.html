@@ -4,6 +4,7 @@
             
             
             
+            
             <h1>Password Hashing</h1>
 <p>
     Now that we know how to use models, we can take advantage of ASP.NET Core's built-in encryption tool, part of Microsoft's Identity suite.
@@ -14,18 +15,18 @@
 class which allows us to generate and verify hashed strings.&nbsp; The PasswordHasher class needs to be associated with a type, like the List and Dictionary classes, and the hashing method itself requires an instance of that type be passed to it. <br></p>
 <h2>Handling Registration</h2>
 <h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// Other fields</span>
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
 }
 </pre>
 <h3>YourController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.AspNetCore.Identity;
+<pre data-language="c_sharp" class="rainbow">using Microsoft.AspNetCore.Identity;
 <span class="comment from-rainbow">//Other using statements</span>
 namespace YourNamespace.Controllers;
     
@@ -52,9 +53,9 @@ namespace YourNamespace.Controllers;
 {
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment from-rainbow">// No other fields!</span>
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
     [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
 }
 </pre>
 <p>
@@ -96,6 +97,7 @@ namespace YourNamespace.Controllers;
 }
 </pre>
 <p></p>
+        
         
         
         
