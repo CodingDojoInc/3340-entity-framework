@@ -1,4 +1,5 @@
 
+            
             <h1>LINQ Eruption!</h1>
 <h2>Objective:</h2>
 <p>Students will demonstrate a working knowledge of basic LINQ queries by creating a console application with boiler plate code and querying data from the included data set.&nbsp;<br></p>
@@ -36,7 +37,7 @@ Type: {Type}
     }
 }</pre>
 <p>3. Copy and paste the following code snippet in your Program&nbsp;</p>
-<pre data-language="c_sharp" class="rainbow">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
+<pre data-language="c_sharp" class="rainbow active_pre">List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> eruptions <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span>()
 {
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"La Palma"</span>, <span class="constant numeric from-rainbow">2021</span>, <span class="string from-rainbow">"Canary Is"</span>, <span class="constant numeric from-rainbow">2426</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Villarrica"</span>, <span class="constant numeric from-rainbow">1963</span>, <span class="string from-rainbow">"Chile"</span>, <span class="constant numeric from-rainbow">2847</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
@@ -50,6 +51,7 @@ Type: {Type}
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Aira"</span>, <span class="constant numeric from-rainbow">766</span>, <span class="string from-rainbow">"Japan"</span>, <span class="constant numeric from-rainbow">1117</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Ceboruco"</span>, <span class="constant numeric from-rainbow">930</span>, <span class="string from-rainbow">"Mexico"</span>, <span class="constant numeric from-rainbow">2280</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
     <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Etna"</span>, <span class="constant numeric from-rainbow">1329</span>, <span class="string from-rainbow">"Italy"</span>, <span class="constant numeric from-rainbow">3320</span>, <span class="string from-rainbow">"Stratovolcano"</span>),
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Eruption</span>(<span class="string from-rainbow">"Bardarbunga"</span>, <span class="constant numeric from-rainbow">1477</span>, <span class="string from-rainbow">"Iceland"</span>, <span class="constant numeric from-rainbow">2000</span>, <span class="string from-rainbow">"Stratovolcano"</span>)
 };
 <span class="comment from-rainbow">// Example Query - Prints all Stratovolcano eruptions</span>
 IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Eruption<span class="keyword operator from-rainbow">&gt;</span> stratovolcanoEruptions <span class="keyword operator from-rainbow">=</span> eruptions.<span class="function call from-rainbow">Where</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.Type <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Stratovolcano"</span>);
@@ -66,4 +68,5 @@ IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Eruption<span 
     }
 }</pre>
 <p> Source:&nbsp;National Geophysical Data Center / World Data Service (NGDC/WDS): NCEI/WDS Global Significant Volcanic Eruptions Database. NOAA National Centers for Environmental Information.&nbsp;<a href="http://dx.doi.org/10.7289/V5JW8BSH" rel="noopener noreferrer" target="_blank" title="Earthquake DOI Information" aria-label="Earthquake DOI Information">doi:10.7289/V5JW8BSH</a>.&nbsp;Accessed on 05/20/2022.</p>
+        
         
