@@ -43,7 +43,7 @@ namespace Monsters.Models;
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.EntityFrameworkCore;
+<pre data-language="c_sharp" class="rainbow">using Microsoft.EntityFrameworkCore;
 namespace Monsters.Models;
 <span class="comment from-rainbow">// the MyContext class representing a session with our MySQL </span>
 <span class="comment from-rainbow">// database allowing us to query for or save data</span>
