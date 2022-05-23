@@ -1,23 +1,26 @@
 
+            
             <h1>Getting Started</h1>
 <p>Entity Framework Core is a fully featured ORM (Object Relational Mapper) that is able to map our model classes to SQL tables, and format the exact SQL statements from method calls that we make. Basically, once our models are set up in our project, Entity Framework does all the work of creating the database and tables within MySQL for us! In addition, we can write methods to query into the database to access or modify these tables without ever opening MySQL or writing a SQL statement! Entity Framework Core comes equipped with methods for querying our database that, used in tandem with LINQ, allow us to retrieve and save data easily.</p>
 <p>This means when we set up a project to use EF Core, we must pay careful attention to our SQL table and column names when setting up our model classes so that EF Core is able to make the association. In addition to these naming considerations, we will also need to deal more directly with Dependency Injection, as we will have to register some new services to get up and running.</p>
 <p>Take your time setting up your EF Core project, and make sure to follow these steps closely, as there is going to be a fair amount of setup required. The good news is that very little will change project to project, and after a few times, it will become second nature.<br></p>
 <h2>Tools: dotnet-ef</h2>
-<div><p>At the beginning of the course, you should have installed the following CLI tool:&nbsp;</p><pre class="active_pre">dotnet tool install --global dotnet-ef</pre>
+<div><p>At the beginning of the course, you should have installed the following CLI tool:&nbsp;</p><pre>
+dotnet tool install --global dotnet-ef</pre>
 <p>This is a global installation, meaning we only need to do this once on our computer. If you followed the installation instructions carefully, you do not need to take this step again!&nbsp;However, if you skipped over any parts, you may want to check that the tool is in use by typing:&nbsp;</p>
 <pre>
 dotnet ef</pre>
 <p>The output will tell you the version of the tool you're using!</p><p>This&nbsp; performs design-time development tasks (e.g. creating and applying migrations, a critical part of working with a database), so it is very important that you have this installed or your database connection will not work! You can read more about this tool in the <a href="https://docs.microsoft.com/en-us/ef/core/cli/dotnet">Microsoft Documentation</a>, including how to update or uninstall tools if this ever becomes necessary.&nbsp;</p><h2>Adding Packages</h2></div>
 <div>The "Pomelo" package will be the provider that lets us connect our project to a MySQL database. We also need to get the EntityFrameworkCode.Design package.</div>
 <p><strong>Note</strong>: Each time we start a new project we will need to run these commands to install EntityFramework.</p>
-<pre class="active_pre">dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
+<pre>
+dotnet add package Pomelo.EntityFrameworkCore.MySql --version 6.0.1
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.3</pre>
 <div><h2>Making Our Model</h2><p>The Model class will represent what we want the "Object" to be for our ORM and for each table we want to work with, we will create an associated Model class.&nbsp;</p>
 <p>Model classes such as these, that bear the responsibility of representing an entry in a database table, are typically referred to as an "Entity". In this Entity class, we will provide&nbsp;Auto-Implemented Properties&nbsp;that will be used by Entity Framework to "map" to&nbsp;Columns&nbsp;in the associated table.&nbsp;
 </p>
 <p>The&nbsp;name&nbsp;and&nbsp;type&nbsp;of each one of these properties will need to match the&nbsp;name&nbsp;and&nbsp;type&nbsp;of the table column they represent.</p>
-<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<p>For this example we will design a website for cataloging Monsters and we'll start with deciding what columns of information we need to store for each Monster.</p><table><tbody><tr><td><strong>Models/Monster.cs</strong></td><td><strong>Equivalent ERD</strong></td></tr><tr><td><pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 using System.ComponentModel.DataAnnotations;
 namespace Monsters.Models;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Monster
@@ -48,7 +51,7 @@ namespace Monsters.Models;
 { 
     <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
     <span class="comment from-rainbow">// the "Monsters" table name will come from the DbSet variable name</span>
-    <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span><span class="keyword operator from-rainbow">!</span>;
+    <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> Monsters { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span>();
 }</pre>
 <div><p>Our Monster Model class has all of the connections needed to represent a single entry - or&nbsp;row&nbsp;of SQL - but to actually access the data to be stored in our users&nbsp;table we will need to update our Context&nbsp;class with a&nbsp;DbSet&nbsp;property.&nbsp;   The&nbsp;type&nbsp;we give this property will be a&nbsp;DbSet&nbsp;-- a collection type from the Entity Framework library. Then in angle brackets we will declare what type of data (Our Monster model) we will be storing and retrieving from our SQL table. The&nbsp;name&nbsp;you give this&nbsp;DbSet&nbsp;property is important. It will need to correlate to your MySQL table name. Much like how our Model class properties map to&nbsp;Column&nbsp;names, DbSet properties in your Context class will match our Table&nbsp;names.&nbsp; By default MySQL will store your table names as lowercase, but will able to handle case-insensitivity.&nbsp; So if our table name will be "Monsters", we can name this DbSet property&nbsp;"Monsters". This "Monsters" name is what we will use to refer to the data from our controllers.   Our Context classes can contain any number of&nbsp;DbSet&nbsp;properties, with each relating to a separate table in the database. If we had models for "Stories" or "Countries" we would set up a&nbsp;public DbSet Stories and&nbsp;public DbSet Countries respectively.<br></p><h2>Setting up and securing our Connection String</h2>
 <p>One crucial step in your setup will be to put your MySQL connection string (the line of code that will connect your project to MySQL) in a separate area from your source code. The connection string contains important information such as your username and password into MySQL, which would introduce a severe vulnerability whereby anyone that has access to your project source (ie. public git repositories) would have the means to take control of your database (bad news!).&nbsp;</p>
@@ -119,4 +122,5 @@ namespace Monsters.Controllers;
 <p> <br> </p>
 <p> <br> </p>
 <p> <br> <br> <br> </p>
+        
         
