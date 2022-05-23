@@ -118,7 +118,7 @@ namespace MyProject.Models;
 <p>You might wonder if a valid option for updating an object would be to say <code>oldObject = newObject</code>&nbsp;if say, you've filled out a form to update an object and have passed it along in your post request. However this is not the case. You must be explicit about what is being altered. So, if your User has a Name, Email, Age, and Address, when you pass along an updated version of the object you must individually set <code>User.Name = NewUser.Name</code>, <code>User.Email = NewUser.Email</code>, and so on. (Then don't forget to save your changes!)&nbsp;</p>
 <h2>Removing</h2>
 <p>To remove an entry from the database, we must query for the object we wish to delete, and then pass the object to the&nbsp;<code>Remove</code>&nbsp;method on the Entity's DBSet.&nbsp;The <code>SaveChanges</code>&nbsp;method will then execute the removal.</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Inside HomeController</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Inside HomeController</span>
 [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"delete/{userId}"</span>)]
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">DeleteUser</span>(<span class="keyword from-rainbow">int</span> userId)
 {
