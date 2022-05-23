@@ -67,7 +67,7 @@ namespace YourNamespace.Controllers;
     <code>VerifyHashedPassword</code>
     method, which returns a <code>PasswordVerificationResult</code> to indicate success or failure. You may compare the result of <code>VerifyHashedPassword</code> to <code>0</code> to detect failure.</p>
 <h3>YourController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">using Microsoft.AspNetCore.Identity;
+<pre data-language="c_sharp" class="rainbow">using Microsoft.AspNetCore.Identity;
 <span class="comment from-rainbow">//Other using statements</span>
 namespace YourNamespace.Controllers;
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Login</span>(LoginUser userSubmission)
