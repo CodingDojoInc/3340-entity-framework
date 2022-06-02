@@ -1,6 +1,20 @@
 <h1>Lambda Expressions</h1>
-<p>When using method syntax, we have to learn about lambda expressions. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; An arrow symbol <code>=&gt;</code>represents the <strong>return</strong> of an operation performed on each item.&nbsp; The left hand side of the arrow symbol is a <strong>variable</strong> definition, its <strong>type </strong>is&nbsp;determined by whatever type the collection contains.&nbsp; The right hand side of the arrow symbol is the operation to be performed on each item.<br></p>
-<p>There are two types of operations our lambda expressions will need to perform: <strong>selectors</strong>&nbsp;and <strong>predicates</strong>.<br></p>
+<p>When using method syntax, we have to learn about <strong>lambda expressions</strong>. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; Let's take a look at an example of a lambda expression:</p>
+<pre class="active_pre">List<int> numsAboveTen = numbers.Where(num =&gt; num &gt; 10).ToList();</int></pre>
+<p>&nbsp;<code>.Where</code>&nbsp;is a&nbsp;LINQ method&nbsp;and the&nbsp;<code>=&gt;</code>&nbsp;is a&nbsp;lambda function. A&nbsp;lambda function&nbsp;contains our query instructions. These instructions are passed into the&nbsp;LINQ method&nbsp;so LINQ can fetch the specific data we ask for.&nbsp;&nbsp;</p>
+<p>
+This LINQ query filters a list of numbers into a new list of numbers greater than 10. The program will iterate through the original list, and execute the lambda function&nbsp;<code>foreach</code>&nbsp;item in the list. In this case, it will iterate through a list&nbsp;of integers and add each number that meets the requirements (&gt;10) to the new list.</p>
+<p><br></p>
+<h2>Parts of a Lambda</h2>
+<p>A lambda function has two parts, the part to the left of the&nbsp;<code>=&gt;</code>&nbsp;is a <strong>parameter</strong> for the function, and to the right of the&nbsp;<code>=&gt;</code>&nbsp;is an <strong>expression for querying</strong>. The parameter to the left of the&nbsp;<code>=&gt;</code>&nbsp;can be named anything since parameters are like variables. Parameters hold the data that was passed in to the function.</p>
+<p>LINQ queries iterate over a list and execute the lambda function&nbsp;<code>foreach</code>&nbsp;item in the list, passing the current item into the lambda's parameter so the expression to the right of the&nbsp;<code>=&gt;</code>&nbsp;can refer check each item for querying.&nbsp;</p>
+<p>Parameter Naming</p>
+<p><br></p>
+<p>There are two types of operations our lambda expressions will need to perform:&nbsp;<strong>selectors</strong>&nbsp;and&nbsp;<strong>predicates</strong>.</p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
 <p>It will help to see these expressions in some examples with the LINQ methods that will be using them. Let's start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
 <pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
 {
