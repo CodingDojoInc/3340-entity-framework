@@ -1,1 +1,22 @@
 <h1>Lambda Expressions</h1>
+<p>When using method syntax, we have to learn about lambda expressions. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; An arrow symbol <code>=&gt;</code>represents the <strong>return</strong> of an operation performed on each item.&nbsp; The left hand side of the arrow symbol is a <strong>variable</strong> definition, its <strong>type </strong>is&nbsp;determined by whatever type the collection contains.&nbsp; The right hand side of the arrow symbol is the operation to be performed on each item.<br></p>
+<p>There are two types of operations our lambda expressions will need to perform: <strong>selectors</strong>&nbsp;and <strong>predicates</strong>.<br></p>
+<p>It will help to see these expressions in some examples with the LINQ methods that will be using them. Let's start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
+<pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
+}
+</pre>
+<p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
+<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> Product[]
+{
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Scooter"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">99.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skateboard"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skirt"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">17.5</span> }
+};
+</pre>
+<p>Now with this as our "database", we can do some basic queries!</p>
