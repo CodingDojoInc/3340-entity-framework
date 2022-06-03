@@ -1,6 +1,7 @@
 <h1>Lambda Expressions</h1>
 <p>When using method syntax, we have to learn about <strong>lambda expressions</strong>. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; Let's take a look at an example of a lambda expression:</p>
-<pre class="active_pre">List numsAboveTen = numbers.Where(num =&gt; num &gt; 10).ToList();</pre>
+<pre>
+List numsAboveTen = numbers.Where(num =&gt; num &gt; 10).ToList();</pre>
 <p>&nbsp;<code>.Where</code>&nbsp;is a&nbsp;LINQ method&nbsp;and the&nbsp;<code>=&gt;</code>&nbsp;is a&nbsp;lambda function. A&nbsp;lambda function&nbsp;contains our query instructions. These instructions are passed into the&nbsp;LINQ method&nbsp;so LINQ can fetch the specific data we ask for.&nbsp;&nbsp;</p>
 <p>
 This LINQ query filters a list of numbers into a new list of numbers greater than 10. The program will iterate through the original list, and execute the lambda function&nbsp;<code>foreach</code>&nbsp;item in the list. In this case, it will iterate through a list&nbsp;of integers and add each number that meets the requirements (&gt;10) to the new list.</p>
@@ -12,7 +13,17 @@ This LINQ query filters a list of numbers into a new list of numbers greater tha
 <p>
 In general, parameters should be named after the data they will contain, such as&nbsp;<code>num</code>&nbsp;for a number, or if that number represents a score,&nbsp;<code>score</code>&nbsp;could be more descriptive. However, lambdas are a shorthand function, so shorthand parameter names are often convention. For example, a developer might use&nbsp;<code>n</code>&nbsp;as opposed to <code>num</code> when querying a list of numbers,&nbsp;<code>u</code>&nbsp;when querying a list of&nbsp;<code>User</code>&nbsp;class instances, or&nbsp;<code>tm</code>&nbsp;when querying a list of&nbsp;<code>TextMessage</code>&nbsp;class instances.</p>
 <p><br></p>
-<p>There are two types of operations our lambda expressions will need to perform:&nbsp;<strong>selectors</strong>&nbsp;and&nbsp;<strong>predicates</strong>.</p>
+<h2>Lambda Selector</h2>
+<p>There are two types of operations our lambda expressions will need to perform:&nbsp;<strong>selectors</strong>&nbsp;and&nbsp;<strong>predicates</strong>.&nbsp;A lambda selector&nbsp;is used for certain LINQ methods that only need to be told what property / column to use.</p>
+<pre>
+people.Min(person =&gt; person.Age);</pre>
+<p>In this example, the function does the job of selecting the person object with the minimum age out of a List of person objects.&nbsp;</p>
+<h3><div><h3></h3></div>Lambda Predicate<p>In grammar, a predicate is one of the main two parts of a sentence.&nbsp;It modifies&nbsp;the subject. A <strong>lambda predicate</strong> is when the right side of the&nbsp;<code>=&gt;</code>&nbsp;evaluates into a boolean, such as using comparison operators or methods that return booleans. Check out this example:</p></h3>
+<pre class="active_pre">List&lt;Person&gt; namedNeil = persons.Where(person =&gt; person.FirstName == "Neil").ToList();</pre><p>
+The&nbsp;<code>==</code>&nbsp;equality comparison operator evaluates to a boolean, when your lambda returns a true to&nbsp;<code>.Where</code>, LINQ knows it found something you were looking for. This works for &gt; and &lt; just the same.&nbsp;</p>
+<pre>
+List&lt;Person&gt; nameStartsWithN = persons.Where(p =&gt; p.FirstName.StartsWith("N")).ToList();</pre>
+<ul><li><code>.StartsWith</code>&nbsp;returns a boolean, it is doing a comparison internally.</li></ul>
 <p><br></p>
 <p><br></p>
 <p><br></p>
@@ -26,7 +37,7 @@ In general, parameters should be named after the data they will contain, such as
 }
 </pre>
 <p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
-<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> Product[]
+<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> new Product[]
 {
      <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
      <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
