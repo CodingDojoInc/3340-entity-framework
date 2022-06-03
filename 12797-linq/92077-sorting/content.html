@@ -1,7 +1,27 @@
 
-            <h1>Method Syntax </h1>
+<h1>Method Syntax </h1>
+<p>It will help to see these expressions in some examples with the LINQ methods that will be using them. In the next lesson, we'll Let's start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
+<pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
+}
+</pre>
+<p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
+<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> new Product[]
+{
+     new Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Scooter"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">99.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skateboard"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.99</span> },
+     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skirt"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">17.5</span> }
+};
+</pre>
+<p>Now with this as our "database", we can do some basic queries!</p>
+<p></p>
 <p>Let's sort all the products by price, using the&nbsp;<strong>OrderBy/OrderByDescending</strong> LINQ methods. The lambda we pass to these methods will be a <strong>selector</strong>, where we will determine which property of our Products we wish to order by.<br></p>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// The lambda here uses a variable 'prod' which represents a product </span>
+<pre data-language="c_sharp" class="active_pre rainbow"><span class="comment from-rainbow">// The lambda here uses a variable 'prod' which represents a product </span>
 <span class="comment from-rainbow">// (although this may be named whatever you like)  </span>
 <span class="comment from-rainbow">//  The right hand side of the arrow is selecting Price as the thing we want to order by.</span>
 IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> orderedProducts <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">OrderByDescending</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Price);
@@ -21,4 +41,3 @@ IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span c
 <p>
 </p>
 <p>Note also that none of these queries affect the original collection.</p>
-        
