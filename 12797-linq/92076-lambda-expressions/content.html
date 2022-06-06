@@ -1,4 +1,5 @@
-<h1>Lambda Expressions</h1>
+
+            <h1>Lambda Expressions</h1>
 <p>When using method syntax, we have to learn about <strong>lambda expressions</strong>. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; Let's take a look at an example of a lambda expression:</p>
 <pre>
 List numsAboveTen = numbers.Where(num =&gt; num &gt; 10).ToList();</pre>
@@ -19,31 +20,11 @@ In general, parameters should be named after the data they will contain, such as
 people.Min(person =&gt; person.Age);</pre>
 <p>In this example, the function does the job of selecting the person object with the minimum age out of a List of person objects.&nbsp;</p>
 <h3><div><h3></h3></div>Lambda Predicate<p>In grammar, a predicate is one of the main two parts of a sentence.&nbsp;It modifies&nbsp;the subject. A <strong>lambda predicate</strong> is when the right side of the&nbsp;<code>=&gt;</code>&nbsp;evaluates into a boolean, such as using comparison operators or methods that return booleans. Check out this example:</p></h3>
-<pre class="active_pre">List&lt;Person&gt; namedNeil = persons.Where(person =&gt; person.FirstName == "Neil").ToList();</pre><p>
+<pre>
+List&lt;Person&gt; namedNeil = persons.Where(person =&gt; person.FirstName == "Neil").ToList();</pre><p>
 The&nbsp;<code>==</code>&nbsp;equality comparison operator evaluates to a boolean, when your lambda returns a true to&nbsp;<code>.Where</code>, LINQ knows it found something you were looking for. This works for &gt; and &lt; just the same.&nbsp;</p>
 <pre>
 List&lt;Person&gt; nameStartsWithN = persons.Where(p =&gt; p.FirstName.StartsWith("N")).ToList();</pre>
 <ul><li><code>.StartsWith</code>&nbsp;returns a boolean, it is doing a comparison internally.</li></ul>
 <p><br></p>
-<p><br></p>
-<p><br></p>
-<p><br></p>
-<p>It will help to see these expressions in some examples with the LINQ methods that will be using them. Let's start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
-<pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
-{
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
-}
-</pre>
-<p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
-<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> new Product[]
-{
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Scooter"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">99.99</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skateboard"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.99</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skirt"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">17.5</span> }
-};
-</pre>
-<p>Now with this as our "database", we can do some basic queries!</p>
+        
