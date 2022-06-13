@@ -4,6 +4,7 @@
             
             
             
+            
             <h1>Relationships in EF Core</h1>
 <p>Creating models for your applications isn't just about considering the content within a model. We also have to be concerned with a models relationship to other models! Of course, Entity Framework Core supports these relationships.</p>
 <p>We can't create fields in MySQL that contain complex data (like another object), so we use the IDs of these objects to represent the relationship. In addition to the field for the ID we will&nbsp;<strong>also</strong> have a&nbsp;field for the full object for its own reference. However, this field will not be visible if we were to view the model in MySQL (because, as mentioned, MySQL does not support fields that contain entire objects). This is the one exception to our rule that our models have exactly the same fields as our database tables. Entity Framework Core is able to detect that the ID and object fields represent the same relationship -- based on their names -- but inside our table columns, we would only be able to see the IDs of our objects.</p>
@@ -20,7 +21,7 @@
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 }
 </pre>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
 {
     [Key]
@@ -43,7 +44,7 @@
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } 
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
-    <span class="comment from-rainbow">// Navigation property for related Message objects. This </span>
+    <span class="comment from-rainbow">// Navigation property for related Message objects.</span>
     <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span> CreatedMessages { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Message<span class="keyword operator from-rainbow">&gt;</span>(); 
     
 }
@@ -56,7 +57,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[Required]
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
     <span class="comment from-rainbow">// Navigation property for related User object</span>
-    <span class="keyword from-rainbow">public</span> User Creator { get; set; }
+    <span class="keyword from-rainbow">public</span> User? Creator { get; set; }
 }
 </pre>
 <p>We know that the <strong>messages</strong> SQL table doesn't have a <strong>Creator </strong>column, and that there is no <strong>User</strong> type for a column in SQL. This is all Entity Framework here. Because your <strong>Message&nbsp;</strong>model has a <strong>UserId</strong>, and your <strong>User</strong> model has a <strong>UserId</strong> as its primary key, Entity Framework knows to join data from a&nbsp;<strong>users&nbsp;</strong>table and map it to a <strong>User</strong> type member in <strong>Message</strong>. No extra input required!&nbsp; Once&nbsp;<strong>Message&nbsp;</strong>has a&nbsp;<strong>UserId</strong> it can reference, it creates the relationship to the&nbsp;<strong>User</strong> object for you! The same works for the User's list of Messages. Once a message is created, the User automatically has the relationship to message added to its list of created messages. You may name navigation properties whatever you like. Here, since a <strong>User </strong>creates <strong>Messages</strong>, it makes sense to name this property&nbsp;<strong>Creator</strong>.</p>
@@ -96,7 +97,7 @@
 <h2>Querying Related Data</h2>
 <p>The use of a .Include() in your query expressions is the first step in making queries across tables/models, in that it will produce the related objects in your model's navigation properties.  This step will then allow you to query further into your model's relationships.  For example, if you wanted to know the number of CreatedMessages a User has produced, or the User with the longest Message, etc - you will need to follow a .Include() with the requisite LINQ expressions that target your model's relationships.  Let's see a few examples:</p>
 <h3>In your Controller:</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{userId}"</span>)]    
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{userId}"</span>)]    
 <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UserDetails</span>(<span class="keyword from-rainbow">int</span> userId)
 {
     <span class="comment from-rainbow">// Number of messages created by this User</span>
@@ -136,6 +137,7 @@
 <p>EF Core is a smart framework. It's capable of making certain leaps of logic such as relating objects for us with just an ID provided. And it's doing something similar here. The information your query is after (the names of the creators) is technically already there. It's just wrapped up in another query meant for a different result on the same page. But our program is smart enough to realize "Hey, I already grabbed this information earlier for this other query, so since I have it, I'll just tag it on to this query you're doing!"</p>
 <p>You might notice the same result if your messages are all made by the same user, and you, the logged in user, are able to see the page just fine, but you get errors when you try to log in as anyone else! If you've done any separate queries for the logged in user (say, if you wanted to display the user's name in the navigation bar at the top) then you've essentially done the same thing, but it only works for things related to the logged in user. It is good to be aware of this logic loophole in case you're getting strange moments where some things are rendering for some users and not for others!</p>
 <p><strong>Disclaimer!!&nbsp;</strong>Just because we are now aware of the extra connections EF will make for us does&nbsp;<em>not</em> mean we should rely on it! If you are doing a query that requires an include you&nbsp;<em>must</em> use it! It is always better to be explicit rather than implicit with your code!<br></p>
+        
         
         
         
