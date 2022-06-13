@@ -44,7 +44,7 @@ namespace Monsters.Models;
     &nbsp;file. The context class is what forms the relationship between our models and the database. Think of it as an object that sits between our app and the database and translates our queries&nbsp;for us.&nbsp;Context classes, by convention, always have names that end in "Context". Make sure to give your Context an informative name to help associate it with the project.
 </p>
 <h4>Models/MyContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 <span class="comment from-rainbow">/* 
 Disabled Warning:&nbsp;"Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable."
 We can disable this safely because we know the framework will assign non-null values when it constructs this class for us.
