@@ -21,7 +21,7 @@
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
 }
 </pre>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Message
 {
     [Key]
@@ -72,7 +72,7 @@
 </pre>
 <p>And our Index.cshtml might look something like this:
     </p>
-<pre data-language="html" class="rainbow">@model List<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">Message</span></span><span class="support tag close from-rainbow">&gt;</span>
+<pre data-language="html" class="rainbow active_pre">@model List<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">Message</span></span><span class="support tag close from-rainbow">&gt;</span>
 @foreach(var message in Model)
 {
     <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>@message.Creator.Name says: @message.Content<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
