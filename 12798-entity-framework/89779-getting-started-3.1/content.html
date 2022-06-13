@@ -48,11 +48,10 @@ namespace Monsters.Models;
 <span class="comment from-rainbow">/* 
 Disabled Warning:&nbsp;"Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable."
 We can disable this safely because we know the framework will assign non-null values when it constructs this class for us.
-*/
-</span>
+*/</span>
 using Microsoft.EntityFrameworkCore;
 namespace Monsters.Models;
-<span class="comment from-rainbow">// the MyContext class representing a session with our MySQL</span><span class="comment from-rainbow"> database, allowing us to query for or save data</span>
+<span class="comment from-rainbow">// the MyContext class representing a session with our MySQL database, allowing us to query for or save data</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> MyContext : DbContext 
 { 
     <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">MyContext</span>(DbContextOptions options) : <span class="function call from-rainbow">base</span>(options) { }
