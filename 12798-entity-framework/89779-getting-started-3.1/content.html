@@ -82,7 +82,7 @@ namespace Monsters.Models;
 <p><strong>Important to note:&nbsp;</strong>Always use a new database name when working with a new project, otherwise your tables from multiple projects will exist inside the same database and cause all sorts of confusion. (Especially if, say, you have multiple projects that have a "User" table.)&nbsp;</p>
 <h2>Program.cs</h2>
 <p>At this point, you can make use of a framework service that is able to <strong>bind </strong>the contents of your <strong>appsettings.json</strong> file to an object you can reference from within your Program class. You will also need some additional libraries. Let's see what this looks like inside of our Program.cs file:</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// Additional libraries</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Additional libraries</span>
 using Microsoft.EntityFrameworkCore;
 using ProjectName.Models;
 <span class="comment from-rainbow">// Creates builder (also part of boilerplate code for web apps)</span>
