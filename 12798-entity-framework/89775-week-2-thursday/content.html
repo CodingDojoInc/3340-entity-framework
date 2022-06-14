@@ -2,21 +2,29 @@
 <h2>Algorithm</h2>
 <p>Binary Search Trees Cont. Refer to the <a href="https://github.com/TheCodingDojo/algorithms/blob/main/schedules/data_structures.md">Coding Dojo Github</a> for greater detail.&nbsp;</p>
 <h2>Lecture&nbsp;</h2>
-<p>LINQ Basics</p>
-<h2>Objective</h2>
-<p>Students will be able retrieve and filter data using LINQ.</p>
+<p>Setting up a database and CRUD.</p>
+<h2>Objectives</h2>
+<p>Students will be able to build a web app that implements basic CRUD applications.</p>
 <h2>Lesson Content&nbsp;</h2>
 <ul>
-	<li>Explain how LINQ methods operate on collection types (IEnumerable)</li>
-	<li>Explain how LINQ will work with the main ORM we will use (Entity Framework)</li>
-	<li>Cover how lambda expressions work with LINQ method calls</li>
-	<li>Go over some of the more useful LINQ methods for DB operations</li>
+	<li>Why EF Core? Industry standard ORM tool</li>
+	<li>How does EF work</li>
 	<ul>
-		<li>.Where()</li>
-		<li>.Any()/.All()</li>
-		<li>.FirstOrDefault()</li>
-		<li>.Select()</li>
-		<li>.Min()/Max() =&gt; also how these can be overloaded</li>
+		<li>Compare "context" class to db schema</li>
+		<li>Compare DbSet to db table</li>
+		<li>Compare Model to db table row</li>
+	</ul>
+	<li>Go over EF project set up</li>
+	<ul>
+		<li>using appsettings to obscure connection string</li>
+		<li>Injecting context service into controller classes</li>
+	</ul>
+	<li>Using EF</li>
+	<ul>
+		<li>How LINQ is used to query</li>
+		<li>How to add an entity</li>
+		<li>How to update an entity</li>
+		<li>How to delete an entity</li>
 	</ul>
 </ul>
 <h2>Example Lecture&nbsp;</h2>
@@ -30,7 +38,8 @@
 <iframe src="https://player.vimeo.com/video/720344219?h=8f3f514025&badge=0&autopause=0&player_id=0&app_id=58479" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" width="640" height="360" frameborder="0" class="vimeo_responsive" style="width: 938px; height: 527.625px;" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe>
 <h3>Part 5 of 5: First or Default</h3>
 <iframe src="https://player.vimeo.com/video/720344396?h=20933931ad&badge=0&autopause=0&player_id=0&app_id=58479" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" width="640" height="360" frameborder="0" class="vimeo_responsive" style="width: 938px; height: 527.625px;" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe>
-<p> <br> <br> <br></p><h1>Lesson 7</h1>
+<p> <br> <br> <br></p>
+<h1>Lesson 7</h1>
 <h2>Lecture: Entity Framework Intro</h2>
 <ul>
 	<li>Why EF Core? Industry standard ORM tool</li>
