@@ -41,7 +41,7 @@
 <div>
 <div class="inline">
 <h3>ProductPartial.cshtml</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">@model Product
+<pre data-language="c_sharp" class="rainbow">@model Product
 <span class="keyword operator from-rainbow">&lt;</span>form asp<span class="keyword operator from-rainbow">-</span>controller<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"product"</span> asp<span class="keyword operator from-rainbow">-</span>action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"create"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
     <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
         <span class="keyword operator from-rainbow">&lt;</span>label <span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductName"</span><span class="keyword operator from-rainbow">&gt;</span>Product Name<span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
@@ -78,7 +78,7 @@
 </div>
 <h3>HomeController.cs</h3>
 <p>In our Controller class, we can accept - as parameters - our <code>Product</code> and <code>User</code> objects for the two Post methods.</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
 {
     [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
@@ -122,7 +122,7 @@
 </pre>
 <p>Note here, that <code>NewProduct</code> and <code>NewUser</code> are the names given to our Model class properties.  When we want to bind to - say <code>Price</code> - inside of the form, we will have to access it from <code>NewProduct.Price</code>.  Let's see how this looks in the single Index view file.</p>
 <h3>Index.cshtml</h3>
-<pre data-language="c_sharp" class="language-c_sharp rainbow">@model IndexViewModel
+<pre data-language="c_sharp" class="rainbow">@model IndexViewModel
 <span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Add a User<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
 <span class="keyword operator from-rainbow">&lt;</span>form action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"/create/user"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
     <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
