@@ -1,1 +1,57 @@
 <h1>Passing Data to Partials</h1>
+<p>Partials can be handed down data just like any other View, the only thing that makes them unique in this regard is <strong>how </strong>this is achieved.&nbsp; A full View file gets its data passed down from the Controller method that is serving that View (ie. setting ViewBag properties or sending a View Model object - but with partials, data gets passed down from the View file from where it is being loaded.</p>
+<h2>ViewBag</h2>
+<p>Getting ViewBag data to a Partial is quite simple, you just need to add an attribute to the <strong>Partial</strong> tag-helper to provide the same ViewBag/ViewData context as the parent View file, like so:</p>
+<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">NameOfPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">view-data</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ViewData</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span>
+</pre>
+<p>This means any ViewBag properties being accessed from the parent View file, can then also be accessed from the partial.&nbsp; Consider the following:</p>
+<h3>HomeController.cs</h3>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// using statements</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+{
+    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
+    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+    {
+    	<span class="comment from-rainbow">// assigning ViewBag properties for the Index view</span>
+    
+        ViewBag.CurrentTime <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+        ViewBag.Message <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"The Time is:"</span>;
+        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
+    }
+}  
+</pre>
+<h3>Index.cshtml</h3>
+<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Home Page<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">TimeKeeperPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">view-data</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ViewData</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span> 
+</pre>
+<h3>TimeKeeperPartial.cshtml</h3>
+<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Keeping Time...<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>@ViewBag.Message @ViewBag.CurrentTime<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
+</pre>
+<hr>
+<h2>View Models</h2>
+<p>Partials can define a model type, and be passed down View Models - same as full Views.&nbsp; To provide the model object, use a <code>model</code> attribute on the Partial tag-helper.</p>
+<pre data-language="html" class="rainbow active_pre"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">NameOfPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">model</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ModelObject</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span>
+</pre>
+<p>Note, that "ModelObject" will be a direct reference to a C# object, so no "@" symbol will be necessary.&nbsp;  Let's use this Product model class as our example:</p>
+<h3>Product.cs</h3>
+<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
+{
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> ProductName {get;set;}
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
+}
+</pre>
+<h3>ProductPartial.cshtml</h3>
+<pre data-language="html" class="rainbow">@model Product
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Name: @Model.ProductName<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Price: @Model.Price<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+</pre>
+<p>Now we just need to pass a Product object to this partial, from its parent View. Since the <code>model</code> attribute of the partial tag-helper expects a C# object, no '@' symbol will be needed to reference this variable.</p>
+<h3>Index.cshtml</h3>
+<pre data-language="html" class="rainbow">@{
+    Product productObject = new Product(){<span class="support attribute from-rainbow">ProductName</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">Boombox</span><span class="string quote from-rainbow">"</span>, <span class="support attribute from-rainbow">Price</span><span class="support operator from-rainbow">=</span><span class="support value from-rainbow">120</span>.00};    
+}
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Home Page<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ProductPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">model</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">productObject</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span> 
+</pre>
+<p> <br> <br> <br></p>
