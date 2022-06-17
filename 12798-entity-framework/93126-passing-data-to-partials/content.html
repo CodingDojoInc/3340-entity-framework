@@ -2,7 +2,7 @@
 <p>Partials can be handed down data just like any other View, the only thing that makes them unique in this regard is <strong>how </strong>this is achieved.&nbsp; A full View file gets its data passed down from the Controller method that is serving that View (ie. setting ViewBag properties or sending a View Model object - but with partials, data gets passed down from the View file from where it is being loaded.</p>
 <h2>ViewBag</h2>
 <p>Getting ViewBag data to a Partial is quite simple, you just need to add an attribute to the <strong>Partial</strong> tag-helper to provide the same ViewBag/ViewData context as the parent View file, like so:</p>
-<pre data-language="c_sharp" class="active_pre language-c_sharp rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NameOfPartial"</span> view<span class="keyword operator from-rainbow">-</span>data<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ViewData"</span>/<span class="keyword operator from-rainbow">&gt;</span>
+<pre data-language="c_sharp" class="rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NameOfPartial"</span> view<span class="keyword operator from-rainbow">-</span>data<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ViewData"</span>/<span class="keyword operator from-rainbow">&gt;</span>
 </pre>
 <p>This means any ViewBag properties being accessed from the parent View file, can then also be accessed from the partial.&nbsp; Consider the following:</p>
 <h3>HomeController.cs</h3>
@@ -48,7 +48,7 @@
 </pre>
 <p>Now we just need to pass a Product object to this partial, from its parent View. Since the <code>model</code> attribute of the partial tag-helper expects a C# object, no '@' symbol will be needed to reference this variable.</p>
 <h3>Index.cshtml</h3>
-<pre data-language="c_sharp" class="language-c_sharp rainbow">@{
+<pre data-language="c_sharp" class="rainbow">@{
     Product productObject <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Product</span>(){ProductName<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Boombox"</span>, Price<span class="keyword operator from-rainbow">=</span><span class="constant numeric from-rainbow">120.00</span>};    
 }
 <span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Home Page<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
