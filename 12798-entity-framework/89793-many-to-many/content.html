@@ -2,12 +2,13 @@
             
             
             
+            
             <h1>Many to Many</h1>
 <p>Many-to-many relationships in EF Core are set up in the same way as we've handled them with SQL in the past. We create a joining table that contains a pair of IDs to establish the connections between the two tables we want to join. Using this joining table, we can now set up a Navigation Property inside of the two models based on the joining table. You can see below how this works:</p>
 <div>
 <div class="inline">
 <h4>Magazine.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
+<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Title { get; set; } 
@@ -29,19 +30,19 @@
 <div>
 <div class="inline">
 <h4>Subscription.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
+<pre data-language="c_sharp" class="rainbow active_pre"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
 {
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> SubscriptionId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }
-    <span class="keyword from-rainbow">public</span> Person Person { get; set; }
-    <span class="keyword from-rainbow">public</span> Magazine Magazine { get; set; }
+    <span class="keyword from-rainbow">public</span> Person Person? { get; set; }
+    <span class="keyword from-rainbow">public</span> Magazine Magazine? { get; set; }
 }
 </pre>
 </div>
 <div class="inline">
 <h4>YourContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">//Other code</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">//Other code</span>
 <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> Persons { get; set; } 
 <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Magazine<span class="keyword operator from-rainbow">&gt;</span> Magazines { get; set; } 
 <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } 
@@ -89,6 +90,7 @@
 }
 </style>
 <p> <br></p>
+        
         
         
         
