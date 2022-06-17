@@ -3,7 +3,7 @@
 <h2>Requirements For Use</h2>
 <p>To utilize Partials, we will need to enable Tag Helpers in a _ViewImports.cshtml file.&nbsp; Make sure this file is present - in YourProject/Views/_ViewImports.cshtml - and has the following line of code:</p>
 <h3>_ViewImports.cshtml</h3>
-<pre data-language="c_sharp" class="language-c_sharp rainbow active_pre"><span class="comment from-rainbow">// other imports</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// other imports</span>
 @addTagHelper <span class="keyword operator from-rainbow">*</span>, Microsoft.AspNetCore.Mvc.TagHelpers
 </pre>
 <h2>Creating a Partial</h2>
@@ -23,7 +23,7 @@
 <h2>Loading a Partial</h2>
 <div>To load a partial, simply just use the <strong>partial</strong> tag helper.&nbsp; This will look like any old HTML element, but it is unique to ASP Razor, and requires that you have tag helpers available to your Views (see above!).&nbsp; This element takes a <strong>name</strong> attribute that will refer to the name (sans .cshtml file extension) of the Partial you wish to load.</div>
 <h3>Index.cshtml</h3>
-<pre data-language="c_sharp" class="language-c_sharp rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NavPartial"</span>/<span class="keyword operator from-rainbow">&gt;</span>
+<pre data-language="c_sharp" class="rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NavPartial"</span>/<span class="keyword operator from-rainbow">&gt;</span>
 <span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Welcome to <span class="keyword from-rainbow">this</span> site<span class="keyword operator from-rainbow">!</span><span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
 <span class="keyword operator from-rainbow">&lt;</span>p<span class="keyword operator from-rainbow">&gt;</span>The rest of your View content here...<span class="keyword operator from-rainbow">&lt;</span>/p<span class="keyword operator from-rainbow">&gt;</span>
 </pre>
