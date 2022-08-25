@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="products d-flex flex-wrap">
+    @foreach(Product p in ViewBag.AllProducts)
+    {
+        <div class="card w-25 m-2 p-3 text-center">
+            <img src="@p.Image" alt="@p.Name">
+            <h5>@p.Name</h5>
+            <h5>@p.Quantity left</h5>
+        </div>
+    }
+</div>
+<a href="/products">See more products</a>
+<h3>Recent Orders</h3>
+@foreach(Order o in ViewBag.RecentOrders)
+{
+    <h5>@o.Customer.Name purchased @o.QuantityBought @o.Product.Name @(DateTime.Now.Day - o.CreatedAt.Day) days ago</h5>
+}
+<a href="/orders">See all orders</a>
+<h3>New Customers</h3>
+@foreach(Customer c in ViewBag.RecentCustomers)
+{
+    <h5>@c.Name joined the store @(DateTime.Now.Day - c.CreatedAt.Day) days ago</h5>
+}
+<a href="/customers">See all customers</a>
