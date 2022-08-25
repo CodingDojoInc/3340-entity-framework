@@ -1,0 +1,47 @@
+@model Order
+<div class="addOrders">
+    <h3>Add a new Order</h3>
+    <form action="/orders/new" method="post">
+        <div class="mb-3">    
+            <label for="CustomerId">Customer Name</label>
+            <select asp-for="CustomerId" class="form-control">
+                @foreach(Customer c in ViewBag.AllCustomers)
+                {
+                    <option value="@c.CustomerId">@c.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="ProductId">Product</label>
+            <select asp-for="ProductId" class="form-control">
+                @foreach(Product p in ViewBag.AllProducts)
+                {
+                    <option value="@p.ProductId">@p.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="QuantityBought">Quantity</label>
+            <input asp-for="QuantityBought" class="form-control" value="1">
+            <span asp-validation-for="QuantityBought" class="text-danger"></span>
+        </div>
+        <input type="submit" value="Order" class="btn btn-primary mb-3">
+    </form>
+</div>
+<table class="table table-striped">
+    <tr>
+        <th>Customer Name</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Ordered on</th>
+    </tr>
+    @foreach(Order o in ViewBag.AllOrders)
+    {
+        <tr>
+            <td>@o.Customer.Name</td>
+            <td>@o.Product.Name</td>
+            <td>@o.QuantityBought</td>
+            <td>@o.CreatedAt.ToString("MMMM dd, yyyy")</td>
+        </tr>
+    }
+</table>
