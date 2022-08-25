@@ -1,0 +1,41 @@
+@model Product
+<div class="d-flex">
+    <div class="col-2">
+        <form action="/products/search" method="post">
+            <input type="text" name="Filter" class="form-control" placeholder="Search products">
+            <input type="submit" value="Filter" class="mt-2 btn btn-info">
+        </form>
+        <form action="/products/new" method="post">
+            <h4>Add a new Product</h4>
+            <div class="mb-3">
+                <label for="Name">Name</label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Image">Image (URL Please)</label>
+                <input asp-for="Image" class="form-control" placeholder="http://">
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="Quantity">Quantity</label>
+                <input asp-for="Quantity" class="form-control">
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Create" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+    <div class="col-1"></div>
+    <div class="col-9 d-flex flex-wrap">
+        @foreach(Product p in ViewBag.AllProducts)
+        {
+            <div class="card w-25 m-2 p-3 text-center">
+                <img src="@p.Image" alt="@p.Name">
+                <h5>@p.Name</h5>
+                <h5>(@p.Quantity left)</h5>
+            </div>
+        }
+    </div>
+</div>
