@@ -1,0 +1,37 @@
+@model IndexViewModel
+<div class="nav d-flex justify-content-between pb-3 pt-3">
+    <div>
+        <h2>CodingDojo Wall</h2>
+    </div>
+    <div class="right d-flex">
+        <h4 class="mx-4">Welcome @ViewBag.User.First_Name!</h4>
+        <h4><a href="/Logout" class="btn btn-danger">Logout</a></h4>
+    </div>
+</div>
+<h3>Post a message</h3>
+<form action="/message/create" method="post">
+    <textarea asp-for="NewMessage.MyMessage" class="form-control"></textarea>
+    <span asp-validation-for="NewMessage.MyMessage" class="text-danger"></span>
+    <input type="submit" value="Post" class="btn btn-success mt-2 mb-2">
+</form>
+
+@foreach(Message m in ViewBag.AllMessages)
+{
+    <h5>@m.Writer.First_Name @m.Writer.Last_Name - @m.CreatedAt.ToString("MMM dd, yyy - h:mm tt")</h5>
+    <p class="p-2">@m.MyMessage</p>
+    <div class="comments ps-4">
+        @foreach(Comment c in m.CommentsOnMessage)
+        {
+            <h6>@c.Commenter.First_Name @c.Commenter.Last_Name - @c.CreatedAt.ToString("MMM dd, yyy - h:mm tt")</h6>
+            <p>@c.MyComment</p>
+        }
+        <form action="/comment/create/@m.MessageId" method="post">
+            <div class="mb-3">
+                <textarea asp-for="NewComment.MyComment" class="form-control"></textarea>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Comment" class="btn btn-info">
+            </div>
+        </form>
+    </div>
+}
