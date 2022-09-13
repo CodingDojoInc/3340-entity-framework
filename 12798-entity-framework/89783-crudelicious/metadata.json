@@ -1,1 +1,1 @@
-{"tasks":[{"id":0,"task":"Add a Dishes table to your MySQL DB."},{"id":1,"task":"(Optional) Insert a few rows into Dishes to get some initial data."},{"id":2,"task":"Set up a new ASP project with a Dish model and a Context class."},{"id":3,"task":"Build out your project to the wireframe spec."}],"difficulty_level":null,"estimated_time":null,"allow_upload":null,"tasks_order":[0,1,2,3],"id":89783}
+{"tasks":[],"difficulty_level":null,"estimated_time":null,"allow_upload":null,"tasks_order":[],"id":89783}
