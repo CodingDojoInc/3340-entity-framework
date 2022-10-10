@@ -1,13 +1,14 @@
 
+            
             <h1>Passing Data to Partials</h1>
-<p>Partials can be handed down data just like any other View, the only thing that makes them unique in this regard is <strong>how </strong>this is achieved.&nbsp; A full View file gets its data passed down from the Controller method that is serving that View (ie. setting ViewBag properties or sending a View Model object - but with partials, data gets passed down from the View file from where it is being loaded.</p>
+<p>Partials can be handed down data just like any other View, the only thing that makes them unique in this regard is <strong>how </strong>this is achieved.&nbsp; A full View file gets its data passed down from the Controller method that is serving that View. IE, setting ViewBag properties or sending a View Model object - but with partials, data gets passed down from the View file from where it is being loaded.</p>
 <h2>ViewBag</h2>
 <p>Getting ViewBag data to a Partial is quite simple, you just need to add an attribute to the <strong>Partial</strong> tag-helper to provide the same ViewBag/ViewData context as the parent View file, like so:</p>
 <pre data-language="c_sharp" class="rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NameOfPartial"</span> view<span class="keyword operator from-rainbow">-</span>data<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ViewData"</span>/<span class="keyword operator from-rainbow">&gt;</span>
 </pre>
 <p>This means any ViewBag properties being accessed from the parent View file, can then also be accessed from the partial.&nbsp; Consider the following:</p>
 <h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">// using statements</span>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// using statements</span>
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
 {
     [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
@@ -56,4 +57,5 @@
 <span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductPartial"</span> model<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"productObject"</span>/<span class="keyword operator from-rainbow">&gt;</span> 
 </pre>
 <p> <br> <br> <br></p>
+        
         
