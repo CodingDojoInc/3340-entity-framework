@@ -1,1 +1,58 @@
 <h1>Read</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Extract data from a database to render on a cshtml page.</li>
+<li>Identify the different types of data that can result from querying a database.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795371831" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Now that we have data in our database, it's time to bring it out and render it on the screen. This is where all that work we did earlier with LINQ comes into play. Let's take a look at a few examples to see this in action:<br></p>
+<h3>HomeController.cs</h3>
+<pre class="rainbow" data-language="c_sharp">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]    
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()    
+{        
+    <span class="comment from-rainbow">// Get all Monsters</span>
+    ViewBag.AllMonsters <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">ToList</span>();             
+    
+    <span class="comment from-rainbow">// Get Monsters with the Name "Mike"</span>
+    ViewBag.AllMikes <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">Where</span>(n <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> n.Name <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Mike"</span>);     	
+    
+    <span class="comment from-rainbow">// Get the 5 most recently added Monsters        </span>
+    ViewBag.MostRecent <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">OrderByDescending</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.CreatedAt).<span class="function call from-rainbow">Take</span>(<span class="constant numeric from-rainbow">5</span>).<span class="function call from-rainbow">ToList</span>(); 	
+    
+    <span class="comment from-rainbow">// Get one Monster who has a certain description</span>
+    ViewBag.MatchedDesc <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">FirstOrDefault</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.Description <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Super scary"</span>);
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();  
+}</pre>
+<p>The most important pieces we need are <code>_context</code> to access our database and the name of the table (in this case <code>Monsters</code>) we want to access. <code>_context.Monsters</code> will by default give us all the monsters in the database, so if we want to apply some filters to only grab certain monsters, this is where we would use LINQ to filter.</p>
+<h2>Know what you're getting back</h2>
+<p>It can be easy to lose track of what is stored in our ViewBags after running a query, especially since ViewBag gives us very little information on what is inside it. Ideally, we will be writing code that passes our data down through ViewModel, but for the above example, we're doing so many examples at once we have no other option. </p>
+<p><strong>Ask yourself:</strong> what data type is being stored in this ViewBag?</p>
+<pre class="rainbow" data-language="c_sharp">ViewBag.Jeffersons <span class="keyword operator from-rainbow">=</span> _context.Users.<span class="function call from-rainbow">Where</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.LastName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jefferson"</span>);  </pre>
+<p><strong>Answer:</strong> A collection (specifically IEnumerable&lt;User&gt;). A good rule of thumb is that if you are using a Where statement, even if it only returns a single result, it will always be a collection/list. </p>
+<p>Which means to view all the data in this collection, what would we need to use on the front end?</p>
+<p>Hopefully, you thought about a loop, so we can go through each piece of data one at a time and render them.</p>
+<h3>Index.cshtml</h3>
+<pre class="rainbow active_pre" data-language="html">@foreach(User u in ViewBag.Jeffersons)
+{
+    <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>Hello, my name is @u.FirstName @u.LastName!<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
+}</pre>
+<p>What about this ViewBag? What data type is stored in it?</p>
+<pre class="rainbow" data-language="c_sharp">ViewBag.MatchedEmail <span class="keyword operator from-rainbow">=</span> _context.Users.<span class="function call from-rainbow">FirstOrDefault</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"abc@def.com"</span>);</pre>
+<p><strong>Answer:</strong> A single User.</p>
+<p>So how would we render this one? With a foreach loop, too?</p>
+<p>No, since we can't loop through a single item. If we wanted to render this User's information, we could do it without the loop.</p>
+<pre class="rainbow" data-language="html"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>Hello, my name is @ViewBag.MatchedEmail.FirstName @ViewBag.MatchedEmail.LastName!<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span></pre>
+<p>Take notice of when and where we used ViewBag here. The same rules will apply when we get back to using ViewModels! Knowing what kind of data you are working with at any given time will save you from lots of headaches in the future when working on your front end.</p>
+<h2>Reading One Item</h2>
+<p>Of course, it is much easier to follow our standard of using ViewModel when we know our page will only have one item on it. Here is some code to demonstrate how we might view one item from a database. Take some time to look it over and see if you can write some logic in your cshtml to route to this page and render the information on a new page!</p>
+<h3>HomeController.cs</h3>
+<pre class="rainbow" data-language="c_sharp">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"monsters/{id}"</span>)]    
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">ShowMonster</span>(<span class="keyword from-rainbow">int</span> id)    
+{
+    Monster OneMonster <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">FirstOrDefault</span>(a <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> a.MonsterId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> id);            
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(OneMonster);  
+}</pre>
