@@ -14,16 +14,16 @@
 <p>Any time we want to create a many-to-many, it is going to require that we create a <em>third table</em>. This table is our joining table, where all the various associations between the original two tables live. If you have ever created a many-to-many relationship directly in MySQL before, you have likely seen this table auto-populate. In our case, we need to manually create it. </p>
 <p>Check out the example below to see how a many-to-many relationship would be created. In this case, we have created a many-to-many between Magazines and People. We have decided this is a many-to-many because <strong>one</strong> person is able to have subscriptions to <strong>many</strong> magazines, and <strong>one</strong> magazine can have <strong>many</strong> people who subscribe to it. </p>
 <p><strong>Magazine.cs</strong></p>
-<pre class="rainbow" data-language="c_sharp">// using statements and namespace removed for brevity
-public class Magazine
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// using statements and namespace removed for brevity</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
 {    
     [Key]
-    public int MagazineId { get; set; }    
-    public string Title { get; set; }  
-    // CreatedAt and UpdatedAt removed for brevity
-    // Our navigation property to our Subscription class
-    // Notice there is NO reference to the Person class   
-    public List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; } <span class="keyword operator from-rainbow">=</span> new List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Title { get; set; }  
+    <span class="comment from-rainbow">// CreatedAt and UpdatedAt removed for brevity</span>
+    <span class="comment from-rainbow">// Our navigation property to our Subscription class</span>
+    <span class="comment from-rainbow">// Notice there is NO reference to the Person class   </span>
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
 }</pre>
 <p><strong>Person.cs</strong></p>
 <pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// using statements and namespace removed for brevity</span>
@@ -35,7 +35,7 @@ public class Magazine
     <span class="comment from-rainbow">// CreatedAt and UpdatedAt removed for brevity</span>
     <span class="comment from-rainbow">// Our Person class also needs a reference to Subscriptions</span>
     <span class="comment from-rainbow">// and contains NO reference to Magazines  </span>
-    <span class="keyword from-rainbow">public</span> List&lt;Subscription&gt; Subscriptions { get; set; } = <span class="keyword from-rainbow">new</span> List&lt;Subscription<span class="keyword operator from-rainbow">&gt;</span>();
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
 }</pre>
 <p><strong>Subscription.cs</strong></p>
 <pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// using statements and namespace removed for brevity</span>
