@@ -1,89 +1,116 @@
-
-            
-            
-            
-            <p>
-            
-            
-            
-            </p><h1>Registration Concerns</h1>
-<h2>Resolving Password Confirm</h2>
-<p>There may be times when you wish to validate some data on a form that does not exist in the model/table you have in your database.&nbsp; Take a Registration form, for example.&nbsp; This form's objective is to validate requirements of a User model: required fields, valid email address, etc.&nbsp; However you will also want to validate that a password your user enters wasn't mis-typed, and thus you will want an additional field for a password confirmation.</p>
-<p>The issue here, is that your Model class for Entity Framework needs its properties to match columns that it is representing in your MySQL table.&nbsp; "Confirm Password" doesn't need to be stored in your database!&nbsp; Consider the following table and model class:</p>
-<figure><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/users-erd.png"><br><br><br></figure>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
-{
-    [Key]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;[Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
-&nbsp;&nbsp;&nbsp;&nbsp;[Required]    
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } 
-    [Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
-    [Required]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }
-    <span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;}
-    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;}
-}
-</pre>
-<p>If we add a <code>string Confirm {get;set;}</code> property to this model, an exception will be thrown due to Entity Framework not being able to "map" this property to a <code>Confirm</code> column in this table! <br></p>
-<p>One way we can resolve this, is by adding a <strong>[NotMapped]</strong> attribute to a Confirm property, which will tell EF to not attempt to map it!&nbsp; Let's see a fully implemented User class with this new property.</p>
-<pre data-language="c_sharp" class="rainbow active_pre"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
-using System.ComponentModel.DataAnnotations.Schema;
-    
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
-{
-    [Key]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; } 
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; } 
-    [EmailAddress]
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
-    [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
-    [Required]
-    [<span class="function call from-rainbow">MinLength</span>(<span class="constant numeric from-rainbow">8</span>, ErrorMessage<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Password must be 8 characters or longer!"</span>)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
-    <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-    <span class="comment from-rainbow">// Will not be mapped to your users table!</span>
-    [NotMapped]
-    [<span class="function call from-rainbow">Compare</span>(<span class="string from-rainbow">"Password"</span>)]
-    [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Confirm { get; set; } 
-}    
-</pre>
+<h1>Registration Concerns</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Build a user model that fits the standards for registering to a website.</li>
+<li>Create a custom validation for verifying unique emails.</li>
+</ul>
 <hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795722404" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Logging in and registering to a website is one of the most common features you will find online. Therefore, it's important to know how to build a functional user feature for your website. We will begin with registration.<br></p>
+<p>Take a moment to think about the common features you are asked to fill out when registering for a website. These features will become the base for the model you will create. What do you think of when you picture a registration form?</p>
+<p>Elements like your name, your email, a password, and a password confirmation come to mind. We could start with a model that looks something like this:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+using System.ComponentModel.DataAnnotations;
+namespace YourProjectName.models;
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+{    
+    [Key]    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
+    
+    [Required]    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
+    
+    [Required]        
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }     
+    
+    [Required]
+    [EmailAddress]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }    
+    
+    [Required]
+    [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
+    [<span class="function call from-rainbow">MinLength</span>(<span class="constant numeric from-rainbow">8</span>, ErrorMessage <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Password must be at least 8 characters"</span>)]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; } 
+    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> PasswordConfirm { get; set; }   
+    
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;   
+    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+}</pre>
+<p>This is a good start, but it has one problem: do we really need to be keeping track of our PasswordConfirm? Its only purpose is to verify that we matched the password we originally wrote. It has a function, so it needs to be there, but what purpose would there be in storing our password in the database twice?</p>
+<p>We can resolve this using an attribute called [NotMapped], which will tell Entity Framework to not attempt to map a property to the database! This solves our problem as it allows us to have it but we do not need to worry about it going into our database. We will update our code like so:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+using System.ComponentModel.DataAnnotations;
+<span class="comment from-rainbow">// Add this using statement to access NotMapped</span>
+using System.ComponentModel.DataAnnotations.Schema;
+namespace YourProjectName.models;
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
+{        
+    [Key]        
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
+    
+    [Required]        
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> FirstName { get; set; }
+    
+    [Required]        
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> LastName { get; set; }         
+    
+    [Required]
+    [EmailAddress]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }        
+    
+    [Required]
+    [<span class="function call from-rainbow">DataType</span>(DataType.Password)]
+    [<span class="function call from-rainbow">MinLength</span>(<span class="constant numeric from-rainbow">8</span>, ErrorMessage <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Password must be at least 8 characters"</span>)]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Password { get; set; }          
+    
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;        
+    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt {get;set;} <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    
+    <span class="comment from-rainbow">// This does not need to be moved to the bottom</span>
+    <span class="comment from-rainbow">// But it helps make it clear what is being mapped and what is not</span>
+    [NotMapped]
+    <span class="comment from-rainbow">// There is also a built-in attribute for comparing two fields we can use!</span>
+    [<span class="function call from-rainbow">Compare</span>(<span class="string from-rainbow">"Password"</span>)]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> PasswordConfirm { get; set; }
+}</pre>
 <h2>Validating Unique Email</h2>
-<p>In addition to the data that we want our Model to validate, we will also want an additional validation step - one that requires us to query our db.&nbsp; In this example, a user's "Email" field would be used for a user to log in, and should be unique for each user in the database.&nbsp; The simplest way to go about this, is to make an additional check in your controller, when processing the POST request, and use ModelState.AddModelError to add a validation error message directly to the "Email" field if the attempted email exists already.</p>
-<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"register"</span>)]
-<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Register</span>(User user)
+<p>One other thing we need to do before we can add anyone to the database is to validate that the new user has a unique email. This is vital because going forward we will be finding users in the database based on their email. If there are duplicate entries, it could cause major problems!</p>
+<p>There are a few ways we could validate that our user has a unique email, but the best way is going to be to use a custom validation since there is no built-in Data Annotation that checks for this. Refer back to the custom validation section earlier in the course for more information if you need a refresher. This can either live in your User file or somewhere else if you intend to use it on multiple models.</p>
+<pre class="rainbow" data-language="c_sharp"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> UniqueEmailAttribute : ValidationAttribute
 {
-    <span class="comment from-rainbow">// Check initial ModelState</span>
-    <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
+    <span class="keyword from-rainbow">protected</span> override ValidationResult? <span class="function call from-rainbow">IsValid</span>(<span class="keyword from-rainbow">object</span>? value, ValidationContext validationContext)
     {
-        <span class="comment from-rainbow">// If a User exists with provided email</span>
-        <span class="keyword from-rainbow">if</span>(_context.Users.<span class="function call from-rainbow">Any</span>(u <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> u.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> user.Email))
+    	<span class="comment from-rainbow">// Though we have Required as a validation, sometimes we make it here anyways</span>
+    	<span class="comment from-rainbow">// In which case we must first verify the value is not null before we proceed</span>
+        <span class="keyword from-rainbow">if</span>(value <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span>)
         {
-            <span class="comment from-rainbow">// Manually add a ModelState error to the Email field, with provided</span>
-            <span class="comment from-rainbow">// error message</span>
-            ModelState.<span class="function call from-rainbow">AddModelError</span>(<span class="string from-rainbow">"Email"</span>, <span class="string from-rainbow">"Email already in use!"</span>);
-            
-            <span class="comment from-rainbow">// You may consider returning to the View at this point</span>
+    	    <span class="comment from-rainbow">// If it was, return the required error</span>
+            <span class="keyword from-rainbow">return</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">ValidationResult</span>("Email is required<span class="keyword operator from-rainbow">!</span>");
+        }
+    
+    	<span class="comment from-rainbow">// This will connect us to our database since we are not in our Controller</span>
+        MyContext _context <span class="keyword operator from-rainbow">=</span> (MyContext)validationContext.<span class="function call from-rainbow">GetService</span>(<span class="function call from-rainbow">typeof</span>(MyContext));
+        <span class="comment from-rainbow">// Check to see if there are any records of this email in our database</span>
+    	<span class="keyword from-rainbow">if</span>(_context.Users.<span class="function call from-rainbow">Any</span>(e <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> e.Email <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> value.<span class="function call from-rainbow">ToString</span>()))
+        {
+    	    <span class="comment from-rainbow">// If yes, throw an error</span>
+            <span class="keyword from-rainbow">return</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">ValidationResult</span>("Email must be unique<span class="keyword operator from-rainbow">!</span>");
+        } <span class="keyword from-rainbow">else</span> {
+    	    <span class="comment from-rainbow">// If no, proceed</span>
+            <span class="keyword from-rainbow">return</span> ValidationResult.Success;
         }
     }
-    <span class="comment from-rainbow">// other code</span>
-} 
+}
 </pre>
-        
-        
-        
-        
-        
-        
-        
-        
+<p>Then in our model, we can update it to say:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// other code    </span>
+[Required]
+[EmailAddress]
+[UniqueEmail]
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
+<span class="comment from-rainbow">// other code  </span></pre>
+<p>This should throw a validation error if we try to register with an email that is already in our database. But we cannot test it just yet! We have one more important step to cover before we add any users to our database.</p>
