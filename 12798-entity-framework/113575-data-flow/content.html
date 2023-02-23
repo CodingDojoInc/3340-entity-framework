@@ -1,1 +1,37 @@
 <h1>Data Flow</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Summarize the way in which data flows through a project.</li>
+<li>Identify ways to solve problems in applications using data flow as a guide.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795623928" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>We are going to take a slight break from building applications to talk about an important topic: data flow.<br></p>
+<p>In nearly every application, game, program, or system you have interacted with, you have been able to use these products seamlessly because the information you needed was able to get from point A to point B. Account information, scoreboards, game progress, user interfaces, and countless other features work because an application works correctly.</p>
+<p><em>Have you ever taken the time to think deeply about how the information you see ends up on your screen?</em></p>
+<p>The reality is: if you understand how data flows through an application, you will be able to debug <em>any</em> problem. Even problems that are written in programming languages you don't understand! When we are talking about an MVC application, the exact process for sending data may differ, but the general steps remain the same. We are going to take a few minutes to look at these steps so that you can apply this knowledge to your debugging skills and your workflow. </p>
+<p>If we break down any MVC application, we can summarize the flow of data like so:</p>
+<div style="display:flex;justify-content:space-around;">
+<figure style="flex:1;"><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1667321890__DataFlow.png" style="width: 314px; height: 547px;" width="314" height="547"></figure>
+<ul style="flex:1;">
+    <li>We need <strong>MODELS</strong> to define the objects we want to create. Users, messages, blog posts, etc... can all be defined by models.</li><li>We then make a <strong>FORM</strong> that is based on our models. ASP helps us out here in making forms that match our model properties.</li><li>From our form, we trigger a <strong>POST REQUEST</strong>.</li><li>That <strong>DATA</strong> is <strong>RECEIVED</strong> in our Controller. We can then check its validity and do whatever else we need to do with it.</li><li>The <strong>DATA</strong> is then <strong>STORED</strong> by connecting to our database or storage option of choice. This does not have to be a database, it could be a session or temporary storage.</li><li>Once data is stored somewhere, it can now be <strong>RETRIEVED</strong> using appropriate queries.</li><li>Finally, our retrieved data can be <strong>RENDERED</strong> by sending it back to our front end!</li>
+</ul>
+</div>
+<p>It might not look like much, but this details all the major steps you need to take to make any MVC application function across any website. Any time you encounter an error in your program, it is likely to have occurred somewhere along this chain of actions. A good programmer is able to identify the series of events that need to happen and knows how to search through each step to determine when and where something went wrong.</p>
+<p>Here are some examples of how we can use data flow to identify problems:</p>
+<p><em>Example: When I submit my form, nothing happens.</em></p>
+<p>Well, our form is pretty early in our data flow process, which means it must be one of three things: </p>
+<ol><li>An issue with the models</li><li>An issue with the form</li><li>An issue with the post request</li></ol>
+<p>Our data flow stopped at "data received" because we know we are not receiving data. This is a good time to check your models for accuracy (maybe a name does not match up or something is missing), check your form for accuracy (are all the needed model elements present, is the action headed to the right location), and the post request (is the action I detailed on the form matching with what I have in the controller, do I pass validations, am I passing the form data through my parameter).  </p>
+<p><em>Example: Nothing is being saved to my database.</em></p>
+<p>This means we are breaking at the "Data Stored" phase, which means any of the steps before it might be causing the problem. In this scenario, it may be best to work backward down the chain. Data isn't being stored? Well, was that data ever received? Run your debugger or use some Console.WriteLines to verify that data was coming from your post request. </p>
+<p>If yes, you have identified the issue is somewhere between when the data arrives at the backend and when it goes to your database. Maybe you forgot to run SaveChanges? Maybe there is a deeper issue in your database and what you have in your model does not match what your database was expecting. Continue to whittle down reasons for your program to have broken until you are left with only the reason it broke.</p>
+<p><em>Example: My data isn't rendering.</em></p>
+<p>This far down the chain, it can become easy to get overwhelmed by all the different reasons your code may not be working. It is at this moment you must remind yourself: you are a programmer and solving problems is in your job description. </p>
+<p>Once again, your best option is to work backward down the chain, asking yourself "am I sending the data over correctly? Is my query even getting any data? Am I using the right words to render the data on my front end?" </p>
+<p>The answers to these questions will help you to solve your problems. They can even be used as guiding questions to help others solve problems in their code. Of course, don't discount any error messages that pop up along the way as well. They are the best way to figure out exactly where something went wrong, but for any situations where there is no error message or the message does not point to the exact issue, knowing how to traverse the chain of the data flow will make debugging much easier.</p>
+<p>Try this out the next time you encounter a problem in your program. Refer to the diagram above and ask yourself "at what point in the chain did my code break?" Based on your answer, you will be able to narrow down all the possible areas the issue could have occurred. </p>
+<p>Try building your next application with these steps in mind and see how they each work together to make your website come alive. Happy coding!</p>
