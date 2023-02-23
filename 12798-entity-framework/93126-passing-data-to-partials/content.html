@@ -1,61 +1,58 @@
-
-            
-            <h1>Passing Data to Partials</h1>
-<p>Partials can be handed down data just like any other View, the only thing that makes them unique in this regard is <strong>how </strong>this is achieved.&nbsp; A full View file gets its data passed down from the Controller method that is serving that View. IE, setting ViewBag properties or sending a View Model object - but with partials, data gets passed down from the View file from where it is being loaded.</p>
-<h2>ViewBag</h2>
-<p>Getting ViewBag data to a Partial is quite simple, you just need to add an attribute to the <strong>Partial</strong> tag-helper to provide the same ViewBag/ViewData context as the parent View file, like so:</p>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NameOfPartial"</span> view<span class="keyword operator from-rainbow">-</span>data<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ViewData"</span>/<span class="keyword operator from-rainbow">&gt;</span>
-</pre>
-<p>This means any ViewBag properties being accessed from the parent View file, can then also be accessed from the partial.&nbsp; Consider the following:</p>
-<h3>HomeController.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// using statements</span>
-<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
-{
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
-    {
-    	<span class="comment from-rainbow">// assigning ViewBag properties for the Index view</span>
-    
-        ViewBag.CurrentTime <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-        ViewBag.Message <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"The Time is:"</span>;
-        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
-    }
-}  
-</pre>
-<h3>Index.cshtml</h3>
-<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Home Page<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">TimeKeeperPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">view-data</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ViewData</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span> 
-</pre>
-<h3>TimeKeeperPartial.cshtml</h3>
-<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Keeping Time...<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>@ViewBag.Message @ViewBag.CurrentTime<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
-</pre>
+<h1>Passing Data to Partials</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Create a Model for passing multiple pieces of data through ViewModel.</li></ul>
 <hr>
-<h2>View Models</h2>
-<p>Partials can define a model type and be passed information from our ViewModel, just like passing data from our Controller to our View.&nbsp; To provide the model object, use a <code>model</code> attribute on the Partial tag-helper.</p>
-<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">NameOfPartial</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">model</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ModelObject</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">/&gt;</span>
-</pre>
-<p>Note, that "ModelObject" will be a direct reference to a C# object, so no "@" symbol will be necessary.&nbsp;  Let's use this Product model class as our example:</p>
-<h3>Product.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
-{
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> ProductName {get;set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
-}
-</pre>
-<h3>ProductPartial.cshtml</h3>
-<pre data-language="html" class="rainbow">@model Product
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Name: @Model.ProductName<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Price: @Model.Price<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-</pre>
-<p>Now we just need to pass a Product object to this partial, from its parent View. Since the <code>model</code> attribute of the partial tag-helper expects a C# object, no '@' symbol will be needed to reference this variable.</p>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795700660" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Taking advantage of partials to allow for multiple forms on a single view is straightforward enough. However, what about a scenario in which there is a form on one side of the page and data from our database on the other side? How could we handle this scenario?<br></p>
+<p>ViewBag could solve this for us easily (a model for the form, a ViewBag for the data). However, we are going to start directing you to move away from using ViewBag from here on out. The reason is that while ViewBag is handy, using ViewModels for passing data is considered best practice due to its more explicit casting (our program never knows what exactly is in ViewBag) which will allow us greater functionality on our front end and fewer chances for errors.<br></p>
+<p>But now we're back at our earlier dilemma: we can't use two models on one page. In addition, we aren't simply using a model in one of these to define a form. This model will have data pre-loaded into it, which means we need to send data from our controller to our partial.</p>
+<p>The trick here is in understanding how ViewModel works. A ViewModel is designed to pass an object or entity from our back end to our front end. As long as we are being explicit about what our ViewModel is, this can be anything.</p>
+<p>So...what's stopping us from making an object that contains all the models and data types we need and passing that "single object" down as our ViewModel?</p>
+<p>This is what we mean: create a new model in your Models folder and call it MyViewModel.</p>
+<h3>MyViewModel.cs</h3>
+<pre data-language="c_sharp">#pragma warning disable CS8618
+namespace YourNamespace.Models;
+public class MyViewModel
+{    
+    public Product Product {get;set;}    
+    public List&lt;Product&gt; AllProducts {get;set;}
+}</pre>
+<p>For all intents and purposes, MyViewModel is a <em>single object</em>. This means it passes ViewModel's requirements and can be used as a model.</p>
 <h3>Index.cshtml</h3>
-<pre data-language="c_sharp" class="rainbow">@{
-    Product productObject <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">Product</span>(){ProductName<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Boombox"</span>, Price<span class="keyword operator from-rainbow">=</span><span class="constant numeric from-rainbow">120.00</span>};    
-}
-<span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Home Page<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>partial name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductPartial"</span> model<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"productObject"</span>/<span class="keyword operator from-rainbow">&gt;</span> 
+<pre data-language="html">@model MyViewModel
+&lt;div class="d-flex"&gt;
+    @await Html.PartialAsync("_ProductForm")
+    @await Html.PartialAsync("_AllProducts")
+&lt;/div&gt;
 </pre>
-<p> <br> <br> <br></p>
-        
-        
+<p>The only thing missing is the data for all our products. By now, you should know how to query for all items in a database table. The new thing we need to do is make sure this data fills in our model.</p>
+<h3>HomeController.cs</h3>
+<pre data-language="c_sharp">// All other code
+[HttpGet("")]    
+public IActionResult Index()    
+{   
+    MyViewModel MyModels = new MyViewModel
+    {
+        AllProducts = _context.Products.ToList()
+    };     
+    return View(MyModels);    
+}</pre>
+<p>There are a few key points to note here:</p>
+<ol><li>We had to create a new instance of MyViewModel to fill in.</li><li>We filled in AllProducts from MyViewModel with a query.</li><li>We did <em>not</em> need to make any mention of the singular Product (because it is only for our form).</li><li>Once our model was ready, we passed it down as a ViewModel like normal.</li></ol>
+<p>The final step we need to take is to pass this information down to our partial. Thankfully, PartialAsync makes it very easy to pass the data along like so:</p>
+<h3>Index.cshtml</h3>
+<pre data-language="html">@model MyViewModel
+&lt;div class="d-flex"&gt;
+    @await Html.PartialAsync("_ProductForm", Model.Product)
+    @await Html.PartialAsync("_AllProducts", Model.AllProducts)
+&lt;/div&gt;</pre>
+<p>And we're done! Over on our respective partials, we can treat everything as normal. There are no changes that need to be made.</p>
+<p><strong>Important:</strong> The method of making a ViewModel to store multiple models is something that, while interesting to know, is not likely to be used often in your projects. We introduce it to show you how you can work around the issue of passing down one model to a page, but the rule of thumb is if your page only needs one model <em>do not use this</em>. It will only unnecessarily complicate your code.</p>
+<div><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1644005990__Knowledge check.png" style="width: 80px; height: 80px;" width="80" height="80" alt="'''" title="'''"><b style="font-size: large;">Check Your Knowledge With These Challenges!</b></div>
+<ul>
+    <li>Debugging challenge: Once you have your data being passed down through MyViewModel, try invoking an error on your form. This will cause an error if you are missing a crucial extra step needed somewhere in your controller. Ask yourself: why is this problem happening and what can I do to fix it?<ul><li>Hint: Try commenting out the AllProducts partial and see if the problem persists.</li></ul></li>
+</ul>
