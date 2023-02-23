@@ -1,1 +1,38 @@
 <h1>Delete</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Query data for the purpose of deleting it from a database.</li>
+<li>Compare and contrast SingleOrDefault and FirstOrDefault.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795372310" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>The final action we need to take is to delete instances from our database (i.e. A user deletes a message they posted or an admin removes someone's account).<br></p>
+<p>Deleting is a very straightforward concept that deals with answering one question before getting to work:</p>
+<p><em>What are we trying to delete?</em></p>
+<p>Just like with edit, the easiest way to access one item to delete is to use its ID to help find it. And just like with edit, where you get this ID from is going to depend on how your webpage is set up. Delete is often done by clicking a button or icon on a page, so ask yourself how you got all the other information about that item to display on the page. </p>
+<p>Also similarly to the update method, we will want to trigger a delete using a POST request. This is because we want to ensure it is not so easy for people to manipulate our website to delete or edit things they have no business modifying. </p>
+<p>You can make your delete feature by creating a form that only has a submit button. This is your delete icon. </p>
+<p>Below is an example of what your delete button may look like:</p>
+<pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">form</span></span> <span class="support attribute from-rainbow">asp-action</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">DestroyMonster</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">asp-controller</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">Home</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">asp-route-MonsterId</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">@Model.MonsterId</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">method</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">post</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">&gt;</span>
+    <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">input</span></span> <span class="support attribute from-rainbow">type</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">submit</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">value</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">Delete</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">&gt;</span>
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">form</span></span><span class="support tag close from-rainbow">&gt;</span>
+</pre>
+<p>With our post request triggered, we can head to our controller to handle it. The key term for deleting something from a database is to <code>Remove</code> it.</p>
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"monsters/{MonsterId}/destroy"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">DestroyMonster</span>(<span class="keyword from-rainbow">int</span> MonsterId)
+{
+    Monster? MonToDelete <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">SingleOrDefault</span>(i <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> i.MonsterId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> MonsterId);
+    <span class="comment from-rainbow">// Once again, it could be a good idea to verify the monster exists before deleting</span>
+    _context.Monsters.<span class="function call from-rainbow">Remove</span>(MonToDelete);
+    _context.<span class="function call from-rainbow">SaveChanges</span>();
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Index"</span>);
+}
+</pre>
+<h3>SingleOrDefault vs FirstOrDefault</h3>
+<p>You may have noticed we used SingleOrDefault here instead of FirstOrDefault. Why and what are the differences between these two similarly named queries? The primary difference between the two is in how they handle situations where more than one result can be returned. </p>
+<p>Deleting is a pretty serious action that could have major consequences if done incorrectly. When a FirstOrDefault query runs, it finds all instances in a database that could match our query and simply returns the first one it finds. With SingleOrDefault, it is designed to throw an error if it encounters more than one instance that matches our query. </p>
+<p>This is good for us, as it means if we're being too ambiguous and run into multiple objects that could fit this description, the delete won't work (which means no accidentally deleting something we didn't mean to). We're actually missing code here to handle a scenario where this exception error occurs, but given we are working with unique IDs it's not entirely necessary. </p>
+<p>For this reason, SingleOrDefault is the query of choice over FirstOrDefault when trying to delete something from a database.</p>
