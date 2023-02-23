@@ -1,45 +1,61 @@
-
-<h1>Method Syntax </h1>
-<p>It will help to see these expressions in some examples with the LINQ methods that will be using them. In the next lesson, we'll start with a simple hard-coded dataset, made up of the following <strong>Product </strong>class:</p>
-<pre data-language="c-sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
-{
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
-}
-</pre>
-<p>Then we will create a list of several products (just like how we made a menu of food items back in Hungry Ninja):</p>
-<pre data-language="c-sharp" class="rainbow">Product[] myProducts <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> Product[]
-{
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Jeans"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.7</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Socks"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">8.12</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Scooter"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">99.99</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skateboard"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Vehicle"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">24.99</span> },
-     <span class="keyword from-rainbow">new</span> Product { Name <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Skirt"</span>, Category <span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>, Price <span class="keyword operator from-rainbow">=</span> <span class="constant numeric from-rainbow">17.5</span> }
-};
-</pre>
-<p>Now with this as our "database", we can do some basic queries!</p>
-<p>Let's sort all the products by price, using the <strong>OrderBy/OrderByDescending</strong> LINQ methods. The lambda we pass to these methods will be a <strong>selector</strong>, where we will determine which property of our Products we wish to order by.<br></p>
-<pre data-language="c_sharp" class="active_pre rainbow"><span class="comment from-rainbow">// The lambda here uses a variable 'prod' which represents a product </span>
-<span class="comment from-rainbow">// (although this may be named whatever you like)  </span>
-<span class="comment from-rainbow">//  The right hand side of the arrow is selecting Price as the thing we want to order by.</span>
-IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> orderedProducts <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">OrderByDescending</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Price);
-</pre>
-<p>So what exactly just happened here? Let's take it one piece at a time:</p>
-<p><strong>IEnumerable&lt;Product&gt;</strong><br></p>
-<p>What is this IEnumerable type? This is simply the interface for any data type that can be iterated over. (For example: Lists and Arrays.) LINQ can be used on sets of data, but that data may originate in many different forms (arrays, lists, dictionaries, etc.). To provide the same functionality for any type of dataset, LINQ works on any class that implements the IEnumerable interface. (Are you seeing the power of interfaces yet?).<br></p>
-<p><strong>orderedProducts</strong><br></p>
-<p>This is simply the variable name which we will use to reference the results of our query. We could call this anything we like.</p>
-<p><strong>myProducts</strong><br></p>
-<p>This is what we called the original list we created. We are starting our query by saying "I am looking in to the dataset of 'myProducts'". Which will then fetch <em>all</em> the data we have contained in myProducts.</p>
-<p><strong>.OrderByDescending</strong><br></p>
-<p>All the features you use to make a query can be strung together by separating them with a ".". We can stack multiple LINQ queries together to narrow down our search further or add structure like sorting to them. Say we wanted all the users whose last name started with "T" but was over the age of 35 and male sorted alphabetically. We can do this in one line! That is what is happening here. So far our query says "Take all the data within the dataset 'myProducts' and order them in descending order by price'". If we wanted them to be in ascending order, we would just say "OrderBy" (which will assume ascending).</p>
-<p><strong>(prod =&gt; prod.Price)</strong></p>
-<p>Here we have our lambda function in action! We start by instantiating a variable (this could be anything! 'prod', 'product', 'p', 'a', 'b', 'c'...it doesn't matter!) Then we use our lambda (<code>=&gt;</code>) and specify which part of the dataset we are using. (In this case, prod.Price.) Think of how earlier you would pass along an object (say, after you've filled out a form), and you called that object by a name (say, 'MyUser'). Then to pull specific information out of that object, you would tell it something like "render the information stored in MyUser.Name", and you would get back "Tim" or "Nate" or whatever name was stored in the Name property of your object. It's the same concept here, but on a dataset level. We're getting <em>all</em> the Prices from our myProducts list. LINQ then goes through every Price and does the work of sorting them for us! (Remember having to write your own sorting algorithms?) </p>
-<p>With that, we now have all our products ordered by price. We could now pass the orderedProducts along in a ViewBag or ViewModel and see the results rendered on our CSHTML if we'd like! But we'll cover doing that a bit later. </p>
+<h1>Method Syntax</h1>
 <p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
 </p>
-<p>Note also that none of these queries affect the original collection.</p>
-<h3>More Method Syntax Methods</h3>
-<p>LINQ methods can be chained together as long as the previous one returns a new collection to be operated on. (For example, why would you need to OrderBy something that's only returning a single FirstOrDefault object?)</p>
-<p><img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_4015/handouts/chapter4015_7325_LINQExtensionMethods.png"></p>
+<ul>
+<li>Demonstrate how to pull data from a dataset using LINQ queries.</li>
+<li>Explore various LINQ queries to understand how they work.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/794935317" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Now is the time to start writing some LINQ queries! In the absence of a database, we will create a dataset using a model and an array of that model. LINQ is not limited to working with data from databases. It can be performed on any set of data!<br></p>
+<p>To get started, create a <code>dotnet new console</code> project called "LINQPractice". We do not need an entire MVC project to be able to practice some LINQ queries. Then we'll create a simple class called Product that will have a few properties:</p>
+<h3>Product.cs</h3>
+<pre class="rainbow" data-language="c_sharp"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
+{    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name {get;set;}    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Category {get;set;}    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
+}</pre>
+<p>Now that we have a model, we'll create an array of Products. We can do this in Program.cs since we will be performing all of our queries from there.</p>
+<h3>Program.cs</h3>
+<pre class="rainbow" data-language="c_sharp">Product[] myProducts <span class="keyword operator from-rainbow">=</span> new Product[]
+{     
+    new Product { Name <span class="keyword operator from-rainbow">=</span> "Jeans", Category <span class="keyword operator from-rainbow">=</span> "Clothing", Price <span class="keyword operator from-rainbow">=</span> 24.7 },     
+    new Product { Name <span class="keyword operator from-rainbow">=</span> "Socks", Category <span class="keyword operator from-rainbow">=</span> "Clothing", Price <span class="keyword operator from-rainbow">=</span> 8.12 },     
+    new Product { Name <span class="keyword operator from-rainbow">=</span> "Scooter", Category <span class="keyword operator from-rainbow">=</span> "Vehicle", Price <span class="keyword operator from-rainbow">=</span> 99.99 },     
+    new Product { Name <span class="keyword operator from-rainbow">=</span> "Skateboard", Category <span class="keyword operator from-rainbow">=</span> "Vehicle", Price <span class="keyword operator from-rainbow">=</span> 24.99 },     
+    new Product { Name <span class="keyword operator from-rainbow">=</span> "Skirt", Category <span class="keyword operator from-rainbow">=</span> "Clothing", Price <span class="keyword operator from-rainbow">=</span> 17.5 }
+};</pre>
+<p>With this as our "database", we can start doing some queries!</p>
+<p>We'll start by going over an example query. By now you have seen a few queries in action and should understand how the lambda expression is working within the query, but it's good to review again. The first thing we will do is take our product array and sort it based on price (think a user has just applied a "sort by price" filter in their search).</p>
+<pre data-language="c_sharp" class="rainbow">IEnumerable&lt;Product&gt; sortProductsByPrice = myProducts.<span class="function call from-rainbow">OrderByDescending</span>(prod =&gt; prod.Price);</pre>
+<p>So what is going on here? Let's break it down one piece at a time:</p>
+<h3>IEnumerable&lt;Product&gt;</h3>
+<p>What is this IEnumerable type? This is simply the interface (remember interfaces?) for any data type that can be iterated through (i.e. Lists, arrays, and dictionaries). In an earlier example, we had a .ToList() tagged to the end of our query, which cast the IEnumerable into a List. Since Lists have the IEnumerable interface applied to them, this is a valid conversion. </p>
+<p>By default, any query that returns a collection of data will return an IEnumerable of that type. It is easy to cast it to the collection type we want using .ToList or .ToArray though. We did not do it here so we can show a bare-bones example.</p>
+<h3>sortProductsByPrice</h3>
+<p>This is simply the variable name that we will use to reference the results of our query. We could call this anything we like, but this name makes sense since we are getting a list of our products sorted by price.</p>
+<h3>myProducts</h3>
+<p>This is what we called the original array (look up for a reminder). We are starting our query by saying "I am looking to perform an operation on the dataset called 'myProducts'", which will then fetch all the data we have in myProducts to perform the operation on.</p>
+<h3>.OrderByDescending</h3>
+<p>This one should be pretty straightforward. This is our LINQ query. We are saying here that we would like to take this dataset of myProducts and order them in descending (highest to lowest) order. The only thing we are missing is <em>what</em> we are using to order them by (the price, which will come up in a moment). If we wanted to do the opposite, we would use .OrderBy (this assumes ascending order). </p>
+<h3>(prod =&gt; prod.Price)</h3>
+<p>Here we have our lambda function in action! As we covered in the last section, we begin by instantiating a variable (prod in this case, but remember it could be anything). Then we apply our lambda arrow and specify what part of each object we are using (in this case, prod.Price). Remember that each product is a whole object that has a Price attribute. As long as we know what features are available to us in our models, we are able to use any of these features to help us with our queries. </p>
+<p>Then we're done! We would get back an IEnumerable of type Product with all our products ordered in descending order by their price. Now we could render this data or do whatever else we need with it. </p>
+<h3>Chaining Methods</h3>
+<p>One neat thing to note is that all the features you use to make a query can be chained together by separating them with a period <code>.</code>. Say we wanted to grab our products by price, but we would also like to grab just the products that are in the "Clothing" category. We don't have to make two separate queries to get this to happen. We can do it all at once like so:</p>
+<pre data-language="c_sharp" class="rainbow">IEnumerable<span class="keyword operator from-rainbow">&lt;</span>Product<span class="keyword operator from-rainbow">&gt;</span> orderedClothingProducts <span class="keyword operator from-rainbow">=</span> myProducts.<span class="function call from-rainbow">Where</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.Category <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Clothing"</span>).<span class="function call from-rainbow">OrderByDescending</span>(prod <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> prod.Price);</pre>
+<p>See what we did there? We were able to tag the Where query before our order by descending query by separating the queries with a period. We could do this as many times as we'd like, though it is important to note that some queries need to be executed before others in order to run, and some queries will not play nicely with each other. For example, it doesn't make sense to order all our products by price if we just planned to pull one item from the dataset, right?</p>
+<p>We could swap the Where and OrderByDescending queries and they will still work, though it could be argued it makes more sense to find the items we need before ordering them by price to prevent ourselves from unnecessarily ordering products we're not planning to use.</p>
+<p>Your compiler will give you notifications if it doesn't agree with how you're doing a query. Sometimes it's not that you can't do the query, it's that the order matters and you need to shift the order of your queries around.</p>
+<h2>More Queries</h2>
+<p>Below is a list of some of the other queries that can be performed on a dataset. Take some time to test these out on the product array to get familiar with how they work. </p>
+<figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1666724262__LINQMethods.PNG" style="width: 821px; height: 498px;" width="821" height="498"></figure>
+<p>When in doubt about how or when to use these methods, remember that Google, your classmates, and the instruction staff are here to help! Don't be afraid to ask questions!<br></p>
+<p>And if you would like more details or to learn about more methods, check out <a href="https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.all?view=net-6.0" target="_blank">Microsoft's documentation</a> on LINQ methods!</p>
+<div><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1644005990__Knowledge check.png" style="width: 80px; height: 80px;" width="80" height="80" alt="'''" title="'''"><b style="font-size: large;">Check Your Knowledge With These Challenges!</b></div>
+<ul>
+    <li>As mentioned above, try some of these queries out yourself on the dataset we have provided. Leave plenty of comments on what each query is doing and what kinds of results you can expect back from them. </li>
+</ul>
