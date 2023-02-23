@@ -1,202 +1,53 @@
-<h1>Multiple Forms Single View</h1>
-<p>We have seen how to bind our forms to models, but we've been limited to the fact that a View can only define <strong>one </strong>model.&nbsp; What if we wanted to support multiple forms/models in a single View?</p>
-<figure><img src="https://s3.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/multi-form.png"></figure>
+<h1>Multiple Models Single View</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Create a single View that is capable of handling multiple Models.</li></ul>
 <hr>
-<h4>While it is true that a View can define a single model, we can approach this problem a couple of ways.</h4>
-<p>We can start by defining our model classes, as these will not need to change for any approach we take.</p>
-<div>
-<div class="inline">
-<h3>Product.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Product
-{
-    [Required]
-    [<span class="function call from-rainbow">Display</span>(Name<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Product Name"</span>)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> ProductName {get;set;}
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">double</span> Price {get;set;}
-}
-</pre>
-</div>
-<div class="inline">
-<h3>User.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
-{
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Username {get;set;}
-    [Required]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> Age {get;set;}
-}
-</pre>
-</div>
-</div>
-<hr>
-<h2>Partials</h2>
-<p>Since partials can have their own models defined, we could break one or both of these forms into their own partial files.&nbsp; The parent View could just load each partial, and allow model binding to occur on the forms contained within the partial views.</p>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795650067" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Sometimes we will encounter scenarios in which there are multiple forms on a single View. However, we have a problem: if we want to take full advantage of our ASP features, we can only use <em>one</em> model at a time on any given page. Try writing <code>@model int</code> and <code>@model string</code> on the top of any cshtml file and you'll receive a compiler error that "The 'model' directive may only occur once per document".<br></p>
+<p>So how do we handle using multiple forms on one page?</p>
+<p>Partials! One of the really neat things about using partials is that the files you create as partials are technically still their own pages. This means that you can have a model in one partial and a model in another and render both those partials on one page without conflict!</p>
+<p>Say for example we have an application where we could add a product <em>and</em> a user on the same page. After building out models for both, you would need to create partials for each form.</p>
+<h3>_ProductForm.cshtml</h3>
+<pre data-language="c_sharp" class="rainbow">@model Product
+&lt;form asp-action="CreateProduct" asp-controller="Home" method="post"&gt;    
+    &lt;div class="mb-3"&gt;        
+        &lt;label asp-for="ProductName"&gt;&lt;/label&gt;        
+        &lt;input asp-for="ProductName" class="form-control"&gt;        
+        &lt;span asp-validation-for="ProductName" class="text-danger"&gt;&lt;/span&gt;    
+    &lt;/div&gt;    
+    &lt;div class="mb-3"&gt;        
+        &lt;label asp-for="Price"&gt;&lt;/label&gt;        
+        &lt;input asp-for="Price" class="form-control"&gt;        
+        &lt;span asp-validation-for="Price" class="text-danger"&gt;&lt;/span&gt;    
+    &lt;/div&gt;    
+    &lt;input type="submit" value<span class="keyword operator from-rainbow">=</span>"Add Product"<span class="keyword operator from-rainbow">&gt;</span>
+<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span></pre>
+<h3>_UserForm.cshtml</h3>
+<pre data-language="c_sharp" class="rainbow">@model User
+<span class="keyword operator from-rainbow">&lt;</span>form asp<span class="keyword operator from-rainbow">-</span>action<span class="keyword operator from-rainbow">=</span>"CreateUser" asp<span class="keyword operator from-rainbow">-</span>controller<span class="keyword operator from-rainbow">=</span>"Home" method<span class="keyword operator from-rainbow">=</span>"post"<span class="keyword operator from-rainbow">&gt;</span>    
+    <span class="keyword operator from-rainbow">&lt;</span>div class<span class="keyword operator from-rainbow">=</span>"mb<span class="keyword operator from-rainbow">-</span>3"<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Username"<span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Username" class<span class="keyword operator from-rainbow">=</span>"form<span class="keyword operator from-rainbow">-</span>control"<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Username" class<span class="keyword operator from-rainbow">=</span>"text<span class="keyword operator from-rainbow">-</span>danger"<span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>    
+    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>    
+    <span class="keyword operator from-rainbow">&lt;</span>div class<span class="keyword operator from-rainbow">=</span>"mb<span class="keyword operator from-rainbow">-</span>3"<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Age"<span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Age" class<span class="keyword operator from-rainbow">=</span>"form<span class="keyword operator from-rainbow">-</span>control"<span class="keyword operator from-rainbow">&gt;</span>        
+        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span>for<span class="keyword operator from-rainbow">=</span>"Age" class<span class="keyword operator from-rainbow">=</span>"text<span class="keyword operator from-rainbow">-</span>danger"<span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>    
+    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>    
+    <span class="keyword operator from-rainbow">&lt;</span>input type<span class="keyword operator from-rainbow">=</span>"submit" value<span class="keyword operator from-rainbow">=</span>"Add User"<span class="keyword operator from-rainbow">&gt;</span>
+<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span></pre>
+<p>Then finally the page that shares these forms would look like this:</p>
 <h3>Index.cshtml</h3>
 <pre data-language="html" class="rainbow"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Add a Product<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">ProductPartial</span><span class="string quote from-rainbow">"</span> <span class="support tag close from-rainbow">/&gt;</span>
+@await Html.PartialAsync("_ProductForm")
 <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Add a User<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
-<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">partial</span></span> <span class="support attribute from-rainbow">name</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">UserPartial</span><span class="string quote from-rainbow">"</span> <span class="support tag close from-rainbow">/&gt;</span>
-</pre>
-<div>
-<div class="inline">
-<h3>ProductPartial.cshtml</h3>
-<pre data-language="c_sharp" class="rainbow">@model Product
-<span class="keyword operator from-rainbow">&lt;</span>form asp<span class="keyword operator from-rainbow">-</span>controller<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"product"</span> asp<span class="keyword operator from-rainbow">-</span>action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"create"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label <span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductName"</span><span class="keyword operator from-rainbow">&gt;</span>Product Name<span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductName"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-control"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"ProductName"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"text-danger"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label <span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Price"</span><span class="keyword operator from-rainbow">&gt;</span>Price<span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Price"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-control"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Price"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"text-danger"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>input type<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"submit"</span> value<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Add Product"</span><span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span>
-</pre>
-</div>
-<div class="inline">
-<h3>UserPartial.cshtml</h3>
-<pre data-language="c_sharp" class="rainbow active_pre">@model User
-<span class="keyword operator from-rainbow">&lt;</span>form asp<span class="keyword operator from-rainbow">-</span>controller<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"user"</span> asp<span class="keyword operator from-rainbow">-</span>action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"create"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label <span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Username"</span><span class="keyword operator from-rainbow">&gt;</span>Username<span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Username"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-control"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Username"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"text-danger"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label <span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Age"</span><span class="keyword operator from-rainbow">&gt;</span>Age<span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Age"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-control"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Age"</span> <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"text-danger"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>input type<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"submit"</span> value<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Add User"</span><span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span>
-</pre>
-</div>
-</div>
-<h3>HomeController.cs</h3>
-<p>In our Controller class, we can accept - as parameters - our <code>Product</code> and <code>User</code> objects for the two Post methods.</p>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
-{
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
-    {
-   &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
-    }
-    [<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"create/product"</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateProduct</span>(Product newProduct)
-    {
-        <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Success"</span>);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span>&nbsp;<span class="function call from-rainbow">View</span>(<span class="string from-rainbow">"Index"</span>);
-    }
-    [<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"create/user"</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateUser</span>(User newUser)
-    {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">if</span>(ModelState.IsValid)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Success"</span>);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(<span class="string from-rainbow">"Index"</span>);
-    }
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"success"</span>)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> <span class="function call from-rainbow">Success</span>()
-    {
-        <span class="keyword from-rainbow">return</span> <span class="string from-rainbow">"You have successfully submitted!"</span>;
-    }
-}
-</pre>
-<hr>
-<h2>View Model</h2>
-<p>Another approach we could take here is to create a View Model class that would contain properties for each of our <strong>Product</strong> and <strong>User</strong> model classes.  In this approach we could keep both forms in our Index view file, which we then could bind to the larger View Model class.  Let's see how this will work, starting with the View Model class.</p>
-<h3>IndexViewModel.cs</h3>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> IndexViewModel
-{
-    <span class="keyword from-rainbow">public</span> Product NewProduct {get;set;}
-    <span class="keyword from-rainbow">public</span> User NewUser {get;set;}
-}
-</pre>
-<p>Note here, that <code>NewProduct</code> and <code>NewUser</code> are the names given to our Model class properties.  When we want to bind to - say <code>Price</code> - inside of the form, we will have to access it from <code>NewProduct.Price</code>.  Let's see how this looks in the single Index view file.</p>
-<h3>Index.cshtml</h3>
-<pre data-language="c_sharp" class="rainbow">@model IndexViewModel
-<span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Add a User<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>form action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"/create/user"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Username"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Username"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Username"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Age"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Age"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewUser.Age"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>input type<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"submit"</span> value<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Add User"</span><span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Add a Product<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>form action<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"/create/product"</span> method<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"post"</span><span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.ProductName"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.ProductName"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.ProductName"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>div <span class="keyword from-rainbow">class</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"form-group"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>label asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.Price"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/label<span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>input asp<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.Price"</span><span class="keyword operator from-rainbow">&gt;</span>
-        <span class="keyword operator from-rainbow">&lt;</span>span asp<span class="keyword operator from-rainbow">-</span>validation<span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">for</span><span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"NewProduct.Price"</span><span class="keyword operator from-rainbow">&gt;</span><span class="keyword operator from-rainbow">&lt;</span>/span<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>/div<span class="keyword operator from-rainbow">&gt;</span>
-    <span class="keyword operator from-rainbow">&lt;</span>input type<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"submit"</span> value<span class="keyword operator from-rainbow">=</span><span class="string from-rainbow">"Add Product"</span><span class="keyword operator from-rainbow">&gt;</span>
-<span class="keyword operator from-rainbow">&lt;</span>/form<span class="keyword operator from-rainbow">&gt;</span>
-</pre>
-<h3>HomeController.cs</h3>
-<p>In our Controller class, we will have to use the <code>IndexViewModel</code> as the input type for our two Post methods.  Because this is the model we defined in our view, this will be the object being submitted by both our Create Product and Create User forms.</p>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
-{
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
-    {
-        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();
-    }
-    [<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"create/product"</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateProduct</span>(IndexViewModel modelData)
-    {
-        <span class="comment from-rainbow">// To get the submitted Product from the submission, </span>
-        <span class="comment from-rainbow">// we would just need to grab "NewProduct" from the modelData object</span>
-        Product submittedProduct <span class="keyword operator from-rainbow">=</span> modelData.NewProduct;
-        <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
-        {
-            <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Success"</span>);
-        }
-        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(<span class="string from-rainbow">"Index"</span>);
-    }
-    [<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"create/user"</span>)]
-    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateUser</span>(IndexViewModel modelData)
-    {
-        <span class="comment from-rainbow">// To get the submitted User from the submission, </span>
-        <span class="comment from-rainbow">// we would just need to grab "NewUser" from the modelData object</span>
-        User submittedUser <span class="keyword operator from-rainbow">=</span> modelData.NewUser;
-        <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
-        {
-            <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Success"</span>);
-        }
-        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(<span class="string from-rainbow">"Index"</span>);
-    }
-    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"success"</span>)]
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> <span class="function call from-rainbow">Success</span>()
-    {
-        <span class="keyword from-rainbow">return</span> <span class="string from-rainbow">"You have successfully submitted!"</span>;
-    }
-}
-</pre>
-<style>
-.inline{
-    display: inline-block;
-    vertical-align: top;
-    margin: 10px;
-}
-</style>
-<p> <br></p>
+@await Html.PartialAsync("_UserForm")</pre>
+<p>From here, we can set up our controller to handle both requests as normal. No modifications are needed since both forms trigger their own unique post request and have their unique model identified from the start. </p>
+<div><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1644005832__Group Discussion.png" style="width: 80px; height: 80px;" width="80" height="80" alt="'''" title="'''"><b style="font-size: large;">Reflection</b></div>
+<ul>
+    <li>What purposes do partials serve in our programs?</li><li>Why can we not have two models on one page?</li></ul>
