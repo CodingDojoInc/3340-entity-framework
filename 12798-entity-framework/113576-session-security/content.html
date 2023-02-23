@@ -13,10 +13,10 @@
 <p>Once you are ready, head back over to your login and registration code and ask yourself this: at what point should I be saving a UserId into session?</p>
 <p>The answer: the moment before you redirect the user to the first internal page. Your code might look something like this:</p>
 <p><strong>HomeController.cs</strong></p>
-<pre data-language="c_sharp">// Surrounding registration code
-HttpContext.Session.SetInt32("UserId", newUser.UserId);
-return RedirectToAction("SomeAction");
-// Surrounding registration code</pre>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Surrounding registration code</span>
+HttpContext.Session.<span class="function call from-rainbow">SetInt32</span>(<span class="string from-rainbow">"UserId"</span>, newUser.UserId);
+<span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"SomeAction"</span>);
+<span class="comment from-rainbow">// Surrounding registration code</span></pre>
 <p><em>Note:</em> After saving a new object to the database, it will have an ID ready to go, so you will be able to access an ID even from the user object that was just created in registration as shown above.</p>
 <p>Great! You have session up and running in your project. Now what? How will it tell you whether or not someone is logged into your website?</p>
 <p>Pop quiz: if you search for a session by a specific key and that key does not exist, what do you get back?</p>
@@ -27,30 +27,30 @@ return RedirectToAction("SomeAction");
 <p>When we are finished making it, it will look very similar to how a custom validation looks. Only instead of applying to a single property in a model, we can apply it to a whole route in our Controller, giving us the power to go through the filter before landing on that route.</p>
 <p>To start, we need to bring in a package to the top of our controller:</p>
 <p><strong>HomeController.cs</strong></p>
-<pre data-language="c_sharp">using Microsoft.AspNetCore.Mvc.Filters;</pre>
+<pre data-language="c_sharp" class="rainbow">using Microsoft.AspNetCore.Mvc.Filters;</pre>
 <p>This is the library where all the tools we need live.</p>
 <p>Next, we can write our code. You can add this to the very bottom of your Controller file:</p>
-<pre data-language="c_sharp">// Name this anything you want with the word "Attribute" at the end
-public class SessionCheckAttribute : ActionFilterAttribute
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// Name this anything you want with the word "Attribute" at the end</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> SessionCheckAttribute : ActionFilterAttribute
 {
-    public override void OnActionExecuting(ActionExecutingContext context)
+    <span class="keyword from-rainbow">public</span> override <span class="keyword from-rainbow">void</span> <span class="function call from-rainbow">OnActionExecuting</span>(ActionExecutingContext context)
     {
-        // Find the session, but remember it may be null so we need int?
-        int? userId = context.HttpContext.Session.GetInt32("UserId");
-        // Check to see if we got back null
-        if(userId == null)
+        <span class="comment from-rainbow">// Find the session, but remember it may be null so we need int?</span>
+        <span class="keyword from-rainbow">int</span>? userId <span class="keyword operator from-rainbow">=</span> context.HttpContext.Session.<span class="function call from-rainbow">GetInt32</span>(<span class="string from-rainbow">"UserId"</span>);
+        <span class="comment from-rainbow">// Check to see if we got back null</span>
+        <span class="keyword from-rainbow">if</span>(userId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="constant language from-rainbow">null</span>)
         {
-            // Redirect to the Index page if there was nothing in session
-            // "Home" here is referring to "HomeController", you can use any controller that is appropriate here
-            context.Result = new RedirectToActionResult("Index", "Home", null);
+            <span class="comment from-rainbow">// Redirect to the Index page if there was nothing in session</span>
+            <span class="comment from-rainbow">// "Home" here is referring to "HomeController", you can use any controller that is appropriate here</span>
+            context.Result <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> <span class="function call from-rainbow">RedirectToActionResult</span>(<span class="string from-rainbow">"Index"</span>, <span class="string from-rainbow">"Home"</span>, <span class="constant language from-rainbow">null</span>);
         }
     }
 }
 </pre>
 <p>Finally, on any route where we want to verify that our user is logged in, we can include the following code:</p>
-<pre data-language="c_sharp">// The name we gave our class minus "Attribute"
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// The name we gave our class minus "Attribute"</span>
 [SessionCheck]
-[HttpGet("someRoute")]
-// The rest of the code</pre>
+[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"someRoute"</span>)]
+<span class="comment from-rainbow">// The rest of the code</span></pre>
 <p>Now if you try to navigate to the "someRoute" route, you will instead be routed to Index if you are not logged in. Security achieved!</p>
 <p>Going forward, there is more we can do to add security to our website, but this is a good start and you should get in the habit of verifying you have a logged-in user on any pages that should be restricted to logged-in users only.</p>
