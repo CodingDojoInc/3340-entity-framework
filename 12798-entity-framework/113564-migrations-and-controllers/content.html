@@ -1,1 +1,64 @@
 <h1>Migrations and Controllers</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Build an MVC project that is capable of connecting to a database.</li>
+<li>Create migration files that instruct MySQL on how to create tables based on models.</li><li>Connect a MySQL database to a back-end Controller using context as a middleman.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795019302" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>This is the time when all our work and Entity Framework get to show how powerful and useful they are! We created models and a context file, set up our connection string, and configured program.cs with all its necessary services. Now we will take all this information to create our database!<br></p>
+<p>To do this, we will create something called "migrations". These migrations are files that contain instructions for the database to create or modify tables. This set of instructions is what will do everything for us in MySQL without us ever needing to open the program ourselves. </p>
+<h2>Adding Migrations</h2>
+<p>Migrations are an extremely powerful tool for interacting with your database. Any time we change our models we must create new migrations to update the database accordingly. </p>
+<p>Migrations are created using Entity Framework's command line tools. First, we have to add a migration by running the following line:</p>
+<pre class="rainbow" data-language="javascript">dotnet ef migrations add FirstMigration</pre>
+<p><strong>Note: </strong>FirstMigration is an example name. This can be anything. However, after you use this name, you cannot use it again when making migrations for the same project. A good rule of thumb is to call your first migration FirstMigration, then if you need to make a second migration for some reason call it SecondMigration. If you need to make a third, call it ThirdMigration, and so on and so forth... </p>
+<p><strong>A common question:</strong> <em>"Will adding or removing model validations (like [Required]) on my model mean I have to run another migration?"</em> Good question! And the answer is no! Your validations are for ASP and your front end. They have no bearing on how the information will be stored in your database, so adding or removing model validations will have no effect on this process and can happen at any time! </p>
+<p>After this code finishes executing you should see a new folder called "Migrations" with the following files:</p>
+<figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1666809895__migrationsFolder.PNG"></figure>
+<p>This is what will keep track of what information needs to be given to our database to construct it. You will see more files if you add more migrations with ending names based on the migration name you gave (see now why we can't use the same name repeatedly in one project?)</p>
+<p>Once that is done, all that is left is to apply it to the database. We do this with another console command:</p>
+<pre class="rainbow" data-language="javascript">dotnet ef database update</pre>
+<p>This command takes those migration files we generated and applies them to the database, performing the actual creation of the tables. The name of the tables we create is determined by the name we gave to their corresponding DbSet (which you created earlier in your Context file), <em>not</em> the name of the model they correspond to. </p>
+<h3>A couple of notes on troubleshooting:</h3>
+<p>Sometimes you will try to run your migrations and will hit an error message that your build failed. This happens when something is wrong with your code somewhere. It could be a misspelling, a missing piece of code, forgotten packages, etc. To figure out what went wrong, run the migrations add line again, but put a -v at the end, like this:</p>
+<pre class="rainbow" data-language="javascript">dotnet ef migrations add FirstMigration <span class="keyword operator from-rainbow">-</span>v</pre>
+<p>This will trigger <code>verbose</code> mode. Verbose mode goes into detail on what steps are happening to create your migrations. It will also provide detailed information about what went wrong in your migration by listing the number of errors it encountered and details on what those errors are. Read through these messages to figure out what exactly went wrong in your code, correct the errors, and run migrations add again (with <code>-v</code> is still recommended in case more errors are hit).  </p>
+<p>Another potential issue you may encounter is that your migrations don't seem to be sticking or you keep running into errors that certain non-nullable fields need default values in order to proceed. This can occur when you make a significant amount of changes to your models between migrations, especially if you already have data in your database (since now your database doesn't know how to properly map the old data to the new table structures).</p>
+<p>When this happens, sometimes the best option is to delete your migrations folder, drop your schema, and try running a fresh migration. There is no shame in needing to restart if you realize too late that you were missing several important pieces to your project, and it can save you a lot of heartache having to wrestle with pre-existing tables that are only partially populated. This will cause you to lose any data you already had stored but is an effective way to resolve migration conflicts. </p>
+<p>If you want to double-check that everything went into your database correctly, check out MySQL Workbench to verify everything is there. </p>
+<h2>Controller Connection</h2>
+<p>You're just about done! The final step is to set up our controller to be able to access the information from our database. We will do this using that handy Context file we made before. With it, we can do what is called <strong>dependency injection</strong>. We will be initializing our context in our controller's constructor method, where the service can be injected to provide us with all the tools we need without the bloat we could have had without our middleman handling talking to the database. </p>
+<p><strong>HomeController.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Using statements</span>
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using YourProjectName.Models;
+namespace YourProjectName.Controllers;    
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> HomeController : Controller
+{    
+    <span class="keyword from-rainbow">private</span> readonly ILogger<span class="keyword operator from-rainbow">&lt;</span>HomeController<span class="keyword operator from-rainbow">&gt;</span> _logger;
+    <span class="comment from-rainbow">// Add a private variable of type MyContext (or whatever you named your context file)</span>
+    <span class="keyword from-rainbow">private</span> MyContext _context;         
+    <span class="comment from-rainbow">// Here we can "inject" our context service into the constructor </span>
+    <span class="comment from-rainbow">// The "logger" was something that was already in our code, we're just adding around it   </span>
+    <span class="keyword from-rainbow">public</span> <span class="function call from-rainbow">HomeController</span>(ILogger<span class="keyword operator from-rainbow">&lt;</span>HomeController<span class="keyword operator from-rainbow">&gt;</span> logger, MyContext context)    
+    {        
+        _logger <span class="keyword operator from-rainbow">=</span> logger;
+        <span class="comment from-rainbow">// When our HomeController is instantiated, it will fill in _context with context</span>
+        <span class="comment from-rainbow">// Remember that when context is initialized, it brings in everything we need from DbContext</span>
+        <span class="comment from-rainbow">// which comes from Entity Framework Core</span>
+        _context <span class="keyword operator from-rainbow">=</span> context;    
+    }         
+    [<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">""</span>)]    
+    <span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()    
+    {     
+        <span class="comment from-rainbow">// Now any time we want to access our database we use _context   </span>
+        List<span class="keyword operator from-rainbow">&lt;</span>Monster<span class="keyword operator from-rainbow">&gt;</span> AllMonsters <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">ToList</span>();
+        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>();    
+    } 
+}</pre>
+<p>And we are officially done and ready to start working with a database! We will go into greater detail on what is happening in the Index route as well as how to access and modify information from our database in the coming modules. Congrats on setting up your first database with C#!</p>
