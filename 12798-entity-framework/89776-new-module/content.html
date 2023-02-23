@@ -1,5 +1,24 @@
-
-            <h1>Entity Framework Core</h1>
-<p>EF Core is the newest incarnation of the Entity Framework, which was first created in 2008. Entity Framework Core was designed to be more powerful and flexible than Entity Framework&nbsp;and will support a wider variety of databases. As with all of the&nbsp;<code>core</code>&nbsp;technologies that Microsoft has created, EF Core is more modular than its previous versions. This means we can pull in just the pieces we need and avoid extra code-bloat.</p>
-<p>EF Core, in tandem with what you've just learned in LINQ, is what we will be using for the remainder of the course to handle the database side of our projects.</p>
-        
+<h1>Entity Framework Core</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Summarize Entity Framework Core and its role in full-stack development.</li>
+<li>Ensure that all pre-requisite installations are complete.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/794950778" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Entity Framework Core (typically shortened to EF Core) is the newest incarnation of Entity Framework. It was designed to be more powerful and flexible than Entity Framework and supports a wider variety of databases. </p>
+<p>As with all of the Core technologies that Microsoft has created, EF Core is more modular than its previous versions. This means we can pull in just the pieces we need and avoid extra code bloat.<br></p>
+<p>EF Core is a fully featured ORM that is able to map our model classes to SQL tables and format the exact SQL statements we need from the method calls that we make. Basically, once our models are set up in our project, EF Core does all the work of creating the database and tables within MySQL for us! We also have access to methods that will query our database to access or modify these tables without ever opening MySQL or writing a raw SQL statement!</p>
+<p>Used in tandem with LINQ, EF Core will make working with a database a breeze. However, there are some careful steps we need to take to get our project set up to talk to a database. This is a bit of a lengthy process, but it is the same steps every time which will eventually make setting up your connection to MySQL feel easy. </p>
+<p>Before we get started, we'll first ensure you have everything you need to start working with Entity Framework Core and MySQL.</p>
+<p>At this time, please verify that you have MySQL installed on your machine. If you followed the instructions at the beginning of this course, this should be done, but it's good to double-check. Sometimes issues with the program will pop up while you were away. </p>
+<p>Open up MySQL Workbench to ensure that everything is in running order or verify that MySQL is installed however you like. The important thing is that it is there and ready for action. </p>
+<p>Also at the beginning of the course, you should have installed the following CLI tool from your terminal:</p>
+<pre class="rainbow" data-language="javascript">dotnet tool install <span class="keyword operator from-rainbow">-</span><span class="keyword operator from-rainbow">-</span><span class="keyword from-rainbow">global</span> dotnet<span class="keyword operator from-rainbow">-</span>ef</pre>
+<p>This is a global installation, meaning it only needs to be run on your computer once. If you followed the instructions at the beginning of this course you do not need to run this command again. However, if you skipped over any parts, you may want to check that the tool is in use by typing:</p>
+<pre class="rainbow" data-language="html">dotnet ef</pre>
+<p>The output will tell you the version of the tool you are using (and show a neat picture of a unicorn!) We will need this tool going forward.</p>
+<p>If everything is installed, you're ready to get started! Head to the next module to begin the setup process.</p>
