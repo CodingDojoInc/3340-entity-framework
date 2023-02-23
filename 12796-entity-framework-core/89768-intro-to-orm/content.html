@@ -1,21 +1,20 @@
-
-            
-            
-            
-            
-            
-            
-            
-<h1>Object Relational Mapper</h1>
-<p>The database systems we use are designed independently of any particular framework or language. Because of this, we need a go-between to communicate with them. Fun as it is to use a connection file to write all our SQL queries out manually, an ORM, or Object Relational Mapper, is more commonly used in applications as the connector between a given framework and a database.</p>
-<p>While we do give up some control when using ORMs, we gain the functionality of having our database tables mapped directly to our model classes. That means that instead of dealing with generic <code>List&lt;Dictionary&lt;string, object&gt;&gt;</code> instances, ORMs give us back&nbsp;<code>List&lt;OurModel&gt;</code>&nbsp;instances instead!&nbsp;In addition, many databases only support having simple alpha-numeric values stored in them, but some ORMs can handle serializing more complex data for us and un-serializing it upon retrieval.</p>
-<p>The Entity Framework is a full ORM, which not only maps things to our models, but also completely obscures any SQL queries, and even has the potential to generate our tables for us. To use Entity most effectively, we'll first learn LINQ, C#'s OOP query language.</p>
-<p><img src="https://s3.amazonaws.com/General_V88/boomyeah/company_209/chapter_4035/handouts/chapter4035_7484_EFMapping.png" alt="Entity Framework Mapping"></p>
-<iframe src="https://player.vimeo.com/video/208534323?title=0&byline=0&portrait=0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" class="vimeo_responsive" style="width: 938px; height: 527.625px;" width="640" height="360" frameborder="0" data-ready="true">&lt;span id="selection-marker-1" class="redactor-selection-marker"&gt;&lt;/span&gt;</iframe>
-        
-        
-        
-        
-        
-        
-        
+<h1>Intro to ORMs</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Summarize what an ORM is and what it does for a full-stack application.</li></ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/794637000" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>For this course, we will be using MySQL as our database of choice. However, if you have never connected a project to a database before, you may be wondering: how do these two totally separate entities manage to communicate with each other? </p>
+<p>There are a variety of ways we can accomplish this communication, and perhaps you have some experience in this already from previous courses or personal experience. The way we will do it here is to use what is known as an Object Relational Mapper (ORM).<br></p>
+<h2>What is an ORM?</h2>
+<p>An Object Relational Mapper acts as a connector between a framework (ASP.NET Core) and a database (MySQL). Many programming languages have frameworks that allow them to use an ORM to connect easily with a database. </p>
+<p>The super neat thing about using ORMs is that they will not only make talking to and manipulating data in our databases easy, but they will even build our tables for us! If you have ever had to make your tables from scratch or by forward engineering, you know this can be time-consuming. </p>
+<p>Now we will be able to quickly and easily create tables in our database based on the models we have been creating in our projects. We won't have to go into MySQL at all unless we want to!</p>
+<h2>What's to Come</h2>
+<p>We are quickly approaching the finish line for this course (hard to believe, I know!) Now that you know how to create a fully-functioning MVC project, our final step is to connect a database so that we can start storing data. In the coming modules, you will learn: </p>
+<ul><li>How to access and filter lists of data with LINQ.</li><li>How to connect to MySQL using Entity Framework Core.</li><li>How to run commands that will create, read, update, and delete data from our database.</li><li>How to connect our tables together using relationships for even more robust interactions and usability.</li></ul>
+<p>By that point, you will be creating fully realized full-stack applications. All that will be left is the exam and some advanced topics for you to make your projects even more impressive! Take a moment to recognize how far you have come in this course (and on your programming journey).</p>
+<p>Feeling ready? Then let's head to the next module to learn about LINQ!</p>
