@@ -1,1 +1,35 @@
 <h1>Create</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Add data to a database using EF Core's built-in tools.</li></ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795371547" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>The backbone of any full-stack application's user experience involves four primary functions: creating data, reading (viewing) data, updating data, and deleting data. These four actions--Create, Read, Update, Delete--are often shorthanded to CRUD commands. Knowing how to perform CRUD commands is essential in creating full-stack applications. </p>
+<p>Over the next few modules, we will cover these four actions in detail, starting with create. After all, we can't read, update, or delete something that doesn't exist!<br></p>
+<p>So far you have learned how to create forms, tie those forms to models, and send bundled model data via post request to your controller, where you typically had to render the page to see information, saved it to a session, or simply logged it to the console. Now it is time to take that data from our forms and finally store it in a proper database. </p>
+<p>Let's say we have a form that takes in information about a monster. You have all your validations set up and all you need now is to save your new monster to the database. To do this, you will <code>Add</code> the new monster to the database. Our code will look the exact same as it has in previous assignments, only now we will have two new lines of code for talking to our database:</p>
+<h3>HomeController.cs</h3>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Inside HomeController</span>
+[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"monsters/create"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">CreateMonster</span>(Monster newMon)
+{    
+    <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
+    {
+        <span class="comment from-rainbow">// We can take the Monster object created from a form submission</span>
+        <span class="comment from-rainbow">// and pass the object through the .Add() method  </span>
+        <span class="comment from-rainbow">// Remember that _context is our database  </span>
+        _context.<span class="function call from-rainbow">Add</span>(newMon);    
+        <span class="comment from-rainbow">// OR _context.Monsters.Add(newMon); if we want to specify the table</span>
+        <span class="comment from-rainbow">// EF Core will be able to figure out which table you meant based on the model  </span>
+        <span class="comment from-rainbow">// VERY IMPORTANT: save your changes at the end! </span>
+        _context.<span class="function call from-rainbow">SaveChanges</span>();
+        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"SomeAction"</span>);
+    } <span class="keyword from-rainbow">else</span> {
+        <span class="comment from-rainbow">// Handle unsuccessful validations</span>
+    }
+}</pre>
+<p>So what happened here? We verified that our form passed model checks (ModelState.IsValid), we accessed our database (_context), and from within our database, we called the .Add method which accepted the object from our form (newMon). Finally, we saved our changes (_context.SaveChanges()) and redirected our user somewhere else.</p>
+<p>...And that's it. Not so crazy, right? Two lines of code and we have data in our database now. You can check it yourself in Workbench or by heading to the next module to learn about reading data!</p>
