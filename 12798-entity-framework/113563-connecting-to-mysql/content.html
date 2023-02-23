@@ -1,1 +1,54 @@
 <h1>Connecting to MySQL</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Build an MVC project that is capable of connecting to a database.</li>
+<li>Create a connection string for connecting to a MySQL database.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795010791" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Now that we have our models set up and our context ready to go, the next step is to prepare our connection to MySQL. To do this, we will need to create a MySQL connection string. This string contains all the important information you need to connect to MySQL like your username and password into MySQL.<br></p>
+<p>Clearly, advertising your username and password where anyone can see it isn't in our best interests from a security standpoint. Luckily, there is an easy way for you to store your sensitive info in a separate json file which can be used to format what ASP calls a "Configuration" object at startup. </p>
+<p>This way, you can "gitignore" this file from any git repo without worrying about the lack of it breaking your code. It will just require that anyone who wants to download and use your project needs to establish their own connection string to their own MySQL database to use it. </p>
+<p>Any project created with <code>dotnet new mvc</code> comes with a file called <strong>appsettings.json</strong>. If you do not see this file for whatever reason, create the file, but be sure to name it appsettings.json exactly or this will not work. This file should live in the main directory of your project.</p>
+<figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1666797649__appsettingsFile.PNG"></figure>
+<p>If you already have this file, you will see some content written inside. It is okay to overwrite this content with the code below. The important piece we need is the ConnectionStrings. Inside this object is our DefaultConnection which has all our login information for MySQL. </p>
+<p><strong>appsettings.json</strong></p>
+<pre class="rainbow" data-language="javascript">{  
+    <span class="string from-rainbow">"Logging"</span>: {    
+        <span class="string from-rainbow">"LogLevel"</span>: {      
+            <span class="string from-rainbow">"Default"</span>: <span class="string from-rainbow">"Information"</span>,      
+            <span class="string from-rainbow">"Microsoft.AspNetCore"</span>: <span class="string from-rainbow">"Warning"</span>    
+        }  
+    },
+    <span class="string from-rainbow">"AllowedHosts"</span>: <span class="string from-rainbow">"*"</span>,    
+    <span class="string from-rainbow">"ConnectionStrings"</span>:    
+    {        
+        <span class="string from-rainbow">"DefaultConnection"</span>: <span class="string from-rainbow">"Server=localhost;port=3306;userid=root;password=root;database=monsterdb;"</span>    
+    }
+}</pre>
+<p>We will need to make some adjustments to the DefaultConnection depending on your personal settings:</p>
+<ol><li>Update <strong>userid</strong> to your userid for MySQL (this is often root, but you may have changed it or made your own. You can verify this by logging in to MySQL Workbench and seeing what options you have).</li><li>Update <strong>password</strong> to your password to MySQL. You can verify what this password is by logging into Workbench. If you have taken courses with us previously that use MySQL, you likely set up this password to be "root", but it is good to check.</li><li>Update <strong>database</strong> to be a unique name for your project. You must <strong>always </strong>do this. This will be the name of your database in MySQL. If you leave it at a default name when the time comes to migrate it will add your tables to an existing database. That could cause some major problems! Be sure to change this every time you start a project.</li><li>Optional: If for whatever reason you had to change the port MySQL runs on (by default it is 3306) then update that as well. If you are unsure if this has happened to you, it is unlikely it has changed.</li></ol>
+<p>Now that we have a connection string for MySQL, it's time to use it and establish our connection. To do this, we'll turn our attention to <strong>Program.cs</strong>, where we have some new lines of code to add:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Add this using statement</span>
+using Microsoft.EntityFrameworkCore;
+<span class="comment from-rainbow">// You will need access to your models for your context file</span>
+using ProjectName.Models;
+<span class="comment from-rainbow">// Builder code from before</span>
+<span class="keyword from-rainbow">var</span> builder <span class="keyword operator from-rainbow">=</span> WebApplication.<span class="function call from-rainbow">CreateBuilder</span>(args);
+<span class="comment from-rainbow">// Create a variable to hold your connection string</span>
+<span class="keyword from-rainbow">var</span> connectionString <span class="keyword operator from-rainbow">=</span> builder.Configuration.<span class="function call from-rainbow">GetConnectionString</span>(<span class="string from-rainbow">"DefaultConnection"</span>);
+<span class="comment from-rainbow">// All your builder.services go here</span>
+<span class="comment from-rainbow">// And we will add one more service</span>
+<span class="comment from-rainbow">// Make sure this is BEFORE var app = builder.Build()!!</span>
+builder.Services.AddDbContext<span class="keyword operator from-rainbow">&lt;</span>MyContext<span class="keyword operator from-rainbow">&gt;</span>(options <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span>
+{
+    options.<span class="function call from-rainbow">UseMySql</span>(connectionString, ServerVersion.<span class="function call from-rainbow">AutoDetect</span>(connectionString));
+});
+<span class="comment from-rainbow">// The rest of the code below</span>
+</pre>
+<p>Notice when we register the service (services.AddDbContext), we will specify that we are using MySQL (options.UseMySql). This registers an additional service (DbContextOptions) that we can then utilize in our Context class's constructor (you saw this referenced in your context file earlier). </p>
+<p>It is also here that we need to pass a connection string for our MySQL server (which you created in appsettings.json) to authenticate the handshake to our ASP app.</p>
+<p>We are getting close! All that is left is to migrate our tables to MySQL and set up our connection so we can access the data from our controllers. </p>
