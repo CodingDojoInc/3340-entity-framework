@@ -1,1 +1,95 @@
-<h1>Update</h1>
+<p>&lt;<br></p><h1>Update</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Render an edit form in an ASP.NET Core MVC application.</li>
+<li>Apply changes to an existing item in a database and save the changes.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/795372098" frameborder="0" allowfullscreen="" data-ready="true" class="vimeo_responsive"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Updating an entity in our database is going to require a little more work than the other methods so far. First off, you will need to build a form that is specifically for handling updating an instance.<br></p>
+<p>The good news is, there are no changes to the visuals of our form from when we made one to create our objects, so to start an edit form the easiest thing we can do is copy and paste our create form into an edit file. Now we are left with two questions to answer:</p>
+<ol>
+    <li>How do we know what object we are trying to edit?</li>
+    <li>Once we figure that out, how do we auto-populate our form with that data? (Most times you go to edit something you are able to see the old information as a reference.)</li>
+</ol>
+<h3>Figuring out what object we are trying to edit</h3>
+<p>Think about it for a moment: what is the best way to identify the exact item we are trying to update? Is there something each of our objects has that is completely distinct from the rest that will make finding one specific item easy for us?</p>
+<p>Yes. Every instance of our model comes with a unique ID that can only belong to it. If we use this ID, it's very easy to grab the object we are trying to update. Pop quiz: What query would we use to grab one item by some specific feature? (Hint: we showed this on the previous page, but try to remember first!)</p>
+<p>Once you have the answer, the next question is: where do we get that ID from? The answer to that is going to depend entirely on how you've set up the page that directs you to the edit page. </p>
+<p><strong>Task one:</strong> be able to link your user to an edit page for your unique item based on its ID. (Hint: think about how you would route a user to a page where they could simply view information about one item.)</p>
+<h3>Auto-populating a form</h3>
+<p>Once you can <em>get</em> to an edit page, the next task is to auto-populate it with data about the item. The best way to do this is to query for it and pass the item down through ViewModel (review the ViewModel section if you need a refresher on how this works).</p>
+<p>Here's the coolest thing: thanks to all the work you did setting up <code>asp-for</code>'s throughout your original form, as soon as you pass the object down through ViewModel it will auto-populate the form for you! Try it out and see for yourself!</p>
+<p>If you've been having trouble getting this far, here is some code to show you how the controller for the edit page is done. However, we highly recommend taking some time to work it out yourself before jumping to copy what we've given you. It's a much better way to learn!</p>
+<p><strong>HomeController.cs</strong></p>
+<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"monsters/{MonsterId}/edit"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">EditMonster</span>(<span class="keyword from-rainbow">int</span> MonsterId)
+{
+    Monster? MonsterToEdit <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">FirstOrDefault</span>(i <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> i.MonsterId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> MonsterId);
+    <span class="comment from-rainbow">// Tip: it would be good to add a check here to ensure what you are grabbing will not return a null item</span>
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(MonsterToEdit);
+}
+</pre>
+<p>So long as your form still has all the <code>asp-for</code> attributes and <code>@model Monster</code>, it will auto-populate the fields!</p>
+<h2>Handling a Post Request</h2>
+<p>You have the form up, it auto-populates, and you're ready to submit the data and update your model. How? We need to talk about how an update works with ASP.NET Core and Entity Framework Core. </p>
+<p>The steps to update our object go like this:</p>
+<ol>
+    <li>Trigger a post request that contains the updated instance from our form and the ID of that instance.</li><li>Find the old version of the instance in your database<ol><li>Tip: you may want to write something that verifies what you get is not null.</li></ol></li>
+    <li>Verify that the new version of our instance passes validations.<ol><li>If it does not, show error messages and try again.</li></ol></li>
+    
+    <li>Overwrite the old version with the new version.</li>
+    <li>Save your changes.</li>
+    <li>Redirect to an appropriate page.</li>
+</ol>
+<p><strong>1. Trigger a post request that contains the updated instance from our form and the ID of that instance.</strong><br></p>
+<p>We need two pieces of information to successfully update our object: the parts of the object we want to change and the ID of the original object so we can overwrite its old values. </p>
+<p>We'll already be getting the parts of the object we want to change by filling out the form. So where does the ID come from? And how is it passed in our post request? </p>
+<p>Remember that when you passed a ViewModel of your object down to your cshtml file, it contained the <em>whole</em> object. ID and all. So we already have access to our ID. We just need to make sure it's also being sent over when our post request triggers. There are a couple of ways this can be done, but we'll talk about the best way to do it: setting the ID as a route parameter.</p>
+<p>Much earlier in the course, we discussed how to send parameters in our routes and pull them from our routes into our controllers (head back to the Routing module located in the ASP.NET Core Unit, Chapter ASP MVC I to read up on this if you forgot.)</p>
+<p>However, there is one catch. We are no longer routing our forms using the string route (originally used by "action" in our forms). We use asp-action now, which relies on the name of the action rather than the name of the route. So how do we pass parameters in our routes? Like this:</p>
+<pre class="rainbow" data-language="html"><span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">form</span></span> <span class="support attribute from-rainbow">asp-action</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">UpdateMonster</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">asp-controller</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">Home</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">asp-route-MonsterId</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">@Model.MonsterId</span><span class="string quote from-rainbow">"</span> <span class="support attribute from-rainbow">method</span><span class="support operator from-rainbow">=</span><span class="string quote from-rainbow">"</span><span class="string value from-rainbow">post</span><span class="string quote from-rainbow">"</span><span class="support tag close from-rainbow">&gt;</span>
+@* <span class="support attribute from-rainbow">the</span> <span class="support attribute from-rainbow">rest</span> <span class="support attribute from-rainbow">of</span> <span class="support attribute from-rainbow">our</span> <span class="support attribute from-rainbow">form</span> *@
+</pre>
+<p>We can pass any parameter we want through our route using asp-route-YourParamNameHere (and you can use as many of these as you like in one form).</p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// {MonsterId} comes from asp-route-MonsterId</span>
+[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"monsters/{MonsterId}/update"</span>)]
+<span class="comment from-rainbow">// We are passing down both the Monster from our form and the ID from our route parameter</span>
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UpdateMonster</span>(Monster newMon, <span class="keyword from-rainbow">int</span> MonsterId)
+{ 
+    <span class="comment from-rainbow">// Code coming soon </span>
+}
+</pre>
+<p>Once this is done, we can get into the rest of the steps fairly quickly. Most of the steps are commands that should already feel familiar to you.</p>
+<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">// 1. Trigger a post request that contains the updated instance from our form and the ID of that instance</span>
+[<span class="function call from-rainbow">HttpPost</span>(<span class="string from-rainbow">"monsters/{MonsterId}/update"</span>)]
+<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">UpdateMonster</span>(Monster newMon, <span class="keyword from-rainbow">int</span> MonsterId)
+{
+    <span class="comment from-rainbow">// 2. Find the old version of the instance in your database</span>
+    Monster? OldMonster <span class="keyword operator from-rainbow">=</span> _context.Monsters.<span class="function call from-rainbow">FirstOrDefault</span>(i <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> i.MonsterId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> MonsterId);
+    <span class="comment from-rainbow">// 3. Verify that the new instance passes validations</span>
+    <span class="keyword from-rainbow">if</span>(ModelState.IsValid)
+    {
+        <span class="comment from-rainbow">// 4. Overwrite the old version with the new version</span>
+    	<span class="comment from-rainbow">// Yes, this has to be done one attribute at a time</span>
+    	OldMonster.Name <span class="keyword operator from-rainbow">=</span> newMon.Name;
+        OldMonster.Height <span class="keyword operator from-rainbow">=</span> newMon.Height;
+        OldMonster.Description <span class="keyword operator from-rainbow">=</span> newMon.Description;
+    	<span class="comment from-rainbow">// You updated it, so update the UpdatedAt field!</span>
+        OldMonster.UpdatedAt <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    	<span class="comment from-rainbow">// 5. Save your changes</span>
+        _context.<span class="function call from-rainbow">SaveChanges</span>();
+    	<span class="comment from-rainbow">// 6. Redirect to an appropriate page</span>
+        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">RedirectToAction</span>(<span class="string from-rainbow">"Index"</span>);
+    } <span class="keyword from-rainbow">else</span> {
+    	<span class="comment from-rainbow">// 3.5. If it does not pass validations, show error messages</span>
+    	<span class="comment from-rainbow">// Be sure to pass the form back in so you don't lose your changes</span>
+        <span class="comment from-rainbow">// It should be the old version so we can keep the ID</span>
+        <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(<span class="string from-rainbow">"EditMonster"</span>, OldMonster);
+    }
+}
+</pre>
+<p>Quite a lot going on here. And we could add even more if we wanted to verify that we pulled a valid object from our database or add extra validations. But we'll keep it simple for now and leave you to figure out how to add advanced security features to your update!</p>
