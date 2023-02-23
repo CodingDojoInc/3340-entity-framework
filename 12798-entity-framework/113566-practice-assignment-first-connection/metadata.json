@@ -1,1 +1,1 @@
-{"tasks":[],"difficulty_level":0,"estimated_time":"","allow_upload":1,"tasks_order":[],"id":113566}
+{"tasks":[{"id":0,"task":"Create an MVC project."},{"id":1,"task":"Create a Pets table for your database."},{"id":2,"task":"Follow the instructions to connect to MySQL."},{"id":3,"task":"Verify that the database and table are populated in MySQL."}],"difficulty_level":null,"estimated_time":null,"allow_upload":null,"tasks_order":[0,1,2,3],"id":113566}
