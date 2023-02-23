@@ -1,1 +1,70 @@
 <h1>Include</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Implement Include queries to access adjoining table data.</li>
+<li>Test various ways in which Include can allow for more complex data pulls.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/796409205" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Once you have some Users who have made some Posts, the next logical step is to render that information. We know how to pull our Users and we know how to pull our Posts, but how do we pull information about the User who made a Post? Or about all the Posts one particular User has made?<br></p>
+<p>Let's start with an example. Say we wanted to render a list of all the Posts in our database and the names of the Users who made them. If we look at our Posts model, we see we have a UserId and the Creator object that is meant to reference the User who made the post. (Pop quiz: what was the feature to refer to the User called again? It starts with "N".)</p>
+<p>If we simply try grabbing all our Posts:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+{    
+    List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span> AllPosts <span class="keyword operator from-rainbow">=</span> _context.Posts.<span class="function call from-rainbow">ToList</span>();    
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(AllPosts);
+}</pre>
+<p>And then we tried to render all the posts and reference the name of the person who created it:</p>
+<pre class="rainbow" data-language="html">@model List<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">Post</span></span><span class="support tag close from-rainbow">&gt;</span>
+@foreach(Post p in Model)
+{    
+    <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>@p.Creator.Name says: @p.Content<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
+}</pre>
+<p>We will quickly find ourselves looking at an error page with this message:</p>
+<p><code>NullReferenceException: Object reference not set to an instance of an object.</code></p>
+<p>And it will highlight the line:</p>
+<p><code>&lt;p&gt;@p.Creator.Name says: @p.Content&lt;/p&gt;</code></p>
+<p>But why? The Creator field is clearly visible in our Post model. Why can't we pull data from it automatically?</p>
+<p>The reason is that the navigation property we set up is more like a bookmark than an actual piece of data, at least for now. The reality is it would be very tedious and taxing on our program if every time we called on anything in our database it automatically brought along information from all adjoining tables. Instead, we create navigation properties as <em>pointers</em> to the data we need.</p>
+<p>This is why relationships exist. They serve the function of binding two tables together with the stipulation that if you <em>want </em>that data you have to <em>ask</em> for it. Until you have asked for the information, that navigation property is just an empty object or List.</p>
+<p>So how do we fill that empty object with the data we need? The package <code>Microsoft.EntityFrameworkCore</code> comes with just the tools we need to make talking between our tables a breeze. If we want to pull data about an adjoining table from another table, we will use a method called <code>.Include()</code>. With this, we will tell our query to <em>include</em> information about the Creator of the post.</p>
+<pre class="rainbow" data-language="c_sharp"><span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Index</span>()
+{        
+    List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span> AllPosts <span class="keyword operator from-rainbow">=</span> _context.Posts.<span class="function call from-rainbow">Include</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.Creator).<span class="function call from-rainbow">ToList</span>();        
+    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(AllPosts);
+}</pre>
+<p>When we run our code again we see the data! Hopefully, now you see the importance and power behind Entity Framework Core and Include.</p>
+<h2>Querying Related Data</h2>
+<p>The use of Include in our queries is the first step in acquiring more complex data. With it, we can write much more complex and detailed queries to pull data that spans across tables. For example, if we wanted to know how many Posts a User has made, or the User with the longest post, we will leverage Include to aid us. Let's see a few examples, and feel free to try some of your own queries out too:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Number of posts created by this User    </span>
+<span class="keyword from-rainbow">int</span> numPosts <span class="keyword operator from-rainbow">=</span> _context.Users        
+                        <span class="comment from-rainbow">// Including Posts, so that we may query on this field        </span>
+                        .<span class="function call from-rainbow">Include</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.AllPosts)        
+                        <span class="comment from-rainbow">// Get a User with a particular UserId        </span>
+                        .<span class="function call from-rainbow">FirstOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.UserId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> userId)        
+                        <span class="comment from-rainbow">// Now, with a reference to a User object, and access to a User's Posts</span>
+                        <span class="comment from-rainbow">// we can get the .Count property of the Posts List        </span>
+                        .AllPosts.Count;         
+<span class="comment from-rainbow">// User with the longest Post, we can do this in two stages    </span>
+<span class="comment from-rainbow">// First, find the Length of the longest Post</span>
+<span class="keyword from-rainbow">int</span> longestPostLength <span class="keyword operator from-rainbow">=</span> _context.Posts.<span class="function call from-rainbow">Max</span>(post <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> post.Content.Length);         
+<span class="comment from-rainbow">// Second, select one User whose AllPosts has Any that matches this character count    </span>
+<span class="comment from-rainbow">// Note here that AllPosts is a List, and thus can take a LINQ expression such as .Any()    </span>
+User userWithLongest <span class="keyword operator from-rainbow">=</span> _context.Users        
+                               .<span class="function call from-rainbow">Include</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.AlllPosts)        
+                               .<span class="function call from-rainbow">FirstOrDefault</span>(user <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> user.AllPosts
+                               .<span class="function call from-rainbow">Any</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.Content.Length <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> longestPostLength));         
+<span class="comment from-rainbow">// Posts NOT related to this User:    </span>
+<span class="comment from-rainbow">// Since this query only requires checking a Post's UserId    </span>
+<span class="comment from-rainbow">// and doesn't require us to check data contained in a Post's Creator    </span>
+<span class="comment from-rainbow">// we can do this WITHOUT a .Include()    </span>
+List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span> unrelatedPosts <span class="keyword operator from-rainbow">=</span> _context.Posts.<span class="function call from-rainbow">Where</span>(c <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> c.UserId <span class="keyword operator from-rainbow">!</span><span class="keyword operator from-rainbow">=</span> userId).<span class="function call from-rainbow">ToList</span>();</pre>
+<h3>But wait, I managed to get my information to display <em>without</em> using an Include!!</h3>
+<p>This might happen if you spend enough time playing around with queries, and the reason is a little sneaky on Entity Framework's part. There will come times when, say, you queried for all your posts and want to display the name of the Creator. But you noticed you rendered the information successfully without having an Include in your AllPosts query.</p>
+<p>If this happens, take a look at what other queries you have in that same route. Do you happen to have another query that is grabbing all the <em>Users</em>? There is your answer!</p>
+<p>EF Core is a smart framework. It's capable of making certain leaps in logic that are otherwise impossible in other frameworks. What it did was it saw you already went through the effort of querying for Posts and then querying for Users, and it saw that those two tables are connected through a one-to-many, so it said "Hey, I already have the information you need. Let me just plug this relational information in for you, free of charge." </p>
+<p>The same thing can happen if you notice that all the Posts are made by a single user, and you, the logged-in user, are able to see the page just fine, but you get errors when you log in as someone else! This likely happened because somewhere in your route you queried for the logged-in user and it made the same connection. It is good to be aware of these loopholes to help you debug errors.</p>
+<p><strong>IMPORTANT!!</strong> Just because we are now aware of the extra connections EF Core will make for us does <em>not</em> mean we should rely on it! You should <i>always </i>write the proper queries and use your Include statement whenever necessary to prevent unwanted errors!</p>
