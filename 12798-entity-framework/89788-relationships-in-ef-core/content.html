@@ -15,7 +15,7 @@
 <p>MySQL is not capable of holding complex data like objects in its columns. To establish relationships between tables, we use the IDs of these objects to represent the relationship. For example, rather than storing the User object who made a post in our Post table, we would instead have a column to store the UserId, which we can then use (since IDs are unique) to identify which user made the post. </p>
 <p>This will result in two tables that look like this:</p>
 <p><strong>User.cs</strong></p>
-<pre class="rainbow active_pre" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 namespace YourProjectName.Models;
 using System.ComponentModel.DataAnnotations;
 <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
@@ -45,20 +45,20 @@ using System.ComponentModel.DataAnnotations;
 <p>This is a good start, but now we get to talk about Entity Framework's role in relationships. Entity Framework Core is here to provide support because it <em>can</em> keep track of complex data. It will allow us to create something called a <strong>Navigation Property</strong> to reference the object (or List of objects) that connects our tables. </p>
 <p>The Navigation Property will <em>not</em> map to our database by default, since it is complex data and meant only for EF Core. We will create Navigation Properties that connect our models to make it easy to access the adjoining table from either side.</p>
 <p><strong>User.cs</strong></p>
-<pre class="rainbow" data-language="c_sharp">#pragma warning disable CS8618
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
 namespace YourProjectName.Models;
 using System.ComponentModel.DataAnnotations;
-public class User
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> User
 {    
     [Key]    
-    public int UserId { get; set; }       
-    public string Name { get; set; } 
-    public string Email { get; set; }
-    public DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-    public DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
-    // Our navigation property to track the many Posts our user has made
-    // Be sure to include the part about instantiating a new List<span class="keyword operator from-rainbow">!</span>
-    public List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span> AllPosts { get; set; } <span class="keyword operator from-rainbow">=</span> new List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span>();
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }       
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; } 
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Email { get; set; }
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    <span class="comment from-rainbow">// Our navigation property to track the many Posts our user has made</span>
+    <span class="comment from-rainbow">// Be sure to include the part about instantiating a new List!</span>
+    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span> AllPosts { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Post<span class="keyword operator from-rainbow">&gt;</span>();
 }</pre>
 <p><strong>Post.cs</strong></p>
 <pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">#pragma warning disable CS8618</span>
@@ -69,8 +69,8 @@ using System.ComponentModel.DataAnnotations;
     [Key]    
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PostId { get; set; }
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Content { get; set; }
-    <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } = DateTime.Now;
-    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } = DateTime.Now;
+    <span class="keyword from-rainbow">public</span> DateTime CreatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
+    <span class="keyword from-rainbow">public</span> DateTime UpdatedAt { get; set; } <span class="keyword operator from-rainbow">=</span> DateTime.Now;
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> UserId { get; set; }
     <span class="comment from-rainbow">// Our navigation property to track which User made this Post</span>
     <span class="comment from-rainbow">// It is VERY important to include the ? on the datatype or this won't work!</span>
