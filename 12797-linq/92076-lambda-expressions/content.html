@@ -1,32 +1,48 @@
-
-            
-            <h1>Lambda Expressions</h1>
-<p>When using method syntax, we have to learn about <strong>lambda expressions</strong>. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression.&nbsp; We will pass a lambda expression as the <em>condition or parameter</em> on which we want the query to execute.&nbsp; Let's take a look at an example of a lambda expression:</p>
-<pre>
-List numsAboveTen = numbers.Where(num =&gt; num &gt; 10).ToList();</pre>
-<p>&nbsp;<code>.Where</code>&nbsp;is a&nbsp;LINQ method&nbsp;and the&nbsp;<code>=&gt;</code>&nbsp;is a&nbsp;lambda function. A&nbsp;lambda function&nbsp;contains our query instructions. These instructions are passed into the&nbsp;LINQ method&nbsp;so LINQ can fetch the specific data we ask for.&nbsp;&nbsp;</p>
+<h1>Lambda Expressions</h1>
 <p>
-This LINQ query filters a list of numbers into a new list of numbers greater than 10. The program will iterate through the original list, and execute the lambda function&nbsp;<code>foreach</code>&nbsp;item in the list. In this case, it will iterate through a list&nbsp;of integers and add each number that meets the requirements (&gt;10) to the new list.</p>
-<p><br></p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Define what a lambda expression is and its role in writing queries.</li><li>Break down the different elements of a lambda expression and how these pieces work together to query a dataset.</li></ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/794906574" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>To get started with LINQ, we first must learn about lambda (lam-duh) expressions. A lambda expression is a way of writing an otherwise cumbersome function in a simplified inline expression. Basically, it will take what would have been a long raw query to write in SQL and turns it into an easy-to-read single-line method.<br></p>
+<p>We pass a lambda as the condition or parameter on which we want the query to execute. Let's take a look at an example of a LINQ query with a lambda expression. This example assumes the existence of a List of integers called numbers.</p>
+<pre class="rainbow" data-language="c_sharp">List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">int</span><span class="keyword operator from-rainbow">&gt;</span> numsAboveTen <span class="keyword operator from-rainbow">=</span> numbers.<span class="function call from-rainbow">Where</span>(num <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> num <span class="keyword operator from-rainbow">&gt;</span> <span class="constant numeric from-rainbow">10</span>).<span class="function call from-rainbow">ToList</span>();</pre>
+<p><code>.Where</code> is a LINQ method and the <code>=&gt;</code> is the lambda function (you may also hear this symbol be referred to as an "arrow function" or a "fat arrow"). A lambda function contains our query instructions. These instructions are passed into the LINQ method so LINQ can perform the action we asked it to with the specific parameters. </p>
+<p>If we were to read this as a sentence, it would read: "give me all the numbers from a given List of integers called numbers WHERE the numbers in question are greater than 10 and put them into a List called numsAboveTen." Essentially, this method looped (it uses a foreach loop, in fact) through a List of integers called numbers, and any time it encountered a number in that List that was greater than 10 it added it to a new List of integers called numsAboveTen. Pretty cool, right?</p>
+<p>If we had tried to write this ourselves, it probably would have looked something like this:</p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Pretend we have a List of integers called numbers up here</span>
+List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">int</span><span class="keyword operator from-rainbow">&gt;</span> numsAboveTen <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span><span class="keyword from-rainbow">int</span><span class="keyword operator from-rainbow">&gt;</span>();
+<span class="keyword from-rainbow">foreach</span>(<span class="keyword from-rainbow">int</span> num in numbers)
+{
+    <span class="keyword from-rainbow">if</span>(num <span class="keyword operator from-rainbow">&gt;</span> <span class="constant numeric from-rainbow">10</span>)
+    {
+    	numsAboveTen.<span class="function call from-rainbow">Add</span>(num);
+    }
+}
+</pre>
+<p>Much more verbose compared to our lambda expression, right? You can see now how much time and space LINQ queries can save us!</p>
 <h2>Parts of a Lambda</h2>
-<p>A lambda function has two parts, the part to the left of the&nbsp;<code>=&gt;</code>&nbsp;is a <strong>parameter</strong> for the function, and to the right of the&nbsp;<code>=&gt;</code>&nbsp;is an <strong>expression for querying</strong>. The parameter to the left of the&nbsp;<code>=&gt;</code>&nbsp;can be named anything since parameters are like variables. Parameters hold the data that was passed in to the function.</p>
-<p>LINQ queries iterate over a list and execute the lambda function&nbsp;<code>foreach</code>&nbsp;item in the list, passing the current item into the lambda's parameter so the expression to the right of the&nbsp;<code>=&gt;</code>&nbsp;can refer check each item for querying.&nbsp;</p>
-<h3>Parameter Naming</h3>
-<p>
-In general, parameters should be named after the data they will contain, such as&nbsp;<code>num</code>&nbsp;for a number, or if that number represents a score,&nbsp;<code>score</code>&nbsp;could be more descriptive. However, lambdas are a shorthand function, so shorthand parameter names are often convention. For example, a developer might use&nbsp;<code>n</code>&nbsp;as opposed to <code>num</code> when querying a list of numbers,&nbsp;<code>u</code>&nbsp;when querying a list of&nbsp;<code>User</code>&nbsp;class instances, or&nbsp;<code>tm</code>&nbsp;when querying a list of&nbsp;<code>TextMessage</code>&nbsp;class instances.</p>
-<p><br></p>
-<h2>Lambda Selector</h2>
-<p>There are two types of operations our lambda expressions will need to perform:&nbsp;<strong>selectors</strong>&nbsp;and&nbsp;<strong>predicates</strong>.&nbsp;A lambda selector&nbsp;is used for certain LINQ methods that only need to be told what property / column to use.</p>
-<pre>
-people.Min(person =&gt; person.Age);</pre>
-<p>In this example, the function does the job of selecting the person object with the minimum age out of a List of person objects.&nbsp;</p>
-<h3><div><h3></h3></div>Lambda Predicate<p>In grammar, a predicate is one of the main two parts of a sentence.&nbsp;It modifies&nbsp;the subject. A <strong>lambda predicate</strong> is when the right side of the&nbsp;<code>=&gt;</code>&nbsp;evaluates into a boolean, such as using comparison operators or methods that return booleans. Check out this example:</p></h3>
-<pre>
-List&lt;Person&gt; namedNeil = persons.Where(person =&gt; person.FirstName == "Neil").ToList();</pre><p>
-The&nbsp;<code>==</code>&nbsp;equality comparison operator evaluates to a boolean, when your lambda returns a true to&nbsp;<code>.Where</code>, LINQ knows it found something you were looking for. This works for &gt; and &lt; just the same.&nbsp;</p>
-<pre>
-List&lt;Person&gt; nameStartsWithN = persons.Where(p =&gt; p.FirstName.StartsWith("N")).ToList();</pre>
-<ul><li><code>.StartsWith</code>&nbsp;returns a boolean, it is doing a comparison internally.</li></ul>
-<p><br></p>
-        
-        
+<p>A lambda function has two parts: the part to the left of the <code>=&gt;</code> is a parameter for the function, and to the right of the <code>=&gt;</code> is an expression for querying. This expression will usually result in a boolean being returned (true or false whether the requirements of the expression were met). If true, it will return whatever we were asking for (a List of numbers, a string or object we were looking for, etc). If false, it will move to the next item if it is searching through a List or it will return null or some other result depending on the query used.</p>
+<h2>Parameter Naming</h2>
+<p>The parameter (<code>num</code> in the example above) is just a stand-in variable name. It can be named anything we want. In general, it is good practice to name the parameter something that makes sense to the data being queried, such as <code>num</code> for number, or <code>score</code> if the number was representing a score.</p>
+<p>It is perfectly acceptable to shorthand this even further to one letter. For example, using <code>n</code> instead of <code>num</code> or <code>u</code> when referring to a <code>user</code>. You will often see the parameter shortened to a single character, and that character may be used across several queries. This is because the variables we make for these queries are function scoped, meaning they only exist within the context of the lambda function we are writing at that moment. </p>
+<h2>Lambda Operations</h2>
+<p>Earlier we mentioned that an expression will <em>usually</em> result in a boolean being returned. There are two types of operations our lambda expressions will need to perform: </p>
+<h3>Lambda Predicates </h3>
+<p>This is an expression that evaluates to a boolean. Like earlier when we asked whether a number was greater than 10. These are the types of queries you will encounter most often. Let's look at another example:</p>
+<pre class="rainbow" data-language="c_sharp">List<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> namedNeil <span class="keyword operator from-rainbow">=</span> persons.<span class="function call from-rainbow">Where</span>(person <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> person.FirstName <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> <span class="string from-rainbow">"Neil"</span>).<span class="function call from-rainbow">ToList</span>();</pre>
+<p>Notice how the expression on the right uses a comparison operator (==). ==, &lt;, and &gt; are common operators you may see when writing a lambda predicate. They answer a question by returning a boolean value.</p>
+<p>There are some minor exceptions to this rule though. Primarily dealing with operations that have a second operation inside that still returns a boolean. They will just look different because they will not have a clear comparison operator, but these still quantify as predicates:</p>
+<pre class="rainbow" data-language="c_sharp">List<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> nameStartsWithN <span class="keyword operator from-rainbow">=</span> persons.<span class="function call from-rainbow">Where</span>(p <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> p.FirstName.<span class="function call from-rainbow">StartsWith</span>(<span class="string from-rainbow">"N"</span>)).<span class="function call from-rainbow">ToList</span>();</pre>
+<p><code>.StartsWith</code> returns a boolean. It is doing a comparison internally.</p>
+<h3>Lambda Selectors </h3>
+<p>This is an expression that grabs something based on a property or column in our table. For example, LINQ has a Min query that will return the smallest number in a set of numbers. Let's say we wanted to get the youngest person from a list of people:</p>
+<pre class="rainbow" data-language="c_sharp">people.<span class="function call from-rainbow">Min</span>(person <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> person.Age);</pre>
+<p>See how the right side of the lambda does not ask a question, it simply selects a column of data from our table (in this case we are assuming there is a People table and one of the columns is for Age) and returns the smallest number from that column it found.</p>
+<div><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1644005832__Group Discussion.png" style="width: 80px; height: 80px;" width="80" height="80" alt="'''" title="'''"><b style="font-size: large;">Reflection</b></div>
+<ul>
+    <li>Summarize what a lambda expression is and its role in writing LINQ queries.</li><li>Think of some other common queries you might make to a data set. Then keep them in mind as we head into the next section!</li>
+</ul>
