@@ -1,99 +1,81 @@
-
-            
-            
-            
-            
-            
-            <h1>Many to Many</h1>
-<p>Many-to-many relationships in EF Core are set up in the same way as we've handled them with SQL in the past. We create a joining table that contains a pair of IDs to establish the connections between the two tables we want to join. Using this joining table, we can now set up a Navigation Property inside of the two models based on the joining table. You can see below how this works:</p>
-<div>
-<div class="inline">
-<h4>Magazine.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Magazine
+<h1>Many to Many</h1>
+<p>
+<img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1643999097__General visual.png" style="width: 100px; height: 100px;" width="100" height="100" alt="''" title="''">
+<b style="font-size: large;">Learning Objectives:</b>
+</p>
+<ul>
+<li>Define what a many-to-many relationship is by comparing it to a one-to-many relationship.</li>
+<li>Build tables for a many-to-many relationship.</li><li>Apply the ThenInclude query to access data across many-to-many relationships.</li>
+</ul>
+<hr>
+<div class="video-container"><iframe style="width: 938px; height: 514px;" src="//player.vimeo.com/video/796423179" frameborder="0" allowfullscreen="" class="vimeo_responsive" data-ready="true"><span id="selection-marker-1" class="redactor-selection-marker"></span></iframe></div>
+<p>Whenever we have two tables that can have multiple associations between each other for each entry (i.e. one store can sell many products and that one product could be sold at many stores) we need to create a many-to-many relationship. </p>
+<p>Setting up a many-to-many requires a bit more work than a one-to-many, and it is very important to know what type of relationship you are intending to set up from the beginning.<br></p>
+<p>Any time we want to create a many-to-many, it is going to require that we create a <em>third table</em>. This table is our joining table, where all the various associations between the original two tables live. If you have ever created a many-to-many relationship directly in MySQL before, you have likely seen this table auto-populate. In our case, we need to manually create it. </p>
+<p>Check out the example below to see how a many-to-many relationship would be created. In this case, we have created a many-to-many between Magazines and People. We have decided this is a many-to-many because <strong>one</strong> person is able to have subscriptions to <strong>many</strong> magazines, and <strong>one</strong> magazine can have <strong>many</strong> people who subscribe to it. </p>
+<p><strong>Magazine.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp">// using statements and namespace removed for brevity
+public class Magazine
+{    
+    [Key]
+    public int MagazineId { get; set; }    
+    public string Title { get; set; }  
+    // CreatedAt and UpdatedAt removed for brevity
+    // Our navigation property to our Subscription class
+    // Notice there is NO reference to the Person class   
+    public List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; } <span class="keyword operator from-rainbow">=</span> new List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
+}</pre>
+<p><strong>Person.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// using statements and namespace removed for brevity</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Person
+{    
+    [Key]
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }  
+    <span class="comment from-rainbow">// CreatedAt and UpdatedAt removed for brevity</span>
+    <span class="comment from-rainbow">// Our Person class also needs a reference to Subscriptions</span>
+    <span class="comment from-rainbow">// and contains NO reference to Magazines  </span>
+    <span class="keyword from-rainbow">public</span> List&lt;Subscription&gt; Subscriptions { get; set; } = <span class="keyword from-rainbow">new</span> List&lt;Subscription<span class="keyword operator from-rainbow">&gt;</span>();
+}</pre>
+<p><strong>Subscription.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// using statements and namespace removed for brevity</span>
+<span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
 {
+    [Key]    
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> SubscriptionId { get; set; } 
+    <span class="comment from-rainbow">// The IDs linking to the adjoining tables   </span>
+    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }    
     <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Title { get; set; } 
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Readers { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
-}
-</pre>
-</div>
-<div class="inline">
-<h4>Person.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Person
-{
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">string</span> Name { get; set; }
-    <span class="keyword from-rainbow">public</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } <span class="keyword operator from-rainbow">=</span> <span class="keyword from-rainbow">new</span> List<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span>();
-}
-</pre>
-</div>
-</div>
-<div>
-<div class="inline">
-<h4>Subscription.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">class</span> Subscription
-{
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> SubscriptionId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> PersonId { get; set; }
-    <span class="keyword from-rainbow">public</span> <span class="keyword from-rainbow">int</span> MagazineId { get; set; }
-    <span class="keyword from-rainbow">public</span> Person? Person { get; set; }
+    <span class="comment from-rainbow">// Our navigation properties - don't forget the ?    </span>
+    <span class="keyword from-rainbow">public</span> Person? Person { get; set; }    
     <span class="keyword from-rainbow">public</span> Magazine? Magazine { get; set; }
-}
-</pre>
-</div>
-<div class="inline">
-<h4>YourContext.cs</h4>
-<pre data-language="c_sharp" class="rainbow"><span class="comment from-rainbow">//Other code</span>
-<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> Persons { get; set; } 
+}</pre>
+<p><strong>YourContext.cs</strong></p>
+<pre class="rainbow" data-language="c_sharp"><span class="comment from-rainbow">// Other code</span>
+<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Person<span class="keyword operator from-rainbow">&gt;</span> People { get; set; } 
 <span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Magazine<span class="keyword operator from-rainbow">&gt;</span> Magazines { get; set; } 
-<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } 
-</pre>
-</div>
-</div>
-<p>What exactly is a many to many relationship? You should have been exposed to the idea of many to many relationships in earlier courses, but just in case here is a refresher: a many to many relationship denotes that two objects (from our model classes) share relationships with one another where each contains a list of the other. In the above example we use people and magazines. Think of how the relationship works in real life. In real life,&nbsp;<strong>one</strong> person can subscribe to&nbsp;<strong>many</strong> different magazines. And&nbsp;<strong>one</strong> magazine can have&nbsp;<strong>many</strong> people who are subscribed to it.&nbsp;</p>
-<p>In order to keep track of who is subscribed to what magazine and vice versa, we must create a third table called&nbsp;<em>Subscriptions</em>. You can call this table anything that would make sense in describing the relationship. When you were making your own relationships directly in MySQL, you should have noticed that this table auto-populates wherever you've created a many to many relationship.&nbsp;</p>
-<p>The subscription table contains two important pieces of information: the ID of the person and the ID of the magazine that are related. As we covered in one to many relationships, once the ID of an object is known EF does a handy job of finding the object for us, which we keep track of in our model.</p>
-<p>From there, we need to keep track of what magazines we are subscribed to in our people table and vice versa. But we wouldn't put a list of magazines inside our person model. Instead we want a list of&nbsp;<em>Subscriptions</em>. This is handier than simply keeping a list of Magazines inside our model because we can do better queries with this information neatly wrapped up in a separate model. Think of what you would need to do to find all the people subscribed to a certain magazine without the subscription class. You would need to query for&nbsp;<em>all</em> the people, and then you would need to loop through&nbsp;<em>all</em> the magazines they're subscribed to in order to see if they are subscribed to that certain magazine. Whereas with the subscription model we can now just say "give me all the users subscribed to this magazine." But if you recall, we cannot actually&nbsp;<em>see</em> this information without a .Include().&nbsp;</p>
-<p>However just like how we don't have immediate access to a Creator object in messages without an include, simply querying for the subscription model won't get us access to the objects stored inside. While it is possible to stack .Include's on top of each other for certain queries, if we want to access the subscriptions&nbsp;<em>then</em> the person or magazine object inside of it, we need to use another query: .ThenInclude().</p>
+<span class="keyword from-rainbow">public</span> DbSet<span class="keyword operator from-rainbow">&lt;</span>Subscription<span class="keyword operator from-rainbow">&gt;</span> Subscriptions { get; set; } </pre>
+<p>The major differences to note here is the existence of the third table and how our primary tables each contain a List of that third table. This is how our relationship is established. Any time we want to access information about what magazines a person is subscribed to or how many people are subscribed to a certain magazine, it is going to require us to first go through the Subscription table to access further information on the Person or Magazine.</p>
+<p>So how would we do this? With two Includes? One to go from Person to Subscription and the next to go from Subscription to Magazine? Almost. There is actually another built-in method specifically for handling this. It is called ThenInclude.</p>
 <h2>.ThenInclude()</h2>
-<p>Much like when querying for data with a One to Many relationship, you will need to tell Entity Framework to <strong>include </strong>data from your model's navigation properties. The difference here is that if you want to include the navigation property of a navigation property (ie. a <strong>Person</strong> with <strong>Subscriptions</strong> that contain a <strong>Magazine</strong>), you<strong> </strong>must follow with a <strong>ThenInclude</strong><strong>() </strong>method, which takes a lambda expression selecting the navigation property you wish to select from the one before.<br></p>
-<p>Say we wanted to get a list of all the magazines that a person is subscribed to. We would first query into our Person DbSet, and then we want to include from our person the List of Subscriptions:</p>
-<p><strong>.</strong><strong>Include(person =&gt; person.Subscriptions)</strong> <br></p>
-<p>After which, we need to access the magazine objects that are inside our subscriptions, so we need to then include:</p>
-<p><strong>.ThenInclude(subscription =&gt; subscription.Magazine)</strong><br></p>
-<p>Finally, we query for a FirstOrDefault person at a provided personId, and now we have access to all the magazine data that the person is subscribed to!</p>
-<h3>In your Controller:</h3>
-<pre data-language="c_sharp" class="rainbow">[<span class="function call from-rainbow">HttpGet</span>(<span class="string from-rainbow">"{personId}"</span>)]
-<span class="keyword from-rainbow">public</span> IActionResult <span class="function call from-rainbow">Show</span>(<span class="keyword from-rainbow">int</span> personId)
-{
-    <span class="keyword from-rainbow">var</span> personWithSubsAndMags <span class="keyword operator from-rainbow">=</span> dbContext.Persons
-    	.<span class="function call from-rainbow">Include</span>(person <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> person.Subscriptions)
-        &nbsp;&nbsp;&nbsp;&nbsp;.<span class="function call from-rainbow">ThenInclude</span>(sub <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> sub.Magazine)
-        .<span class="function call from-rainbow">FirstOrDefault</span>(person <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> person.PersonId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> personId);
-    
-    <span class="keyword from-rainbow">return</span> <span class="function call from-rainbow">View</span>(personWithSubsAndMags);
-}
-</pre>
-<p>Now that we have that information, we can display it!</p>
-<h3>In your View:</h3>
-<pre data-language="c_sharp" class="rainbow">@model Person
-<span class="keyword operator from-rainbow">&lt;</span>h1<span class="keyword operator from-rainbow">&gt;</span>Subscriptions <span class="keyword from-rainbow">for</span> @Model.Name<span class="keyword operator from-rainbow">&lt;</span>/h1<span class="keyword operator from-rainbow">&gt;</span>
-@<span class="keyword from-rainbow">foreach</span>(<span class="keyword from-rainbow">var</span> sub in Model.Subscriptions)
-{
-    <span class="keyword operator from-rainbow">&lt;</span>p<span class="keyword operator from-rainbow">&gt;</span>@sub.Magazine.Title<span class="keyword operator from-rainbow">&lt;</span>/p<span class="keyword operator from-rainbow">&gt;</span>
-}
-</pre>
-<style>
-.inline{
-    display: inline-block;
-    vertical-align: top;
-    margin: 10px;
-}
-</style>
-<p> <br></p>
-        
-        
-        
-        
-        
-        
+<p>Once we start working with many-to-manys, we have three tables to work with instead of two. Accessing data across these tables requires us to hop from one table to the other to the other. To access the closest adjoining table (i.e. going from Person to Subscription) we would still use Include to get inside the Subscription table. But then to access information about the magazines in relation to our Person, we must make another jump into the Magazine table from Subscription using ThenInclude.</p>
+<p>The code will end up looking like this:</p>
+<pre class="rainbow" data-language="c_sharp">Person personWithMags <span class="keyword operator from-rainbow">=</span> _context.People    	
+                                .<span class="function call from-rainbow">Include</span>(subs <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> subs.Subscriptions)            
+                                .<span class="function call from-rainbow">ThenInclude</span>(sub <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> sub.Magazine)        
+                                .<span class="function call from-rainbow">FirstOrDefault</span>(person <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">&gt;</span> person.PersonId <span class="keyword operator from-rainbow">=</span><span class="keyword operator from-rainbow">=</span> personId);</pre>
+<p>See what we did here? First, we used Include to get into the Subscription table. Then, from within our Subscription table, we ThenInclude-d our Magazines before narrowing the query down to one person. With this, we now have information on one person and all the magazines they are subscribed to.</p>
+<figure><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1668614962__includes.jpg" style="width: 664px; height: 193px;" width="664" height="193"></figure>
+<p>If we wanted to render this information, it would look something like this:<br></p>
+<pre class="rainbow" data-language="html">@model Person
+<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>Subscriptions for @Model.Name<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">h1</span></span><span class="support tag close from-rainbow">&gt;</span>
+@foreach(Subscription sub in Model.Subscriptions)
+{    
+    <span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>@sub.Magazine.Title<span class="support tag from-rainbow"><span class="support tag from-rainbow">&lt;</span><span class="support tag special from-rainbow">/</span><span class="support tag-name from-rainbow">p</span></span><span class="support tag close from-rainbow">&gt;</span>
+}</pre>
+<p>Remember that our Person contains a List of Subscriptions, which we are now looping through. For each Subscription we encounter, there is information on a single Magazine, which we access through our Subscription to get the Title.</p>
+<p>Working with ThenInclude can feel confusing the first time around. Play around with the queries until you start to understand how and where the data is coming from. We will be using these queries a lot very soon!</p>
+<div><img src="https://s3.us-east-1.amazonaws.com/General_V88/boomyeah2015/codingdojo/curriculum/content/chapter/1644005832__Group Discussion.png" style="width: 80px; height: 80px;" width="80" height="80" alt="'''" title="'''"><b style="font-size: large;">Reflection</b></div>
+<ul>
+  <li>Test your current comprehension of the material by verbalizing (saying out loud) the definitions for and examples of or uses for the following terms:<ul><li>One-to-many relationships</li><li>Many-to-many relationships</li><li>Include</li><li>ThenInclude</li></ul></li><li>Of all of these terms, which do you feel the most confident in explaining? Which do you feel the least confident in explaining?</li><li>For the least confident one, review the material and try writing some code that uses that feature or try drawing a diagram to visualize how it is working.</li>
+</ul>
